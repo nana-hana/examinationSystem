@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>在线考试系统</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <script src="/static/script/jquery-3.3.1.min.js"></script>
+    <script src="/static/script/loadHeadAndFoot.js"></script>
+    <script src="/static/script/loginCheck.js"></script>
+</head>
+<body>
+<header></header>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-md-2 col-xs-2 col-md-offset-5 col-xs-offset-5">
+            <p id="title">请先登陆</p>
+            <div class="form-group has-feedback">
+                <input id="user" type="text" class="form-control" placeholder="用户名">
+                <span id="user_alert" style="color: red;visibility: hidden;">请输入账号</span>
+            </div>
+            <div class="form-group has-feedback">
+                <input id="pwd" type="password" class="form-control" placeholder="密码">
+                <span id="pwd_alert" style="color: red;visibility: hidden;"></span>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-xs-6" style="left: 20px;">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> 记住我
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xs-6">
+                    <button id="submitId" type="button" class="btn btn-primary btn-block btn-flat">登陆</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer></footer>
+</body>
+</html>

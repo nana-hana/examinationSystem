@@ -11,6 +11,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <build>
+        <!--告诉maven，java下dao里面的xml帮我读取一下.因为它认为java下面的全是源码，所以xml识别不了，不会去读取-->
         <resources>
             <resource>
                 <directory>src/main/java</directory>
@@ -21,6 +22,17 @@
         </resources>
 
         <plugins>
+            <!--mybatis的generator自动生成插件-->
+            <plugin>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>1.3.2</version>
+                <configuration>
+                    <verbose>true</verbose>
+                    <overwrite>true</overwrite>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -40,6 +52,7 @@
         <slf4j.version>1.7.7</slf4j.version>
         <log4j.version>1.2.17</log4j.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
