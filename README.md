@@ -19,5 +19,17 @@
 
 # 使用的框架
 
-Spring、Spring MVC、MyBatis、jQuery、JavaScript、Bootstrap
+* Spring
+* Spring MVC
+* MyBatis
+* jQuery
+* JavaScript
+* Bootstrap
 
+# 开发环境
+* Ubuntu 17.10
+* IntelliJ IDEA 2018.1.5(Ultimate Edition) 
+* Mysql 14.14
+* Tomcat 8.5.24
+* java-8-oracle(1.8)
+* Chrome
