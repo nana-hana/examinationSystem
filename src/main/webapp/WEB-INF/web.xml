@@ -56,5 +56,18 @@
         <url-pattern>/static/*</url-pattern>
     </servlet-mapping>
 
+    <!-- 用于支持RESTful架构的PUT和DELETE方法 -->
+    <filter>
+        <filter-name>HiddenHttpMethodFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+        <init-param>
+            <param-name>methodParam</param-name>
+            <param-value>_method</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>HiddenHttpMethodFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 </web-app>
         

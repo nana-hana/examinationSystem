@@ -19,11 +19,11 @@ $(function () {
         if (verify) {
             $.ajax({
                 type: "POST",
-                url: "/login/check",
+                url: "loginCheck",
                 data: {"username": user, "password": pwd},
                 success: function (data) {
                     if (data === "login_success") {
-                        window.location.href = "/user/home";
+                        window.location.href = "logined";
                     } else {
                         $("#pwd_alert").text("用户名密码不匹配，请重新输入").css("visibility", "visible");
                     }
