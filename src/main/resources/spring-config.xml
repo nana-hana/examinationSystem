@@ -61,4 +61,6 @@
         <!-- 关闭abandoned链接时输出错误日志 -->
         <property name="logAbandoned" value="true"/>
     </bean>
+
+    <import resource="spring-shiro.xml"/>
 </beans>

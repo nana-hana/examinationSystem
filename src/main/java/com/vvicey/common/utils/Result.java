@@ -11,6 +11,7 @@ public class Result {
 
     private int stateCode;//HTTP状态码
     private String message;//返回的提示信息
+    private Loginer loginer;//返回登陆者信息实体
 
     /**
      * 构造器
@@ -33,6 +34,7 @@ public class Result {
     public Result(int stateCode, String message, Loginer loginer) {
         this.stateCode = stateCode;
         this.message = message;
+        this.loginer = loginer;
     }
 
     public int getStateCode() {
@@ -49,5 +51,13 @@ public class Result {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Loginer getLoginer() {
+        return loginer;
+    }
+
+    public void setLoginer(Loginer loginer) {
+        this.loginer = loginer;
     }
 }

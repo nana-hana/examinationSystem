@@ -11,7 +11,7 @@ import java.security.NoSuchAlgorithmException;
  * @Date 18-6-24 下午8:49
  * @Description 密码加密及账户密码检测
  */
-public class SecurityUtils {
+public class MD5Utils {
 
     /**
      * 对密码进行加密

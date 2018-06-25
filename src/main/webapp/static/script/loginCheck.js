@@ -19,11 +19,22 @@ $(function () {
         if (verify) {
             $.ajax({
                 type: "POST",
-                url: "loginCheck",
+                url: "/loginCheck",
                 data: {"username": user, "password": pwd},
                 success: function (data) {
-                    if (data === "login_success") {
-                        window.location.href = "logined";
+                    data = JSON.parse(data);
+                    if (data.stateCode === 200) {
+                        switch (data.loginer.uclass) {
+                            case 0:
+                                setTimeout("window.location.href='administrator'", 2000);
+                                break;
+                            case 1:
+                                setTimeout("window.location.href='teacher'", 2000);
+                                break;
+                            case 2:
+                                setTimeout("window.location.href='student'", 2000);
+                                break;
+                        }
                     } else {
                         $("#pwd_alert").text("用户名密码不匹配，请重新输入").css("visibility", "visible");
                     }

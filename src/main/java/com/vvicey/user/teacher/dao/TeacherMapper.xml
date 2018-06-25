@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vvicey.user.teacher.dao.TeacherMapper" >
+  <resultMap id="BaseResultMap" type="com.vvicey.user.teacher.entity.Teacher" >
+    <id column="tid" property="tid" jdbcType="INTEGER" />
+    <result column="tname" property="tname" jdbcType="VARCHAR" />
+    <result column="major" property="major" jdbcType="INTEGER" />
+    <result column="institute" property="institute" jdbcType="INTEGER" />
+    <result column="tphone" property="tphone" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    tid, tname, major, institute, tphone, uid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from teacher
+    where tid = #{tid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from teacher
+    where tid = #{tid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.vvicey.user.teacher.entity.Teacher" >
+    insert into teacher (tid, tname, major, 
+      institute, tphone, uid
+      )
+    values (#{tid,jdbcType=INTEGER}, #{tname,jdbcType=VARCHAR}, #{major,jdbcType=INTEGER}, 
+      #{institute,jdbcType=INTEGER}, #{tphone,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.vvicey.user.teacher.entity.Teacher" >
+    insert into teacher
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tid != null" >
+        tid,
+      </if>
+      <if test="tname != null" >
+        tname,
+      </if>
+      <if test="major != null" >
+        major,
+      </if>
+      <if test="institute != null" >
+        institute,
+      </if>
+      <if test="tphone != null" >
+        tphone,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tid != null" >
+        #{tid,jdbcType=INTEGER},
+      </if>
+      <if test="tname != null" >
+        #{tname,jdbcType=VARCHAR},
+      </if>
+      <if test="major != null" >
+        #{major,jdbcType=INTEGER},
+      </if>
+      <if test="institute != null" >
+        #{institute,jdbcType=INTEGER},
+      </if>
+      <if test="tphone != null" >
+        #{tphone,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.vvicey.user.teacher.entity.Teacher" >
+    update teacher
+    <set >
+      <if test="tname != null" >
+        tname = #{tname,jdbcType=VARCHAR},
+      </if>
+      <if test="major != null" >
+        major = #{major,jdbcType=INTEGER},
+      </if>
+      <if test="institute != null" >
+        institute = #{institute,jdbcType=INTEGER},
+      </if>
+      <if test="tphone != null" >
+        tphone = #{tphone,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where tid = #{tid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.vvicey.user.teacher.entity.Teacher" >
+    update teacher
+    set tname = #{tname,jdbcType=VARCHAR},
+      major = #{major,jdbcType=INTEGER},
+      institute = #{institute,jdbcType=INTEGER},
+      tphone = #{tphone,jdbcType=INTEGER},
+      uid = #{uid,jdbcType=INTEGER}
+    where tid = #{tid,jdbcType=INTEGER}
+  </update>
+</mapper>

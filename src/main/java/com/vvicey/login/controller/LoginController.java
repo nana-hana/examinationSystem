@@ -1,9 +1,12 @@
 package com.vvicey.login.controller;
 
+import com.vvicey.common.utils.MD5Utils;
 import com.vvicey.common.utils.Result;
-import com.vvicey.common.utils.SecurityUtils;
 import com.vvicey.login.entity.Loginer;
 import com.vvicey.login.service.LoginService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +21,10 @@ import java.security.NoSuchAlgorithmException;
  * @Description 登陆控制器
  */
 @Controller
+@RequestMapping
 public class LoginController {
+
+    private static final int SESSION_LIFE = 600000;//session过期时间10分钟
 
     @Autowired
     private LoginService loginService;
@@ -26,7 +32,7 @@ public class LoginController {
     /**
      * 跳转登陆界面
      *
-     * @return 返回跳转的登录界面文件名称
+     * @return 登陆界面文件名
      */
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public String login() {
@@ -34,41 +40,28 @@ public class LoginController {
     }
 
     /**
-     * 登陆成功跳转页面
-     *
-     * @return 返回跳转的主界面文件名称
-     */
-    @RequestMapping(value = "logined", method = RequestMethod.GET)
-    public String logined() {
-        return "mainPage";
-    }
-
-    /**
      * 用户登陆检测
      *
      * @param request 获取前端传值
      * @return 返回账户验证失败或成功的状态信息
-     * @throws UnsupportedEncodingException 编码不支持
-     * @throws NoSuchAlgorithmException     请求的加密算法无法实现
      */
     @RequestMapping(value = "loginCheck", method = RequestMethod.POST)
     @ResponseBody//返回json格式数据而不是跳转界面
-    public String loginCheck(HttpServletRequest request) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public Result loginCheck(HttpServletRequest request) {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        Loginer loginerRemote = loginService.queryUser(username);
-        if (loginerRemote != null) {
-            if (SecurityUtils.checkPassword(password, loginerRemote.getUpassword())) {
-                //设置session 占位保证一个账号一次只能一个人登陆 先保留
-                loginerRemote.setUpassword("");
-                request.getSession().setAttribute("userInfo", loginerRemote);
-                return "login_success";
-            } else {
-                return "login_fail";
-            }
-        } else {
-            return "login_fail";
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+//        token.setRememberMe(true);
+        Subject subject = SecurityUtils.getSubject();//获取用户主体(current user)
+        try {
+            subject.login(token);
+            SecurityUtils.getSubject().getSession().setTimeout(SESSION_LIFE);
+        } catch (Exception e) {
+            return new Result(403, "登陆失败");
         }
+        Loginer loginer = loginService.queryUser(username);
+        request.getSession().setAttribute("loginerInfo", loginer);
+        return new Result(200, "登陆成功", loginer);
     }
 
     /**
@@ -139,7 +132,7 @@ public class LoginController {
             return new Result(403, "查询失败");
         }
         loginer.setUpassword("");
-        loginer.setUpassword(SecurityUtils.encryptPassword(loginer.getUpassword()));
+        loginer.setUpassword(MD5Utils.encryptPassword(loginer.getUpassword()));
         return new Result(200, "查询成功", loginer);
     }
 }

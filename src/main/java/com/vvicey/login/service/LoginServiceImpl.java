@@ -1,6 +1,6 @@
 package com.vvicey.login.service;
 
-import com.vvicey.common.utils.SecurityUtils;
+import com.vvicey.common.utils.MD5Utils;
 import com.vvicey.login.dao.LoginMapper;
 import com.vvicey.login.entity.Loginer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public int createUser(Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        loginer.setUpassword(SecurityUtils.encryptPassword(loginer.getUpassword()));//将密码进行编译在存入数据库
+        loginer.setUpassword(MD5Utils.encryptPassword(loginer.getUpassword()));//将密码进行编译在存入数据库
         return loginMapper.insertSelective(loginer);
     }
 
@@ -38,7 +38,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public int updateUser(Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        loginer.setUpassword(SecurityUtils.encryptPassword(loginer.getUpassword()));
+        loginer.setUpassword(MD5Utils.encryptPassword(loginer.getUpassword()));
         return loginMapper.updateByNameSelective(loginer);
     }
 }
