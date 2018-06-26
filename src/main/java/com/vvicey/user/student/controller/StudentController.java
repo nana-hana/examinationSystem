@@ -1,5 +1,6 @@
 package com.vvicey.user.student.controller;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @Description 学生控制器
  */
 @Controller
+@RequiresPermissions("student")
 @RequestMapping("student")
 public class StudentController {
 

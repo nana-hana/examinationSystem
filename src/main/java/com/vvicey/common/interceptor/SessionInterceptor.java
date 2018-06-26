@@ -13,9 +13,20 @@ import java.io.IOException;
 /**
  * @Author nana
  * @Date 18-6-22 下午2:30
- * @Description
+ * @Description session拦截器
  */
 public class SessionInterceptor implements HandlerInterceptor {
+
+    /**
+     * 校验是否拥有session
+     *
+     * @param request  http请求
+     * @param response http回复
+     * @param o        handler对象
+     * @return 返回是否有session的信息
+     * @throws ServletException servlet异常
+     * @throws IOException      io异常
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws ServletException, IOException {
         String uri = request.getRequestURI();

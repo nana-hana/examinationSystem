@@ -5,21 +5,44 @@
         <id column="uid" property="uid" jdbcType="INTEGER"/>
         <result column="uname" property="uname" jdbcType="VARCHAR"/>
         <result column="upassword" property="upassword" jdbcType="VARCHAR"/>
-        <result column="uclass" property="uclass" jdbcType="INTEGER"/>
+        <collection property="roleList" resultMap="RoleResultMap"/>
     </resultMap>
+    <resultMap id="RoleResultMap" type="com.vvicey.permission.entity.Role">
+        <id column="rid" property="rid" jdbcType="INTEGER"/>
+        <result column="role" property="role" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <collection property="permissionList" resultMap="PermissionResultMap"/>
+    </resultMap>
+    <resultMap id="PermissionResultMap" type="com.vvicey.permission.entity.Permission">
+        <id column="pid" property="pid" jdbcType="INTEGER"/>
+        <result column="permission" property="permission" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Permission_Column_List">
+      p.pid, permission, p.description pd
+    </sql>
+    <sql id="Role_Column_List">
+      r.rid, role, r.description rd
+    </sql>
     <sql id="Base_Column_List">
-    uid, uname, upassword, uclass
-  </sql>
+      l.uid, uname, upassword
+    </sql>
     <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String">
-        select
-        <include refid="Base_Column_List"/>
-        from login
+        select distinct
+        <include refid="Base_Column_List"/>,
+        <include refid="Role_Column_List"/>,
+        <include refid="Permission_Column_List"/>
+        from login l
+        left join role_login rl on rl.uid = l.uid
+        left join role r on rl.rid = r.rid
+        left join role_permission rp on rp.rid = r.rid
+        left join permission p on p.pid = rp.pid
         where uname = #{uname,jdbcType=VARCHAR}
     </select>
     <delete id="deleteByName" parameterType="java.lang.String">
-    delete from login
-    where uname = #{uname,jdbcType=VARCHAR}
-  </delete>
+        delete from login
+        where uname = #{uname,jdbcType=VARCHAR}
+    </delete>
     <insert id="insertSelective" parameterType="com.vvicey.login.entity.Loginer">
         insert into login
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -32,9 +55,6 @@
             <if test="upassword != null">
                 upassword,
             </if>
-            <if test="uclass != null">
-                uclass,
-            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="uid != null">
@@ -46,9 +66,6 @@
             <if test="upassword != null">
                 #{upassword,jdbcType=VARCHAR},
             </if>
-            <if test="uclass != null">
-                #{uclass,jdbcType=INTEGER},
-            </if>
         </trim>
     </insert>
     <update id="updateByNameSelective" parameterType="com.vvicey.login.entity.Loginer">
@@ -59,9 +76,6 @@
             </if>
             <if test="upassword != null">
                 upassword = #{upassword,jdbcType=VARCHAR},
-            </if>
-            <if test="uclass != null">
-                uclass = #{uclass,jdbcType=INTEGER},
             </if>
         </set>
         where uname = #{uname,jdbcType=VARCHAR}

@@ -24,7 +24,7 @@ $(function () {
                 success: function (data) {
                     data = JSON.parse(data);
                     if (data.stateCode === 200) {
-                        switch (data.loginer.uclass) {
+                        switch (data.loginer.roleList[0].rid) {
                             case 0:
                                 setTimeout("window.location.href='administrator'", 2000);
                                 break;

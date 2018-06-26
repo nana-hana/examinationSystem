@@ -2,6 +2,8 @@ package com.vvicey.common.security;
 
 import com.vvicey.login.entity.Loginer;
 import com.vvicey.login.service.LoginService;
+import com.vvicey.permission.entity.Permission;
+import com.vvicey.permission.entity.Role;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -23,21 +25,20 @@ public class MyRealm extends AuthorizingRealm {
     /**
      * 权限授权
      *
-     * @param principalCollection
-     * @return
+     * @param principalCollection 权限身份集合
+     * @return 返回服务器提供的身份信息
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-
         String username = (String) principalCollection.getPrimaryPrincipal();
         Loginer loginer = loginService.queryUser(username);
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-//        for (Role role : user.getRoleList()) {
-//            authorizationInfo.addRole(role.getRole());
-//            for (Permission permission : role.getPermissionList()) {
-//                authorizationInfo.addStringPermission(permission.getPermission());
-//            }
-//        }
+        for (Role role : loginer.getRoleList()) {
+            authorizationInfo.addRole(role.getRole());
+            for (Permission permission : role.getPermissionList()) {
+                authorizationInfo.addStringPermission(permission.getPermission());
+            }
+        }
         return authorizationInfo;
     }
 

@@ -1,5 +1,6 @@
 package com.vvicey.user.administrator.controller;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @Description 管理员控制器
  */
 @Controller
+@RequiresPermissions("administrator")
 @RequestMapping("administrator")
 public class AdministratorController {
 
