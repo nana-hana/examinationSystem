@@ -11,7 +11,7 @@ public class Result {
 
     private int stateCode;//HTTP状态码
     private String message;//返回的提示信息
-    private Loginer loginer;//返回登陆者信息实体
+    private Object returnObject;//返回数据对象
 
     /**
      * 构造器
@@ -29,12 +29,12 @@ public class Result {
      *
      * @param stateCode HTTP状态码
      * @param message   返回的提示信息
-     * @param loginer   返回loginer类
+     * @param returnObject   返回数据对象
      */
-    public Result(int stateCode, String message, Loginer loginer) {
+    public Result(int stateCode, String message, Object returnObject) {
         this.stateCode = stateCode;
         this.message = message;
-        this.loginer = loginer;
+        this.returnObject = returnObject;
     }
 
     public int getStateCode() {
@@ -53,11 +53,11 @@ public class Result {
         this.message = message;
     }
 
-    public Loginer getLoginer() {
-        return loginer;
+    public Object getLoginer() {
+        return returnObject;
     }
 
-    public void setLoginer(Loginer loginer) {
-        this.loginer = loginer;
+    public void setLoginer(Loginer returnObject) {
+        this.returnObject = returnObject;
     }
 }

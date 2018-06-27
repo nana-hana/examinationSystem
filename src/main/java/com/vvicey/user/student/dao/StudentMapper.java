@@ -8,15 +8,12 @@ import com.vvicey.user.student.entity.Student;
  * @Description 学生数据库CRUD映射抽象类
  */
 public interface StudentMapper {
-    int deleteByPrimaryKey(Integer sid);
 
-    int insert(Student record);
+    int deleteByUid(int uid);
 
-    int insertSelective(Student record);
+    int insertSelective(Student student);
 
-    Student selectByPrimaryKey(Integer sid);
+    Student selectByStudentNumber(int studentNumber);
 
-    int updateByPrimaryKeySelective(Student record);
-
-    int updateByPrimaryKey(Student record);
+    int updateByStudentNumberSelective(Student student);
 }

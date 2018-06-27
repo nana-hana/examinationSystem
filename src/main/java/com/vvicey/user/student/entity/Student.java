@@ -14,7 +14,6 @@ public class Student {
     private Integer major;//学生专业
     private Integer institute;//学生学院
     private Integer sphone;//学生手机号码
-    private String idCard;//学生身份证
     private Integer uid;//学生的登陆id
 
     public Integer getSid() {
@@ -71,14 +70,6 @@ public class Student {
 
     public void setSphone(Integer sphone) {
         this.sphone = sphone;
-    }
-
-    public String getIdCard() {
-        return idCard;
-    }
-
-    public void setIdCard(String idCard) {
-        this.idCard = idCard == null ? null : idCard.trim();
     }
 
     public Integer getUid() {

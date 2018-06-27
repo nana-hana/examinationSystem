@@ -1,14 +1,10 @@
 package com.vvicey.user.teacher.entity;
 
-/**
- * @Author nana
- * @Date 18-6-25 下午3:49
- * @Description 教师实体类
- */
 public class Teacher {
 
     private Integer tid;//教师id
     private String tname;//教师姓名
+    private Integer teacherNumber;//教师编号
     private Integer major;//教师专业
     private Integer institute;//教师学院
     private Integer tphone;//教师手机号码
@@ -28,6 +24,14 @@ public class Teacher {
 
     public void setTname(String tname) {
         this.tname = tname == null ? null : tname.trim();
+    }
+
+    public Integer getTeacherNumber() {
+        return teacherNumber;
+    }
+
+    public void setTeacherNumber(Integer teacherNumber) {
+        this.teacherNumber = teacherNumber;
     }
 
     public Integer getMajor() {

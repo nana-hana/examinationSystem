@@ -19,7 +19,7 @@ $(function () {
         if (verify) {
             $.ajax({
                 type: "POST",
-                url: "/loginCheck",
+                url: "/login/check",
                 data: {"username": user, "password": pwd},
                 success: function (data) {
                     data = JSON.parse(data);

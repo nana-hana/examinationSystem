@@ -39,10 +39,6 @@
         left join permission p on p.pid = rp.pid
         where uname = #{uname,jdbcType=VARCHAR}
     </select>
-    <delete id="deleteByName" parameterType="java.lang.String">
-        delete from login
-        where uname = #{uname,jdbcType=VARCHAR}
-    </delete>
     <insert id="insertSelective" parameterType="com.vvicey.login.entity.Loginer">
         insert into login
         <trim prefix="(" suffix=")" suffixOverrides=",">

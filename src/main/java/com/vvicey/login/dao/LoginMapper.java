@@ -8,7 +8,6 @@ import com.vvicey.login.entity.Loginer;
  * @Description 登陆者数据库CRUD映射抽象类
  */
 public interface LoginMapper {
-    int deleteByName(String name);
 
     int insertSelective(Loginer loginer);
 

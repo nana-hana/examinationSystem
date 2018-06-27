@@ -20,22 +20,39 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private LoginMapper loginMapper;
 
+    /**
+     * 创建登陆者账号
+     *
+     * @param loginer 需要被创建的登陆者信息
+     * @return 返回创建成功与否
+     * @throws UnsupportedEncodingException 编码不支持
+     * @throws NoSuchAlgorithmException     请求的加密算法无法实现
+     */
     @Override
     public int createUser(Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         loginer.setUpassword(MD5Utils.encryptPassword(loginer.getUpassword()));//将密码进行编译在存入数据库
         return loginMapper.insertSelective(loginer);
     }
 
-    @Override
-    public int deleteUser(String name) {
-        return loginMapper.deleteByName(name);
-    }
-
+    /**
+     * 查询登陆者信息
+     *
+     * @param name 根据账号来查询登陆者信息
+     * @return 返回查询的结果
+     */
     @Override
     public Loginer queryUser(String name) {
         return loginMapper.selectByName(name);
     }
 
+    /**
+     * 更新登陆者信息
+     *
+     * @param loginer 需要被更新的登陆者信息
+     * @return 返回更新成功与否
+     * @throws UnsupportedEncodingException 编码不支持
+     * @throws NoSuchAlgorithmException     请求的加密算法无法实现
+     */
     @Override
     public int updateUser(Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         loginer.setUpassword(MD5Utils.encryptPassword(loginer.getUpassword()));
