@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
     <link rel="stylesheet" href="/static/css/font-awesome.min.css">
     <script src="/static/script/jquery-3.3.1.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
     <script src="/static/script/loadHeadAndFoot.js"></script>
     <link rel="shortcut icon" href="/static/images/favicon.png"/>
     <link rel="bookmark" href="/static/images/favicon.png" type="image/x-icon"/>
@@ -196,6 +197,62 @@
                     }
                 });
             });
+
+            //创建考试事件
+            $("#createExamination").on("click", function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/teacher/createExamination",
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        //数据包含单选、多选、判断题的总分值和数量，试卷难度，试卷生成类型，科目id
+                        singleNumber: 1,
+                        singleScore: 1,
+                        multipleNumber: 1,
+                        multipleScore: 1,
+                        checkingNumber: 1,
+                        checkingScore: 1,
+                        paperLevel: 1,
+                        paperKind: 1,
+                        subjectId: 1,
+                        studentClass: 1
+                    }),
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+
+            //删除考试事件
+            $("#deleteExamination").on("click", function () {
+                $.ajax({
+                    type: "DELETE",
+                    url: "/teacher/deleteExamination",
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        //数据包含需要删除的试卷的eiid
+                        eiid: 11
+                    }),
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                })
+                ;
+            });
+
+            //查询考试事件
+            $("#queryExamination").on("click", function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/teacher/queryExaminationSelf",
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
         });
     </script>
 </head>
@@ -216,6 +273,10 @@
 <button id="queryStudentInfo">查询学生个人信息</button>
 <button id="queryTeacherSelfLoginer">查询教师登陆信息</button>
 <button id="queryTeacherSelfInfo">查询教师个人信息</button>
+<br>
+<button id="createExamination">提交考试申请</button>
+<button id="deleteExamination">删除考试申请</button>
+<button id="queryExamination">查询考试申请</button>
 <footer></footer>
 </body>
 </html>

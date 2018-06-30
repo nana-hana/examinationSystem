@@ -20,4 +20,5 @@ public interface TeacherService {
     int updateTeacherInfoByTeacherNumber(Teacher teacher);
 
     int updateTeacherInfoByUid(Teacher teacher);
+
 }

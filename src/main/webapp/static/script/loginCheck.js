@@ -22,9 +22,8 @@ $(function () {
                 url: "/login/check",
                 data: {"username": user, "password": pwd},
                 success: function (data) {
-                    data = JSON.parse(data);
-                    var a = data.roleList[0].rid;
-                    if (data != null) {
+                    if (data !== "") {
+                        data = JSON.parse(data);
                         switch (data.roleList[0].rid) {
                             case 0:
                                 setTimeout("window.location.href='administrator'", 2000);

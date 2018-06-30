@@ -1,5 +1,10 @@
 package com.vvicey.user.teacher.entity;
 
+/**
+ * @Author nana
+ * @Date 18-6-30 下午4:54
+ * @Description 教师实体类
+ */
 public class Teacher {
 
     private Integer tid;//教师id

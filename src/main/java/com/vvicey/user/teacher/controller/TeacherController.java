@@ -2,6 +2,8 @@ package com.vvicey.user.teacher.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.vvicey.common.utils.Status;
+import com.vvicey.examination.entity.ExaminationInternal;
+import com.vvicey.examination.service.ExaminationService;
 import com.vvicey.login.entity.Loginer;
 import com.vvicey.login.service.LoginService;
 import com.vvicey.user.student.entity.Student;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,6 +38,8 @@ public class TeacherController {
     private LoginService loginService;
     @Autowired
     private TeacherService teacherService;
+    @Autowired
+    private ExaminationService examinationService;
 
     /**
      * 跳转教师界面
@@ -238,4 +243,60 @@ public class TeacherController {
         return teacherService.queryTeacherInfoByUid(loginer.getUid());
     }
 
+    /**
+     * 创建考试事件
+     *
+     * @param request             用于获取提交老师的编号
+     * @param examinationInternal 需要创建的考试试卷详情
+     * @return 返回创建成功失败的信息
+     */
+    @RequestMapping(value = "createExamination", method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public int createExamination(HttpServletRequest request, @RequestBody ExaminationInternal examinationInternal) {
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        int teacherNumber = teacherService.queryTeacherInfoByUid(loginer.getUid()).getTeacherNumber();
+        examinationInternal.setSubmitTeacherNumber(teacherNumber);
+        int examinationResult = examinationService.createExamination(examinationInternal);
+        if (examinationResult == 0) {
+            return Status.FAIL.getSign();
+        }
+        return examinationInternal.getEiid();//此处返回考试事件的eiid(即id)，方便删除和更新
+    }
+
+    /**
+     * 删除考试事件
+     *
+     * @param examinationInternal 用于获取考试事件号eiid
+     * @return 返回删除失败或成功的状态信息
+     */
+    @RequestMapping(value = "deleteExamination", method = RequestMethod.DELETE)
+    @ResponseBody
+    @Transactional
+    public int deleteExamination(@RequestBody ExaminationInternal examinationInternal) {
+        int eiid = examinationInternal.getEiid();
+        examinationInternal = examinationService.queryExaminationByEiid(eiid);
+        if (examinationInternal == null) {
+            return Status.NOT_EXIST.getSign();
+        }
+        int result = examinationService.deleteExamination(eiid);
+        if (result == 0) {
+            return Status.FAIL.getSign();
+        }
+        return Status.SUCCESS.getSign();
+    }
+
+    /**
+     * 查询自己创建的考试事件(个人)
+     *
+     * @param request 教师学号
+     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的教师信息
+     */
+    @RequestMapping(value = "queryExaminationSelf", method = RequestMethod.GET)
+    @ResponseBody
+    public List<ExaminationInternal> queryExaminationSelf(HttpServletRequest request) {
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        int teacherNumber = teacherService.queryTeacherInfoByUid(loginer.getUid()).getTeacherNumber();
+        return examinationService.queryExaminationByTeacherNumber(teacherNumber);
+    }
 }
