@@ -9,13 +9,11 @@ import java.util.List;
  * @Date 18-6-30 下午5:46
  * @Description 考试事件的操作抽象类
  */
-public interface ExaminationService {
+public interface ExaminationInternalService {
 
     int createExamination(ExaminationInternal examinationInternal);
 
     int deleteExamination(int eiid);
-
-    ExaminationInternal queryExaminationByEiid(int eiid);
 
     List<ExaminationInternal> queryExaminationByTeacherNumber(int teacherNumber);
 

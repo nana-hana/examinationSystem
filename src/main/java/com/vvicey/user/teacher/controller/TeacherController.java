@@ -3,7 +3,7 @@ package com.vvicey.user.teacher.controller;
 import com.alibaba.fastjson.JSON;
 import com.vvicey.common.utils.Status;
 import com.vvicey.examination.entity.ExaminationInternal;
-import com.vvicey.examination.service.ExaminationService;
+import com.vvicey.examination.service.ExaminationInternalService;
 import com.vvicey.login.entity.Loginer;
 import com.vvicey.login.service.LoginService;
 import com.vvicey.user.student.entity.Student;
@@ -39,7 +39,7 @@ public class TeacherController {
     @Autowired
     private TeacherService teacherService;
     @Autowired
-    private ExaminationService examinationService;
+    private ExaminationInternalService examinationInternalService;
 
     /**
      * 跳转教师界面
@@ -257,11 +257,11 @@ public class TeacherController {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         int teacherNumber = teacherService.queryTeacherInfoByUid(loginer.getUid()).getTeacherNumber();
         examinationInternal.setSubmitTeacherNumber(teacherNumber);
-        int examinationResult = examinationService.createExamination(examinationInternal);
+        int examinationResult = examinationInternalService.createExamination(examinationInternal);
         if (examinationResult == 0) {
             return Status.FAIL.getSign();
         }
-        return examinationInternal.getEiid();//此处返回考试事件的eiid(即id)，方便删除和更新
+        return Status.SUCCESS.getSign();
     }
 
     /**
@@ -275,11 +275,7 @@ public class TeacherController {
     @Transactional
     public int deleteExamination(@RequestBody ExaminationInternal examinationInternal) {
         int eiid = examinationInternal.getEiid();
-        examinationInternal = examinationService.queryExaminationByEiid(eiid);
-        if (examinationInternal == null) {
-            return Status.NOT_EXIST.getSign();
-        }
-        int result = examinationService.deleteExamination(eiid);
+        int result = examinationInternalService.deleteExamination(eiid);
         if (result == 0) {
             return Status.FAIL.getSign();
         }
@@ -297,6 +293,30 @@ public class TeacherController {
     public List<ExaminationInternal> queryExaminationSelf(HttpServletRequest request) {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         int teacherNumber = teacherService.queryTeacherInfoByUid(loginer.getUid()).getTeacherNumber();
-        return examinationService.queryExaminationByTeacherNumber(teacherNumber);
+        return examinationInternalService.queryExaminationByTeacherNumber(teacherNumber);
     }
+
+    /**
+     * 更新考试事件
+     *
+     * @param examinationAndEiid 要更新的考试事件信息和试卷编号eiid
+     * @return 返回删除失败或成功的状态信息
+     */
+    @RequestMapping(value = "updateExamination", method = RequestMethod.PUT)
+    @ResponseBody
+    @Transactional
+    public int updateExamination(@RequestBody Map<String, Object> examinationAndEiid, HttpServletRequest request) {
+        ExaminationInternal examinationInternal = JSON.parseObject(JSON.toJSONString(examinationAndEiid.get("examination")), ExaminationInternal.class);
+        int eiid = JSON.parseObject(JSON.toJSONString(examinationAndEiid.get("eiid")), Integer.class);
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        int teacherNumber = teacherService.queryTeacherInfoByUid(loginer.getUid()).getTeacherNumber();
+        examinationInternal.setEiid(eiid);
+        examinationInternal.setSubmitTeacherNumber(teacherNumber);
+        int result = examinationInternalService.updateExaminationByEiid(examinationInternal);
+        if (result == 0) {
+            return Status.FAIL.getSign();
+        }
+        return Status.SUCCESS.getSign();
+    }
+
 }

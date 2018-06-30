@@ -14,10 +14,12 @@
         <result column="subject_id" property="subjectId" jdbcType="INTEGER"/>
         <result column="submit_teacherNumber" property="submitTeacherNumber" jdbcType="INTEGER"/>
         <result column="student_class" property="studentClass" jdbcType="INTEGER"/>
+        <result column="examination_time" property="examinationTime" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
     eiid, single_number, single_score, multiple_number, multiple_score, checking_number, 
-    checking_score, paper_level, paper_kind, subject_id, submit_teacherNumber, student_class
+    checking_score, paper_level, paper_kind, subject_id, submit_teacherNumber, student_class,
+    examination_time
   </sql>
     <select id="selectByEiid" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
@@ -76,6 +78,9 @@
             <if test="studentClass != null">
                 student_class,
             </if>
+            <if test="examinationTime != null">
+                examination_time,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="eiid != null">
@@ -114,6 +119,9 @@
             <if test="studentClass != null">
                 #{studentClass,jdbcType=INTEGER},
             </if>
+            <if test="examinationTime != null">
+                #{examinationTime,jdbcType=INTEGER},
+            </if>
         </trim>
     </insert>
     <update id="updateByEiidSelective" parameterType="com.vvicey.examination.entity.ExaminationInternal">
@@ -151,6 +159,9 @@
             </if>
             <if test="studentClass != null">
                 student_class = #{studentClass,jdbcType=INTEGER},
+            </if>
+            <if test="examinationTime != null">
+                examination_time = #{examinationTime,jdbcType=INTEGER},
             </if>
         </set>
         where eiid = #{eiid,jdbcType=INTEGER}

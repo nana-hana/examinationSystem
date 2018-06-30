@@ -19,6 +19,7 @@ public class ExaminationInternal {
     private Integer subjectId;//考试科目id
     private Integer submitTeacherNumber;//提交考试申请的老师编号
     private Integer studentClass;//参加考试的班级
+    private Integer examinationTime;//考试持续事件
 
     public Integer getEiid() {
         return eiid;
@@ -114,5 +115,13 @@ public class ExaminationInternal {
 
     public void setStudentClass(Integer studentClass) {
         this.studentClass = studentClass;
+    }
+
+    public Integer getExaminationTime() {
+        return examinationTime;
+    }
+
+    public void setExaminationTime(Integer examinationTime) {
+        this.examinationTime = examinationTime;
     }
 }

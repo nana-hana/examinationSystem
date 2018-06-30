@@ -205,7 +205,8 @@
                     url: "/teacher/createExamination",
                     contentType: 'application/json',
                     data: JSON.stringify({
-                        //数据包含单选、多选、判断题的总分值和数量，试卷难度，试卷生成类型，科目id
+                        //数据包含单选、多选、判断题的总分值和数量，试卷难度，试卷生成类型，科目id，考试持续时间
+                        examinationTime:120,
                         singleNumber: 1,
                         singleScore: 1,
                         multipleNumber: 1,
@@ -242,6 +243,36 @@
                 ;
             });
 
+            //更新考试事件
+            $("#updateExamination").on("click", function () {
+                $.ajax({
+                    type: "PUT",
+                    url: "/teacher/updateExamination",
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        //数据包含单选、多选、判断题的总分值和数量，试卷难度，试卷生成类型，科目id，考试持续事件
+                        eiid: 12,
+                        examination: {
+                            examinationTime: 120,
+                            singleNumber: 2,
+                            singleScore: 2,
+                            multipleNumber: 2,
+                            multipleScore: 2,
+                            checkingNumber: 2,
+                            checkingScore: 2,
+                            paperLevel: 2,
+                            paperKind: 2,
+                            subjectId: 2,
+                            studentClass: 2
+                        }
+                    }),
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+
             //查询考试事件
             $("#queryExamination").on("click", function () {
                 $.ajax({
@@ -276,6 +307,7 @@
 <br>
 <button id="createExamination">提交考试申请</button>
 <button id="deleteExamination">删除考试申请</button>
+<button id="updateExamination">更新考试申请</button>
 <button id="queryExamination">查询考试申请</button>
 <footer></footer>
 </body>

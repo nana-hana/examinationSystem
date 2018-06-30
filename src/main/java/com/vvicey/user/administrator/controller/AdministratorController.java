@@ -237,4 +237,96 @@ public class AdministratorController {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         return administratorService.queryAdministratorInfoByUid(loginer.getUid());
     }
+
+//    /**
+//     *
+//     *
+//     * @param loginAndInfo 增添的教师个人信息和登陆信息
+//     * @return 返回增添失败或成功的状态信息
+//     * @throws UnsupportedEncodingException 编码不支持
+//     * @throws NoSuchAlgorithmException     请求的加密算法无法实现
+//     */
+//    @RequestMapping(value = "addTeacher", method = RequestMethod.POST)
+//    @ResponseBody
+//    @Transactional
+//    public int addTeacher(@RequestBody Map<String, Object> loginAndInfo) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+//        Loginer loginer = JSON.parseObject(JSON.toJSONString(loginAndInfo.get("loginer")), Loginer.class);
+//        Teacher teacher = JSON.parseObject(JSON.toJSONString(loginAndInfo.get("teacher")), Teacher.class);
+//        //检查账号重复
+//        Loginer checkResult = loginService.queryUser(loginer.getName());
+//        if (checkResult != null) {
+//            return Status.FAIL_REPETITION.getSign();
+//        }
+//        //创建账号
+//        int loginerResult = loginService.createUser(loginer);
+//        if (loginerResult == 0) {
+//            return Status.FAIL.getSign();
+//        }
+//        //创建教师信息身份，教师uid与账号uid相关联
+//        loginer = loginService.queryUser(loginer.getName());
+//        teacher.setUid(loginer.getUid());
+//        int teacherResult = teacherService.createTeacherInfo(teacher);
+//        if (teacherResult == 0) {
+//            return Status.FAIL.getSign();
+//        }
+//        return Status.SUCCESS.getSign();
+//    }
+//
+//    /**
+//     * 删除教师登陆账号及个人信息
+//     *
+//     * @param teacher 获取教师学号
+//     * @return 返回删除失败或成功的状态信息
+//     */
+//    @RequestMapping(value = "deleteTeacher", method = RequestMethod.DELETE)
+//    @ResponseBody
+//    @Transactional
+//    public int deleteTeacher(@RequestBody Teacher teacher) {
+//        teacher = teacherService.queryTeacherInfoByTeacherNumber(teacher.getTeacherNumber());
+//        if (teacher == null) {
+//            return Status.NOT_EXIST.getSign();
+//        }
+//        int result = teacherService.deleteTeacher(teacher.getUid());
+//        if (result == 0) {
+//            return Status.FAIL.getSign();
+//        }
+//        return Status.SUCCESS.getSign();
+//    }
+//
+//    /**
+//     * 更新教师登陆信息
+//     *
+//     * @param loginAndTeacherNumber 要更新的教师账号信息和编号
+//     * @return 返回更新失败或成功的状态信息
+//     * @throws UnsupportedEncodingException 编码不支持
+//     * @throws NoSuchAlgorithmException     请求的加密算法无法实现
+//     */
+//    @RequestMapping(value = "updateTeacherLoginer", method = RequestMethod.PUT)
+//    @ResponseBody
+//    @Transactional
+//    public int updateTeacherLoginer(@RequestBody Map<String, Object> loginAndTeacherNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+//        Loginer loginer = JSON.parseObject(JSON.toJSONString(loginAndTeacherNumber.get("loginer")), Loginer.class);
+//        int teacherNumber = JSON.parseObject(JSON.toJSONString(loginAndTeacherNumber.get("teacherNumber")), Integer.class);
+//        Teacher teacher = teacherService.queryTeacherInfoByTeacherNumber(teacherNumber);
+//        int uid = teacher.getUid();
+//        loginer.setUid(uid);
+//        int result = loginService.updateUserByUid(loginer);
+//        if (result == 0) {
+//            return Status.FAIL.getSign();
+//        }
+//        return Status.SUCCESS.getSign();
+//    }
+//
+//    /**
+//     * 查询管理员个人信息(个人)
+//     *
+//     * @param request 管理员uid
+//     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的管理员信息
+//     */
+//    @RequestMapping(value = "queryAdministratorSelfInfo", method = RequestMethod.GET)
+//    @ResponseBody
+//    public Administrator queryAdministratorSelfInfo(HttpServletRequest request) {
+//        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+//        return administratorService.queryAdministratorInfoByUid(loginer.getUid());
+//    }
 }

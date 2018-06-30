@@ -12,8 +12,8 @@ import java.util.List;
  * @Date 18-6-30 下午5:52
  * @Description 考试事件的操作实现类
  */
-@Service("ExaminationServiceImpl")
-public class ExaminationServiceImpl implements ExaminationService {
+@Service("ExaminationInternalServiceImpl")
+public class ExaminationInternalServiceImpl implements ExaminationInternalService {
 
     @Autowired
     private ExaminationInternalMapper examinationInternalMapper;
@@ -38,17 +38,6 @@ public class ExaminationServiceImpl implements ExaminationService {
     @Override
     public int deleteExamination(int eiid) {
         return examinationInternalMapper.deleteByEiid(eiid);
-    }
-
-    /**
-     * 根据考试编号id查询考试信息
-     *
-     * @param eiid 考试编号id
-     * @return 返回查询结果
-     */
-    @Override
-    public ExaminationInternal queryExaminationByEiid(int eiid) {
-        return examinationInternalMapper.selectByEiid(eiid);
     }
 
     /**
