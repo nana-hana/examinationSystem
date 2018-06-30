@@ -1,40 +1,20 @@
 package com.vvicey.common.utils;
 
-import com.vvicey.login.entity.Loginer;
-
-/**
- * @Author nana
- * @Date 18-6-24 下午7:15
- * @Description 返回CRUD状态信息
- */
 public class Result {
 
-    private int stateCode;//HTTP状态码
-    private String message;//返回的提示信息
-    private Object returnObject;//返回数据对象
+    private int stateCode;
+    private String message;
+    private Object object;
 
-    /**
-     * 构造器
-     *
-     * @param stateCode HTTP状态码
-     * @param message   返回的提示信息
-     */
     public Result(int stateCode, String message) {
         this.stateCode = stateCode;
         this.message = message;
     }
 
-    /**
-     * 带实体返回构造器
-     *
-     * @param stateCode HTTP状态码
-     * @param message   返回的提示信息
-     * @param returnObject   返回数据对象
-     */
-    public Result(int stateCode, String message, Object returnObject) {
+    public Result(int stateCode, String message, Object object) {
         this.stateCode = stateCode;
         this.message = message;
-        this.returnObject = returnObject;
+        this.object = object;
     }
 
     public int getStateCode() {
@@ -51,13 +31,5 @@ public class Result {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public Object getLoginer() {
-        return returnObject;
-    }
-
-    public void setLoginer(Loginer returnObject) {
-        this.returnObject = returnObject;
     }
 }

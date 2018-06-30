@@ -14,7 +14,7 @@ public interface LoginService {
 
     int createUser(Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException;
 
-    Loginer queryUser(String name);
+    Loginer queryUser(String username);
 
-    int updateUser(Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException;
+    int updateUserByUid(Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException;
 }

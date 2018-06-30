@@ -27,28 +27,4 @@ public class MD5Utils {
         return base64Encoder.encode(md5.digest(password.getBytes("utf-8")));
     }
 
-    /**
-     * 将输入的密码和服务器的密码进行匹配
-     *
-     * @param inputPassword 输入的密码
-     * @param dbPassword    服务器的密码
-     * @return 返回两者密码是否相等
-     * @throws UnsupportedEncodingException 编码不支持
-     * @throws NoSuchAlgorithmException     请求的加密算法无法实现
-     */
-    public static boolean checkPassword(String inputPassword, String dbPassword) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        String result = encryptPassword(inputPassword);
-        return result.equals(dbPassword);
-    }
-
-    /**
-     * 加密测试
-     *
-     * @param args 系统参数
-     * @throws UnsupportedEncodingException 编码不支持
-     * @throws NoSuchAlgorithmException     请求的加密算法无法实现
-     */
-    public static void main(String[] args) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        System.out.println(encryptPassword("123"));
-    }
 }

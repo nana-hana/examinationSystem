@@ -11,7 +11,7 @@ public interface LoginMapper {
 
     int insertSelective(Loginer loginer);
 
-    Loginer selectByName(String name);
+    Loginer selectByUsername(String username);
 
-    int updateByNameSelective(Loginer loginer);
+    int updateByUidSelective(Loginer loginer);
 }

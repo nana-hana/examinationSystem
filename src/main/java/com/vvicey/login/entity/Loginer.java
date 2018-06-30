@@ -12,8 +12,8 @@ import java.util.List;
 public class Loginer {
 
     private Integer uId;//登陆者id
-    private String uName;//登陆者姓名
-    private String uPassword;//登陆者密码
+    private String username;//登陆者姓名
+    private String password;//登陆者密码
     private List<Role> roleList;//角色集
 
     public List<Role> getRoleList() {
@@ -32,19 +32,19 @@ public class Loginer {
         this.uId = uId;
     }
 
-    public String getUname() {
-        return uName;
+    public String getName() {
+        return username;
     }
 
-    public void setUname(String uName) {
-        this.uName = uName == null ? null : uName.trim();
+    public void setName(String username) {
+        this.username = username == null ? null : username.trim();
     }
 
-    public String getUpassword() {
-        return uPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setUpassword(String uPassword) {
-        this.uPassword = uPassword == null ? null : uPassword.trim();
+    public void setPassword(String password) {
+        this.password = password == null ? null : password.trim();
     }
 }

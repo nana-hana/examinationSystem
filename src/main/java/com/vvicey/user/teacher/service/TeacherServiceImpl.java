@@ -17,13 +17,14 @@ public class TeacherServiceImpl implements TeacherService {
     private TeacherMapper teacherMapper;
 
     /**
-     * 创建教师个人信息
+     * 创建教师个人信息(包含创建教师身份)
      *
      * @param teacher 需要创建的教师信息
      * @return 返回创建成功与否
      */
     @Override
     public int createTeacherInfo(Teacher teacher) {
+        teacherMapper.insertTeacherRole(teacher.getUid());
         return teacherMapper.insertSelective(teacher);
     }
 
@@ -41,22 +42,44 @@ public class TeacherServiceImpl implements TeacherService {
     /**
      * 查询教师个人信息
      *
-     * @param teacherNumber 根据教师编号查询
+     * @param teacherNumber 教师编号
      * @return 返回查询的教师数据
      */
     @Override
-    public Teacher queryTeacherInfo(int teacherNumber) {
+    public Teacher queryTeacherInfoByTeacherNumber(int teacherNumber) {
         return teacherMapper.selectByTeacherNumber(teacherNumber);
     }
 
     /**
-     * 更新教师个人信息
+     * 查询教师个人信息
+     *
+     * @param uid 用户id
+     * @return 返回查询的教师数据
+     */
+    @Override
+    public Teacher queryTeacherInfoByUid(int uid) {
+        return teacherMapper.selectByUid(uid);
+    }
+
+    /**
+     * 更新教师个人信息(根据编号)
      *
      * @param teacher 传入需要更新的教师信息
      * @return 返回更新成功与否
      */
     @Override
-    public int updateTeacherInfo(Teacher teacher) {
+    public int updateTeacherInfoByTeacherNumber(Teacher teacher) {
         return teacherMapper.updateByTeacherNumberSelective(teacher);
+    }
+
+    /**
+     * 更新教师个人信息(根据账号id)
+     *
+     * @param teacher 教师数据
+     * @return 返回更新成功与否
+     */
+    @Override
+    public int updateTeacherInfoByUid(Teacher teacher) {
+        return teacherMapper.updateByUidSelective(teacher);
     }
 }

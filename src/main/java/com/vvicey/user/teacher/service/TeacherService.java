@@ -13,7 +13,11 @@ public interface TeacherService {
 
     int deleteTeacher(int uid);
 
-    Teacher queryTeacherInfo(int teacherNumber);
+    Teacher queryTeacherInfoByTeacherNumber(int teacherNumber);
 
-    int updateTeacherInfo(Teacher teacher);
+    Teacher queryTeacherInfoByUid(int uid);
+
+    int updateTeacherInfoByTeacherNumber(Teacher teacher);
+
+    int updateTeacherInfoByUid(Teacher teacher);
 }

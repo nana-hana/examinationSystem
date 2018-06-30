@@ -13,8 +13,14 @@ public interface TeacherMapper {
 
     int insertSelective(Teacher teacher);
 
+    void insertTeacherRole(int uid);
+
     Teacher selectByTeacherNumber(int teacherNumber);
 
+    Teacher selectByUid(int uid);
+
     int updateByTeacherNumberSelective(Teacher teacher);
+
+    int updateByUidSelective(Teacher teacher);
 
 }

@@ -7,10 +7,215 @@
     <link rel="stylesheet" href="/static/css/font-awesome.min.css">
     <script src="/static/script/jquery-3.3.1.min.js"></script>
     <script src="/static/script/loadHeadAndFoot.js"></script>
+    <link rel="shortcut icon" href="/static/images/favicon.png"/>
+    <link rel="bookmark" href="/static/images/favicon.png" type="image/x-icon"/>
+    <script>
+        $(function () {
+            //创建学生账号信息
+            $("#addStudent").on("click", function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/teacher/addStudent",
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        //学生登陆信息
+                        loginer: {
+                            name: "studentT",
+                            password: "test"
+                        },
+                        //学生个人信息
+                        student: {
+                            name: "bb",
+                            studentNumber: 10086,
+                            studentClass: 1,
+                            major: 1,
+                            institute: 1,
+                            phone: 110
+                        }
+                    }),
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+
+            //删除学生账号信息
+            $("#deleteStudent").on("click", function () {
+                $.ajax({
+                    type: "DELETE",
+                    url: "/teacher/deleteStudent",
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        //需要删除的学生学号
+                        studentNumber: 10086
+                    }),
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+
+            //更新学生登陆信息
+            $("#updateStudentLoginer").on("click", function () {
+                $.ajax({
+                    type: "PUT",
+                    url: "/teacher/updateStudentLoginer",
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        //数据仅包含密码
+                        studentNumber: 10086,
+                        loginer: {
+                            name: "studentGai",
+                            password: "test"
+                        }
+                    }),
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+
+            //更新学生个人信息
+            $("#updateStudentInfo").on("click", function () {
+                $.ajax({
+                    type: "PUT",
+                    url: "/teacher/updateStudentInfo",
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        //数据包含学生班级，专业，学院，电话号码
+                        studentNumber: 10086,
+                        student: {
+                            name: "cc",
+                            studentNumber: 10086,
+                            studentClass: 2,
+                            major: 2,
+                            institute: 2,
+                            phone: 2
+                        }
+                    }),
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+
+            //更新教师个人登陆密码
+            $("#updateTeacherSelfLoginer").on("click", function () {
+                $.ajax({
+                    type: "PUT",
+                    url: "/teacher/updateTeacherLoginer",
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        //数据仅包含密码
+                        password: "123"
+                    }),
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+
+            //更新教师个人信息
+            $("#updateTeacherSelfInfo").on("click", function () {
+                $.ajax({
+                    type: "PUT",
+                    url: "/teacher/updateTeacherInfo",
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        //数据包含学生班级，专业，学院，电话号码
+                        major: 3,
+                        institute: 3,
+                        phone: 3,
+                    }),
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+
+            //查询学生登陆信息
+            $("#queryStudentLoginer").on("click", function () {
+                var name = "student";
+                $.ajax({
+                    type: "GET",
+                    url: "/teacher/queryStudentLoginer/" + name,
+                    success: function (data) {
+                        if (data === "") {
+                            console.log("403");
+                        } else {
+                            data = JSON.parse(data);
+                            console.log(data)
+                        }
+                    }
+                });
+            });
+
+            //查询学生个人信息
+            $("#queryStudentInfo").on("click", function () {
+                var studentNumber = "12";
+                $.ajax({
+                    type: "GET",
+                    url: "/teacher/queryStudentInfo/" + studentNumber,
+                    success: function (data) {
+                        if (data === "") {
+                            console.log("403");
+                        } else {
+                            data = JSON.parse(data);
+                            console.log(data)
+                        }
+                    }
+                });
+            });
+
+            //查询教师自己登陆信息
+            $("#queryTeacherSelfLoginer").on("click", function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/teacher/queryTeacherSelfLoginer",
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+
+            //查询教师自己个人信息
+            $("#queryTeacherSelfInfo").on("click", function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/teacher/queryTeacherSelfInfo",
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <header></header>
-老师
+教师
+<br>
+<button id="addStudent">创建学生账号信息</button>
+<br>
+<button id="deleteStudent">删除学生账号信息</button>
+<br>
+<button id="updateStudentLoginer">更新学生登陆信息</button>
+<button id="updateStudentInfo">更新学生个人信息</button>
+<button id="updateTeacherSelfLoginer">更新教师登陆信息</button>
+<button id="updateTeacherSelfInfo">更新教师个人信息</button>
+<br>
+<button id="queryStudentLoginer">查询学生登陆信息</button>
+<button id="queryStudentInfo">查询学生个人信息</button>
+<button id="queryTeacherSelfLoginer">查询教师登陆信息</button>
+<button id="queryTeacherSelfInfo">查询教师个人信息</button>
 <footer></footer>
 </body>
 </html>

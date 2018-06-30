@@ -13,8 +13,11 @@ public interface StudentService {
 
     int createStudentInfo(Student student);
 
-    Student queryStudentInfo(int studentNumber);
+    Student queryStudentInfoByStudentNumber(int studentNumber);
 
-    int updateStudentInfo(Student student);
+    Student queryStudentInfoByUid(int uid);
 
+    int updateStudentInfoByStudentNumber(Student student);
+
+    int updateStudentInfoByUid(Student student);
 }

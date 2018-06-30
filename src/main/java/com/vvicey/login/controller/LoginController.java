@@ -1,6 +1,5 @@
 package com.vvicey.login.controller;
 
-import com.vvicey.common.utils.Result;
 import com.vvicey.login.entity.Loginer;
 import com.vvicey.login.service.LoginService;
 import org.apache.shiro.SecurityUtils;
@@ -46,7 +45,7 @@ public class LoginController {
      */
     @RequestMapping(value = "check", method = RequestMethod.POST)
     @ResponseBody//返回json格式数据而不是跳转界面
-    public Result loginCheck(HttpServletRequest request) {
+    public Loginer loginCheck(HttpServletRequest request) {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
@@ -55,10 +54,11 @@ public class LoginController {
             subject.login(token);
             SecurityUtils.getSubject().getSession().setTimeout(SESSION_LIFE);
         } catch (Exception e) {
-            return new Result(403, "登陆失败");
+            return null;
         }
         Loginer loginer = loginService.queryUser(username);
+        loginer.setPassword("");
         request.getSession().setAttribute("loginerInfo", loginer);
-        return new Result(200, "登陆成功", loginer);
+        return loginer;
     }
 }

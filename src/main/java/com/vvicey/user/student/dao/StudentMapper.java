@@ -13,7 +13,13 @@ public interface StudentMapper {
 
     int insertSelective(Student student);
 
+    void insertStudentRole(int uid);
+
     Student selectByStudentNumber(int studentNumber);
 
+    Student selectByUid(int uid);
+
     int updateByStudentNumberSelective(Student student);
+
+    int updateByUidSelective(Student student);
 }

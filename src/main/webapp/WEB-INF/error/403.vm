@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>在线考试系统</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <script src="/static/script/jquery-3.3.1.min.js"></script>
+    <script src="/static/script/loadHeadAndFoot.js"></script>
+    <link rel="shortcut icon" href="/static/images/favicon.png"/>
+    <link rel="bookmark" href="/static/images/favicon.png" type="image/x-icon"/>
+</head>
+<body>
+<header></header>
+403
+<footer></footer>
+</body>
+</html>

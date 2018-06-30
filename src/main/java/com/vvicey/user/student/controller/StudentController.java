@@ -1,6 +1,6 @@
 package com.vvicey.user.student.controller;
 
-import com.vvicey.common.utils.Result;
+import com.vvicey.common.utils.Status;
 import com.vvicey.login.entity.Loginer;
 import com.vvicey.login.service.LoginService;
 import com.vvicey.user.student.entity.Student;
@@ -9,7 +9,10 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -23,7 +26,6 @@ import java.security.NoSuchAlgorithmException;
 @Controller
 @RequiresPermissions("student")
 @RequestMapping("student")
-
 public class StudentController {
 
     @Autowired
@@ -42,9 +44,10 @@ public class StudentController {
     }
 
     /**
-     * 更新学生自身登陆信息(未完成 个人)
+     * 更新学生自身登陆信息(个人)
      *
-     * @param loginer 要更新的学生账号信息
+     * @param request  要更新的学生账号信息
+     * @param password 需要更新的密码
      * @return 返回更新失败或成功的状态信息
      * @throws UnsupportedEncodingException 编码不支持
      * @throws NoSuchAlgorithmException     请求的加密算法无法实现
@@ -52,60 +55,60 @@ public class StudentController {
     @RequestMapping(value = "updateStudentSelfLoginer", method = RequestMethod.PUT)
     @ResponseBody
     @Transactional
-    public Result updateStudentSelfLoginer(@RequestBody Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        int result = loginService.updateUser(loginer);
+    public int updateStudentSelfLoginer(HttpServletRequest request, @RequestBody Loginer password) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        loginer.setPassword(password.getPassword());
+        int result = loginService.updateUserByUid(loginer);
         if (result == 0) {
-            return new Result(403, "登陆信息更新失败");
+            return Status.FAIL.getSign();
         }
-        return new Result(200, "登陆信息更新成功");
+        return Status.SUCCESS.getSign();
     }
 
     /**
-     * 更新学生自身个人信息(未完成 个人）
+     * 更新学生自身个人信息(个人）
      *
+     * @param request 需要更新的学生
      * @param student 需要更新的学生个人信息
      * @return 返回更新成功失败信息
      */
     @RequestMapping(value = "updateStudentSelfInfo", method = RequestMethod.PUT)
     @ResponseBody
     @Transactional
-    public Result updateStudentSelfInfo(@RequestBody Student student) {
-        int result = studentService.updateStudentInfo(student);
+    public int updateStudentSelfInfo(HttpServletRequest request, @RequestBody Student student) {
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        student.setUid(loginer.getUid());
+        int result = studentService.updateStudentInfoByUid(student);
         if (result == 0) {
-            return new Result(403, "个人信息更新失败");
+            return Status.FAIL.getSign();
         }
-        return new Result(200, "个人信息更新成功");
+        return Status.SUCCESS.getSign();
     }
 
     /**
-     * 查询学生自身登陆信息(未完成 个人）
+     * 查询学生自身登陆信息(个人）
      *
-     * @param name 学生账号
+     * @param request 学生账号
      * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的学生信息
      */
-    @RequestMapping(value = "queryStudentSelfLoginer/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = "queryStudentSelfLoginer", method = RequestMethod.GET)
     @ResponseBody
-    public Result queryStudentSelfLoginer(@PathVariable String name) {
-        Loginer loginer = loginService.queryUser(name);
-        if (loginer == null) {
-            return new Result(403, "登录信息查询失败");
-        }
-        return new Result(200, "登录信息查询成功", loginer);
+    public Loginer queryStudentSelfLoginer(HttpServletRequest request) {
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        loginer = loginService.queryUser(loginer.getName());
+        return loginer;
     }
 
     /**
-     * 查询学生自身个人信息(未完成 个人）
+     * 查询学生自身个人信息(个人）
      *
-     * @param studentNumber 学生学号
+     * @param request 学生学号
      * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的学生信息
      */
-    @RequestMapping(value = "queryStudentSelfInfo/{studentNumber}", method = RequestMethod.GET)
+    @RequestMapping(value = "queryStudentSelfInfo", method = RequestMethod.GET)
     @ResponseBody
-    public Result queryStudentSelfInfo(@PathVariable int studentNumber) {
-        Student student = studentService.queryStudentInfo(studentNumber);
-        if (student == null) {
-            return new Result(403, "个人信息查询失败");
-        }
-        return new Result(200, "个人信息查询成功", student);
+    public Student queryStudentSelfInfo(HttpServletRequest request) {
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        return studentService.queryStudentInfoByUid(loginer.getUid());
     }
 }

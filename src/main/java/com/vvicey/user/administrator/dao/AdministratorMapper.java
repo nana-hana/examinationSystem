@@ -8,15 +8,18 @@ import com.vvicey.user.administrator.entity.Administrator;
  * @Description 管理员数据库CRUD映射抽象类
  */
 public interface AdministratorMapper {
-    int deleteByPrimaryKey(Integer aid);
+    int deleteByUid(int aid);
 
-    int insert(Administrator record);
+    int insertSelective(Administrator administrator);
 
-    int insertSelective(Administrator record);
+    void insertAdministratorRole(int uid);
 
-    Administrator selectByPrimaryKey(Integer aid);
+    Administrator selectByAdministratorName(String name);
 
-    int updateByPrimaryKeySelective(Administrator record);
+    Administrator selectByUid(int uid);
 
-    int updateByPrimaryKey(Administrator record);
+    int updateByAdministratorNameSelective(Administrator administrator);
+
+    int updateByUidSelective(Administrator updateByUidSelective);
+
 }

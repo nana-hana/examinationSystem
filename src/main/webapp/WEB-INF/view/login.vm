@@ -8,6 +8,8 @@
     <script src="/static/script/jquery-3.3.1.min.js"></script>
     <script src="/static/script/loadHeadAndFoot.js"></script>
     <script src="/static/script/loginCheck.js"></script>
+    <link rel="shortcut icon" href="/static/images/favicon.png"/>
+    <link rel="bookmark" href="/static/images/favicon.png" type="image/x-icon"/>
 </head>
 <body>
 <header></header>

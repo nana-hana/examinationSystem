@@ -3,8 +3,8 @@
 <mapper namespace="com.vvicey.login.dao.LoginMapper">
     <resultMap id="BaseResultMap" type="com.vvicey.login.entity.Loginer">
         <id column="uid" property="uid" jdbcType="INTEGER"/>
-        <result column="uname" property="uname" jdbcType="VARCHAR"/>
-        <result column="upassword" property="upassword" jdbcType="VARCHAR"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
         <collection property="roleList" resultMap="RoleResultMap"/>
     </resultMap>
     <resultMap id="RoleResultMap" type="com.vvicey.permission.entity.Role">
@@ -25,9 +25,9 @@
       r.rid, role, r.description rd
     </sql>
     <sql id="Base_Column_List">
-      l.uid, uname, upassword
+      l.uid, username, password
     </sql>
-    <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+    <select id="selectByUsername" resultMap="BaseResultMap" parameterType="java.lang.String">
         select distinct
         <include refid="Base_Column_List"/>,
         <include refid="Role_Column_List"/>,
@@ -37,7 +37,7 @@
         left join role r on rl.rid = r.rid
         left join role_permission rp on rp.rid = r.rid
         left join permission p on p.pid = rp.pid
-        where uname = #{uname,jdbcType=VARCHAR}
+        where username = #{username,jdbcType=VARCHAR}
     </select>
     <insert id="insertSelective" parameterType="com.vvicey.login.entity.Loginer">
         insert into login
@@ -45,35 +45,35 @@
             <if test="uid != null">
                 uid,
             </if>
-            <if test="uname != null">
-                uname,
+            <if test="username != null">
+                username,
             </if>
-            <if test="upassword != null">
-                upassword,
+            <if test="password != null">
+                password,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="uid != null">
                 #{uid,jdbcType=INTEGER},
             </if>
-            <if test="uname != null">
-                #{uname,jdbcType=VARCHAR},
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
             </if>
-            <if test="upassword != null">
-                #{upassword,jdbcType=VARCHAR},
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
-    <update id="updateByNameSelective" parameterType="com.vvicey.login.entity.Loginer">
+    <update id="updateByUidSelective" parameterType="com.vvicey.login.entity.Loginer">
         update login
         <set>
-            <if test="uname != null">
-                uname = #{uname,jdbcType=VARCHAR},
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
             </if>
-            <if test="upassword != null">
-                upassword = #{upassword,jdbcType=VARCHAR},
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
             </if>
         </set>
-        where uname = #{uname,jdbcType=VARCHAR}
+        where uid = #{uid,jdbcType=VARCHAR}
     </update>
 </mapper>

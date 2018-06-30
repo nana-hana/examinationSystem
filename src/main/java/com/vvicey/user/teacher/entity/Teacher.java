@@ -3,11 +3,11 @@ package com.vvicey.user.teacher.entity;
 public class Teacher {
 
     private Integer tid;//教师id
-    private String tname;//教师姓名
+    private String name;//教师姓名
     private Integer teacherNumber;//教师编号
     private Integer major;//教师专业
     private Integer institute;//教师学院
-    private Integer tphone;//教师手机号码
+    private Integer phone;//教师手机号码
     private Integer uid;//教师的登陆id
 
     public Integer getTid() {
@@ -18,12 +18,12 @@ public class Teacher {
         this.tid = tid;
     }
 
-    public String getTname() {
-        return tname;
+    public String getName() {
+        return name;
     }
 
-    public void setTname(String tname) {
-        this.tname = tname == null ? null : tname.trim();
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
     }
 
     public Integer getTeacherNumber() {
@@ -50,12 +50,12 @@ public class Teacher {
         this.institute = institute;
     }
 
-    public Integer getTphone() {
-        return tphone;
+    public Integer getPhone() {
+        return phone;
     }
 
-    public void setTphone(Integer tphone) {
-        this.tphone = tphone;
+    public void setPhone(Integer phone) {
+        this.phone = phone;
     }
 
     public Integer getUid() {

@@ -1,6 +1,7 @@
 package com.vvicey.user.teacher.controller;
 
-import com.vvicey.common.utils.Result;
+import com.alibaba.fastjson.JSON;
+import com.vvicey.common.utils.Status;
 import com.vvicey.login.entity.Loginer;
 import com.vvicey.login.service.LoginService;
 import com.vvicey.user.student.entity.Student;
@@ -13,8 +14,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 /**
  * @Author nana
@@ -46,61 +49,62 @@ public class TeacherController {
     /**
      * 增添学生登陆账号及个人信息
      *
-     * @param student 增添的学生个人信息
-     * @param loginer 增添的学生登陆信息
+     * @param loginAndInfo 增添的学生个人信息和登陆信息
      * @return 返回增添失败或成功的状态信息
      * @throws UnsupportedEncodingException 编码不支持
      * @throws NoSuchAlgorithmException     请求的加密算法无法实现
      */
-    @RequestMapping(value = "add", method = RequestMethod.POST)
+    @RequestMapping(value = "addStudent", method = RequestMethod.POST)
     @ResponseBody
     @Transactional
-    public Result addStudent(@RequestBody Student student, @RequestBody Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public int addStudent(@RequestBody Map<String, Object> loginAndInfo) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        Loginer loginer = JSON.parseObject(JSON.toJSONString(loginAndInfo.get("loginer")), Loginer.class);
+        Student student = JSON.parseObject(JSON.toJSONString(loginAndInfo.get("student")), Student.class);
         //检查账号重复
-        Loginer checkResult = loginService.queryUser(loginer.getUname());
-        if (checkResult == null) {
-            return new Result(403, "账号重复");
+        Loginer checkResult = loginService.queryUser(loginer.getName());
+        if (checkResult != null) {
+            return Status.FAIL_REPETITION.getSign();
         }
         //创建账号
         int loginerResult = loginService.createUser(loginer);
         if (loginerResult == 0) {
-            return new Result(403, "账号创建失败");
+            return Status.FAIL.getSign();
         }
-        //创建学生信息，学生uid与账号uid相关联
-        loginer = loginService.queryUser(loginer.getUname());
+        //创建学生信息身份，学生uid与账号uid相关联
+        loginer = loginService.queryUser(loginer.getName());
         student.setUid(loginer.getUid());
         int studentResult = studentService.createStudentInfo(student);
         if (studentResult == 0) {
-            return new Result(403, "学生个人信息插入失败");
+            return Status.FAIL.getSign();
         }
-        return new Result(200, "创建成功");
+        return Status.SUCCESS.getSign();
     }
 
     /**
      * 删除学生登陆账号及个人信息
      *
-     * @param studentNumber 要删除的学生学号
+     * @param student 获取学生学号
      * @return 返回删除失败或成功的状态信息
      */
-    @RequestMapping(value = "delete/{studentNumber}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "deleteStudent", method = RequestMethod.DELETE)
     @ResponseBody
     @Transactional
-    public Result deleteStudent(@PathVariable int studentNumber) {
-        Student student = studentService.queryStudentInfo(studentNumber);
+    public int deleteStudent(@RequestBody Student student) {
+        student = studentService.queryStudentInfoByStudentNumber(student.getStudentNumber());
         if (student == null) {
-            return new Result(403, "没有该学号学生");
+            return Status.NOT_EXIST.getSign();
         }
         int result = studentService.deleteStudent(student.getUid());
         if (result == 0) {
-            return new Result(403, "账号删除失败");
+            return Status.FAIL.getSign();
         }
-        return new Result(200, "账号删除成功");
+        return Status.SUCCESS.getSign();
     }
 
     /**
      * 更新学生登陆信息
      *
-     * @param loginer 要更新的学生账号信息
+     * @param loginAndStudentNumber 要更新的学生账号信息和学号
      * @return 返回更新失败或成功的状态信息
      * @throws UnsupportedEncodingException 编码不支持
      * @throws NoSuchAlgorithmException     请求的加密算法无法实现
@@ -108,35 +112,45 @@ public class TeacherController {
     @RequestMapping(value = "updateStudentLoginer", method = RequestMethod.PUT)
     @ResponseBody
     @Transactional
-    public Result updateStudentLoginer(@RequestBody Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        int result = loginService.updateUser(loginer);
+    public int updateStudentLoginer(@RequestBody Map<String, Object> loginAndStudentNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        Loginer loginer = JSON.parseObject(JSON.toJSONString(loginAndStudentNumber.get("loginer")), Loginer.class);
+        int studentNumber = JSON.parseObject(JSON.toJSONString(loginAndStudentNumber.get("studentNumber")), Integer.class);
+        Student student = studentService.queryStudentInfoByStudentNumber(studentNumber);
+        int uid = student.getUid();
+        loginer.setUid(uid);
+        int result = loginService.updateUserByUid(loginer);
         if (result == 0) {
-            return new Result(403, "登陆信息更新失败");
+            return Status.FAIL.getSign();
         }
-        return new Result(200, "登陆信息更新成功");
+        return Status.SUCCESS.getSign();
     }
 
     /**
      * 更新学生个人信息
      *
-     * @param student 要更新的学生个人信息
+     * @param studentAndStudentNumber 要更新的学生个人信息和学号
      * @return 返回更新失败或成功的状态信息
      */
     @RequestMapping(value = "updateStudentInfo", method = RequestMethod.PUT)
     @ResponseBody
     @Transactional
-    public Result updateStudentInfo(@RequestBody Student student) {
-        int result = studentService.updateStudentInfo(student);
+    public int updateStudentInfo(@RequestBody Map<String, Object> studentAndStudentNumber) {
+        Student student = JSON.parseObject(JSON.toJSONString(studentAndStudentNumber.get("student")), Student.class);
+        int studentNumber = JSON.parseObject(JSON.toJSONString(studentAndStudentNumber.get("studentNumber")), Integer.class);
+        int uid = studentService.queryStudentInfoByStudentNumber(studentNumber).getUid();
+        student.setUid(uid);
+        int result = studentService.updateStudentInfoByUid(student);
         if (result == 0) {
-            return new Result(403, "个人信息更新失败");
+            return Status.FAIL.getSign();
         }
-        return new Result(200, "个人信息更新成功");
+        return Status.SUCCESS.getSign();
     }
 
     /**
-     * 更新教师自身登陆信息(未完成 个人)
+     * 更新教师自身登陆信息(个人)
      *
-     * @param loginer 要更新的教师账号信息
+     * @param request  要更新的教师账号信息
+     * @param password 需要更新的密码
      * @return 返回更新失败或成功的状态信息
      * @throws UnsupportedEncodingException 编码不支持
      * @throws NoSuchAlgorithmException     请求的加密算法无法实现
@@ -144,29 +158,33 @@ public class TeacherController {
     @RequestMapping(value = "updateTeacherLoginer", method = RequestMethod.PUT)
     @ResponseBody
     @Transactional
-    public Result updateTeacherLoginer(@RequestBody Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        int result = loginService.updateUser(loginer);
-        if (result == 0) {
-            return new Result(403, "登陆信息更新失败");
+    public int updateTeacherLoginer(HttpServletRequest request, @RequestBody Loginer password) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        loginer.setPassword(password.getPassword());
+        if (loginService.updateUserByUid(loginer) == 0) {
+            return Status.FAIL.getSign();
         }
-        return new Result(200, "登陆信息更新成功");
+        return Status.SUCCESS.getSign();
     }
 
     /**
-     * 更新教师自身个人信息(未完成 个人)
+     * 更新教师自身个人信息(个人)
      *
-     * @param student 要更新的教师个人信息
+     * @param request 需要更新的教师
+     * @param teacher 要更新的教师个人信息
      * @return 返回更新失败或成功的状态信息
      */
     @RequestMapping(value = "updateTeacherInfo", method = RequestMethod.PUT)
     @ResponseBody
     @Transactional
-    public Result updateTeacherInfo(@RequestBody Student student) {
-        int result = studentService.updateStudentInfo(student);
+    public int updateTeacherInfo(HttpServletRequest request, @RequestBody Teacher teacher) {
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        teacher.setUid(loginer.getUid());
+        int result = teacherService.updateTeacherInfoByUid(teacher);
         if (result == 0) {
-            return new Result(403, "个人信息更新失败");
+            return Status.FAIL.getSign();
         }
-        return new Result(200, "个人信息更新成功");
+        return Status.SUCCESS.getSign();
     }
 
     /**
@@ -177,12 +195,8 @@ public class TeacherController {
      */
     @RequestMapping(value = "queryStudentLoginer/{name}", method = RequestMethod.GET)
     @ResponseBody
-    public Result queryStudentLoginer(@PathVariable String name) {
-        Loginer loginer = loginService.queryUser(name);
-        if (loginer == null) {
-            return new Result(403, "登录信息查询失败");
-        }
-        return new Result(200, "登录信息查询成功", loginer);
+    public Loginer queryStudentLoginer(@PathVariable String name) {
+        return loginService.queryUser(name);
     }
 
     /**
@@ -193,44 +207,35 @@ public class TeacherController {
      */
     @RequestMapping(value = "queryStudentInfo/{studentNumber}", method = RequestMethod.GET)
     @ResponseBody
-    public Result queryStudentInfo(@PathVariable int studentNumber) {
-        Student student = studentService.queryStudentInfo(studentNumber);
-        if (student == null) {
-            return new Result(403, "个人信息查询失败");
-        }
-        return new Result(200, "个人信息查询成功", student);
+    public Student queryStudentInfo(@PathVariable int studentNumber) {
+        return studentService.queryStudentInfoByStudentNumber(studentNumber);
     }
 
     /**
-     * 查询教师登陆信息(未完成 个人)
+     * 查询教师登陆信息(个人)
      *
-     * @param name 教师账号
-     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的学生信息
+     * @param request 教师账号
+     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的教师信息
      */
-    @RequestMapping(value = "queryTeacherLoginer/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = "queryTeacherSelfLoginer", method = RequestMethod.GET)
     @ResponseBody
-    public Result queryTeacherLoginer(@PathVariable String name) {
-        Loginer loginer = loginService.queryUser(name);
-        if (loginer == null) {
-            return new Result(403, "登录信息查询失败");
-        }
-        return new Result(200, "登录信息查询成功", loginer);
+    public Loginer queryTeacherSelfLoginer(HttpServletRequest request) {
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        loginer = loginService.queryUser(loginer.getName());
+        return loginer;
     }
 
     /**
-     * 查询教师个人信息(未完成 个人)
+     * 查询教师个人信息(个人)
      *
-     * @param teacherNumber 学生学号
-     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的学生信息
+     * @param request 教师学号
+     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的教师信息
      */
-    @RequestMapping(value = "queryTeacherInfo/{teacherNumber}", method = RequestMethod.GET)
+    @RequestMapping(value = "queryTeacherSelfInfo", method = RequestMethod.GET)
     @ResponseBody
-    public Result queryTeacherInfo(@PathVariable int teacherNumber) {
-        Teacher teacher = teacherService.queryTeacherInfo(teacherNumber);
-        if (teacher == null) {
-            return new Result(403, "个人信息查询失败");
-        }
-        return new Result(200, "个人信息查询成功", teacher);
+    public Teacher queryTeacherSelfInfo(HttpServletRequest request) {
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        return teacherService.queryTeacherInfoByUid(loginer.getUid());
     }
 
 }

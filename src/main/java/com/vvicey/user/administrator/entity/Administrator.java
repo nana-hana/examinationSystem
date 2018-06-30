@@ -8,9 +8,9 @@ package com.vvicey.user.administrator.entity;
 public class Administrator {
 
     private Integer aid;//管理员id
-    private String aname;//管理员名字
-    private Integer ainstitute;//管理员学院
-    private Integer aphone;//管理员手机号码
+    private String name;//管理员名字
+    private Integer institute;//管理员学院
+    private Integer phone;//管理员手机号码
     private Integer uid;//管理员的登陆id
 
     public Integer getAid() {
@@ -21,28 +21,28 @@ public class Administrator {
         this.aid = aid;
     }
 
-    public String getAname() {
-        return aname;
+    public String getName() {
+        return name;
     }
 
-    public void setAname(String aname) {
-        this.aname = aname == null ? null : aname.trim();
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
     }
 
-    public Integer getAinstitute() {
-        return ainstitute;
+    public Integer getInstitute() {
+        return institute;
     }
 
-    public void setAinstitute(Integer ainstitute) {
-        this.ainstitute = ainstitute;
+    public void setInstitute(Integer institute) {
+        this.institute = institute;
     }
 
-    public Integer getAphone() {
-        return aphone;
+    public Integer getPhone() {
+        return phone;
     }
 
-    public void setAphone(Integer aphone) {
-        this.aphone = aphone;
+    public void setPhone(Integer phone) {
+        this.phone = phone;
     }
 
     public Integer getUid() {

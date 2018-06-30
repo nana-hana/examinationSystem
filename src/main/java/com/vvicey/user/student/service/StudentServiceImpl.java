@@ -28,13 +28,14 @@ public class StudentServiceImpl implements StudentService {
     }
 
     /**
-     * 插入学生个人信息
+     * 插入学生个人信息(包含创建学生身份)
      *
      * @param student 要插入的学生信息
      * @return 返回插入成功与否
      */
     @Override
     public int createStudentInfo(Student student) {
+        studentMapper.insertStudentRole(student.getUid());
         return studentMapper.insertSelective(student);
     }
 
@@ -45,18 +46,40 @@ public class StudentServiceImpl implements StudentService {
      * @return 返回查询的学生数据
      */
     @Override
-    public Student queryStudentInfo(int studentNumber) {
+    public Student queryStudentInfoByStudentNumber(int studentNumber) {
         return studentMapper.selectByStudentNumber(studentNumber);
     }
 
     /**
-     * 更新学生个人信息
+     * 查询学生个人信息
+     *
+     * @param uid 用户id
+     * @return 返回查询的学生数据
+     */
+    @Override
+    public Student queryStudentInfoByUid(int uid) {
+        return studentMapper.selectByUid(uid);
+    }
+
+    /**
+     * 更新学生个人信息(根据学号)
      *
      * @param student 学生数据
      * @return 返回更新结果
      */
     @Override
-    public int updateStudentInfo(Student student) {
+    public int updateStudentInfoByStudentNumber(Student student) {
         return studentMapper.updateByStudentNumberSelective(student);
+    }
+
+    /**
+     * 更新学生个人信息(根据账号id)
+     *
+     * @param student 学生数据
+     * @return 返回更新结果
+     */
+    @Override
+    public int updateStudentInfoByUid(Student student) {
+        return studentMapper.updateByUidSelective(student);
     }
 }

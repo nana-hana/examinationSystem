@@ -8,12 +8,12 @@ package com.vvicey.user.student.entity;
 public class Student {
 
     private Integer sid;//学生id
-    private String sname;//学生姓名
+    private String name;//学生姓名
     private Integer studentNumber;//学生学号
     private Integer studentClass;//学生班级
     private Integer major;//学生专业
     private Integer institute;//学生学院
-    private Integer sphone;//学生手机号码
+    private Integer phone;//学生手机号码
     private Integer uid;//学生的登陆id
 
     public Integer getSid() {
@@ -24,12 +24,12 @@ public class Student {
         this.sid = sid;
     }
 
-    public String getSname() {
-        return sname;
+    public String getName() {
+        return name;
     }
 
-    public void setSname(String sname) {
-        this.sname = sname == null ? null : sname.trim();
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
     }
 
     public Integer getStudentNumber() {
@@ -64,12 +64,12 @@ public class Student {
         this.institute = institute;
     }
 
-    public Integer getSphone() {
-        return sphone;
+    public Integer getPhone() {
+        return phone;
     }
 
-    public void setSphone(Integer sphone) {
-        this.sphone = sphone;
+    public void setPhone(Integer phone) {
+        this.phone = phone;
     }
 
     public Integer getUid() {
