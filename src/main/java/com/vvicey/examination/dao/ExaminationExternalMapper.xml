@@ -18,6 +18,12 @@
     from examination_external
     where institute = #{institute,jdbcType=INTEGER}
   </select>
+  <select id="selectByEiid" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from examination_external
+    where eiid = #{eiid,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByEeid" parameterType="java.lang.Integer" >
     delete from examination_external
     where eeid = #{eeid,jdbcType=INTEGER}

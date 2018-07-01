@@ -1,6 +1,6 @@
-package com.vvicey.login.service;
+package com.vvicey.user.login.service;
 
-import com.vvicey.login.entity.Loginer;
+import com.vvicey.user.login.entity.Loginer;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;

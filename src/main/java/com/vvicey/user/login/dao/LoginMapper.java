@@ -1,6 +1,6 @@
-package com.vvicey.login.dao;
+package com.vvicey.user.login.dao;
 
-import com.vvicey.login.entity.Loginer;
+import com.vvicey.user.login.entity.Loginer;
 
 /**
  * @Author nana

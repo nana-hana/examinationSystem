@@ -1,7 +1,7 @@
-package com.vvicey.login.controller;
+package com.vvicey.user.login.controller;
 
-import com.vvicey.login.entity.Loginer;
-import com.vvicey.login.service.LoginService;
+import com.vvicey.user.login.entity.Loginer;
+import com.vvicey.user.login.service.LoginService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;

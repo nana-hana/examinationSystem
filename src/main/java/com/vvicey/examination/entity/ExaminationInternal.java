@@ -20,6 +20,7 @@ public class ExaminationInternal {
     private Integer submitTeacherNumber;//提交考试申请的老师编号
     private Integer studentClass;//参加考试的班级
     private Integer examinationTime;//考试持续事件
+    private Integer approvalStatus;//审批情况
 
     public Integer getEiid() {
         return eiid;
@@ -123,5 +124,13 @@ public class ExaminationInternal {
 
     public void setExaminationTime(Integer examinationTime) {
         this.examinationTime = examinationTime;
+    }
+
+    public Integer getApprovalStatus() {
+        return approvalStatus;
+    }
+
+    public void setApprovalStatus(Integer approvalStatus) {
+        this.approvalStatus = approvalStatus;
     }
 }

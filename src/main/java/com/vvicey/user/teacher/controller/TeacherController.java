@@ -2,10 +2,12 @@ package com.vvicey.user.teacher.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.vvicey.common.information.Status;
+import com.vvicey.examination.entity.ExaminationExternal;
 import com.vvicey.examination.entity.ExaminationInternal;
+import com.vvicey.examination.service.ExaminationExternalService;
 import com.vvicey.examination.service.ExaminationInternalService;
-import com.vvicey.login.entity.Loginer;
-import com.vvicey.login.service.LoginService;
+import com.vvicey.user.login.entity.Loginer;
+import com.vvicey.user.login.service.LoginService;
 import com.vvicey.user.student.entity.Student;
 import com.vvicey.user.student.service.StudentService;
 import com.vvicey.user.teacher.entity.Teacher;
@@ -40,6 +42,8 @@ public class TeacherController {
     private TeacherService teacherService;
     @Autowired
     private ExaminationInternalService examinationInternalService;
+    @Autowired
+    private ExaminationExternalService examinationExternalService;
 
     /**
      * 跳转教师界面
@@ -195,13 +199,13 @@ public class TeacherController {
     /**
      * 查询学生登陆信息
      *
-     * @param name 学生账号
+     * @param username 学生账号
      * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的学生信息
      */
-    @RequestMapping(value = "queryStudentLoginer/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = "queryStudentLoginer/{username}", method = RequestMethod.GET)
     @ResponseBody
-    public Loginer queryStudentLoginer(@PathVariable String name) {
-        return loginService.queryUser(name);
+    public Loginer queryStudentLoginer(@PathVariable String username) {
+        return loginService.queryUser(username);
     }
 
     /**
@@ -294,6 +298,18 @@ public class TeacherController {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         int teacherNumber = teacherService.queryTeacherInfoByUid(loginer.getUid()).getTeacherNumber();
         return examinationInternalService.queryExaminationByTeacherNumber(teacherNumber);
+    }
+
+    /**
+     * 查询考试事件相关外在因素地点等
+     *
+     * @param eiid 教师学号
+     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的教师信息
+     */
+    @RequestMapping(value = "queryExaminationExternal", method = RequestMethod.GET)
+    @ResponseBody
+    public ExaminationExternal queryExaminationExternal(@RequestBody int eiid) {
+        return examinationExternalService.queryExaminationExternalByEiid(eiid);
     }
 
     /**

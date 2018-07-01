@@ -1,8 +1,8 @@
-package com.vvicey.login.service;
+package com.vvicey.user.login.service;
 
 import com.vvicey.common.utils.MD5Utils;
-import com.vvicey.login.dao.LoginMapper;
-import com.vvicey.login.entity.Loginer;
+import com.vvicey.user.login.dao.LoginMapper;
+import com.vvicey.user.login.entity.Loginer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

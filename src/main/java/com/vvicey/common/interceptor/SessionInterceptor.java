@@ -1,6 +1,6 @@
 package com.vvicey.common.interceptor;
 
-import com.vvicey.login.entity.Loginer;
+import com.vvicey.user.login.entity.Loginer;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;

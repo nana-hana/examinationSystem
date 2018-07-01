@@ -16,6 +16,8 @@ public interface ExaminationExternalService {
 
     int deleteExaminationExternal(int eeid);
 
+    ExaminationExternal queryExaminationExternalByEiid(int eiid);
+
     List<ExaminationExternal> queryExaminationExternalByInstitute(int institute);
 
     int updateExaminationExternalByEeid(ExaminationExternal examinationExternal);

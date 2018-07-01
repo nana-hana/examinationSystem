@@ -1,4 +1,4 @@
-package com.vvicey.login.entity;
+package com.vvicey.user.login.entity;
 
 import com.vvicey.permission.entity.Role;
 

@@ -1,4 +1,4 @@
-package com.vvicey.login.controller;
+package com.vvicey.user.login.controller;
 
 import org.junit.After;
 import org.junit.Before;

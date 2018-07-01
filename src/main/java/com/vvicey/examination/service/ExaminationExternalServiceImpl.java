@@ -54,6 +54,17 @@ public class ExaminationExternalServiceImpl implements ExaminationExternalServic
     }
 
     /**
+     * 根据试卷id查询考试外在因素申请
+     *
+     * @param eiid 考试编号
+     * @return 返回查询结果
+     */
+    @Override
+    public ExaminationExternal queryExaminationExternalByEiid(int eiid) {
+        return examinationExternalMapper.selectByEiid(eiid);
+    }
+
+    /**
      * 根据考试外在因素编号id对考试外在因素信息进行更新
      *
      * @param examinationExternal 考试详情

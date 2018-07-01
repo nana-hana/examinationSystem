@@ -95,5 +95,12 @@
         <error-code>500</error-code>
         <location>/WEB-INF/error/500.vm</location>
     </error-page>
+
+    <!-- 日志文件配置路径 -->
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>classpath:log4j.properties</param-value>
+    </context-param>
+
 </web-app>
         

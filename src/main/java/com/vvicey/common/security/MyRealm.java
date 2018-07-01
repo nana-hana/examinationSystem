@@ -1,7 +1,7 @@
 package com.vvicey.common.security;
 
-import com.vvicey.login.entity.Loginer;
-import com.vvicey.login.service.LoginService;
+import com.vvicey.user.login.entity.Loginer;
+import com.vvicey.user.login.service.LoginService;
 import com.vvicey.permission.entity.Permission;
 import com.vvicey.permission.entity.Role;
 import org.apache.shiro.SecurityUtils;

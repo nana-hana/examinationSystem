@@ -17,5 +17,7 @@ public interface ExaminationExternalMapper {
 
     List<ExaminationExternal> selectByInstitute(int institute);
 
+    ExaminationExternal selectByEiid(int eiid);
+
     int updateByEeidSelective(ExaminationExternal examinationExternal);
 }
