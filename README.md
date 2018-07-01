@@ -17,17 +17,24 @@
 * 进行在线考试
 * 进行成绩查询
 
+**管理员模块：**
+* 对老师模块进行管理
+* 审批考试请求申请
+
 # 使用的框架
 
+* Maven
 * Spring
 * Spring MVC
 * MyBatis
 * jQuery
 * JavaScript
 * Bootstrap
+* Junit
+* shiro
 
 # 开发环境
-* Ubuntu 17.10
+* Ubuntu 18.04 LTS
 * IntelliJ IDEA 2018.1.5(Ultimate Edition) 
 * Mysql 14.14
 * Tomcat 8.5.24

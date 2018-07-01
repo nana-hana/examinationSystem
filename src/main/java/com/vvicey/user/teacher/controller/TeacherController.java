@@ -1,7 +1,7 @@
 package com.vvicey.user.teacher.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.vvicey.common.utils.Status;
+import com.vvicey.common.information.Status;
 import com.vvicey.examination.entity.ExaminationInternal;
 import com.vvicey.examination.service.ExaminationInternalService;
 import com.vvicey.login.entity.Loginer;

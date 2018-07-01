@@ -1,7 +1,9 @@
 package com.vvicey.user.administrator.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.vvicey.common.utils.Status;
+import com.vvicey.common.information.Status;
+import com.vvicey.common.task.BeginExamination;
+import com.vvicey.common.utils.QuartzManagerUtils;
 import com.vvicey.login.entity.Loginer;
 import com.vvicey.login.service.LoginService;
 import com.vvicey.user.administrator.entity.Administrator;
@@ -9,6 +11,8 @@ import com.vvicey.user.administrator.service.AdministratorService;
 import com.vvicey.user.teacher.entity.Teacher;
 import com.vvicey.user.teacher.service.TeacherService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -236,6 +241,18 @@ public class AdministratorController {
     public Administrator queryAdministratorSelfInfo(HttpServletRequest request) {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         return administratorService.queryAdministratorInfoByUid(loginer.getUid());
+    }
+
+    @RequestMapping(value = "test", method = RequestMethod.GET)
+    @ResponseBody
+    public int test() {
+        try {
+            QuartzManagerUtils.addJob("英语考试", "1", BeginExamination.class,
+                    "0 0 10 2 7 ? *", 1, "2018");
+        } catch (Exception e) {
+            return Status.FAIL.getSign();
+        }
+        return Status.SUCCESS.getSign();
     }
 
 //    /**

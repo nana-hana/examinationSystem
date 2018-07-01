@@ -1,4 +1,4 @@
-package com.vvicey.common.utils;
+package com.vvicey.common.information;
 
 public enum Status {
 

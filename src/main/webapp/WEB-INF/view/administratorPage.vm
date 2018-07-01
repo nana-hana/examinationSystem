@@ -193,6 +193,18 @@
                     }
                 });
             });
+
+            //测试触发事件
+            $("#test").on("click", function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/administrator/test",
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
         });
     </script>
 </head>
@@ -213,6 +225,8 @@
 <button id="queryTeacherInfo">查询教师个人信息</button>
 <button id="queryAdministratorSelfLoginer">查询管理员登陆信息</button>
 <button id="queryAdministratorSelfInfo">查询管理员个人信息</button>
+<br>
+<button id="test">测试触发事件</button>
 <footer></footer>
 </body>
 </html>

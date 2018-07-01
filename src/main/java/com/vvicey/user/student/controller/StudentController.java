@@ -1,6 +1,6 @@
 package com.vvicey.user.student.controller;
 
-import com.vvicey.common.utils.Status;
+import com.vvicey.common.information.Status;
 import com.vvicey.login.entity.Loginer;
 import com.vvicey.login.service.LoginService;
 import com.vvicey.user.student.entity.Student;
