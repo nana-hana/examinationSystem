@@ -1,11 +1,15 @@
 package com.vvicey.examination.entity;
 
+import java.io.Serializable;
+
 /**
  * @Author nana
  * @Date 18-6-30 下午4:54
  * @Description 考试内在因素(试卷生成)实体类
  */
-public class ExaminationInternal {
+public class ExaminationInternal implements Serializable {
+
+    private static final long serialVersionUID = -3173729191432597839L;
 
     private Integer eiid;//examinationInternal的id
     private Integer singleNumber;//单选题数量
@@ -17,10 +21,8 @@ public class ExaminationInternal {
     private Integer paperLevel;//试卷平均难度
     private Integer paperKind;//试卷生成类型(0:a、b卷型，1:全随机型)
     private Integer subjectId;//考试科目id
-    private Integer submitTeacherNumber;//提交考试申请的老师编号
     private Integer studentClass;//参加考试的班级
     private Integer examinationTime;//考试持续事件
-    private Integer approvalStatus;//审批情况
 
     public Integer getEiid() {
         return eiid;
@@ -102,14 +104,6 @@ public class ExaminationInternal {
         this.subjectId = subjectId;
     }
 
-    public Integer getSubmitTeacherNumber() {
-        return submitTeacherNumber;
-    }
-
-    public void setSubmitTeacherNumber(Integer submitTeacherNumber) {
-        this.submitTeacherNumber = submitTeacherNumber;
-    }
-
     public Integer getStudentClass() {
         return studentClass;
     }
@@ -126,11 +120,4 @@ public class ExaminationInternal {
         this.examinationTime = examinationTime;
     }
 
-    public Integer getApprovalStatus() {
-        return approvalStatus;
-    }
-
-    public void setApprovalStatus(Integer approvalStatus) {
-        this.approvalStatus = approvalStatus;
-    }
 }

@@ -6,6 +6,7 @@ import com.vvicey.examination.entity.ExaminationExternal;
 import com.vvicey.examination.entity.ExaminationInternal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class ExaminationExternalServiceImpl implements ExaminationExternalServic
      * @return 返回创建成功与否
      */
     @Override
+    @Transactional
     public int createExaminationExternal(ExaminationExternal examinationExternal) {
         return examinationExternalMapper.insertSelective(examinationExternal);
     }
@@ -38,6 +40,7 @@ public class ExaminationExternalServiceImpl implements ExaminationExternalServic
      * @return 返回删除成功与否
      */
     @Override
+    @Transactional
     public int deleteExaminationExternal(int eeid) {
         return examinationExternalMapper.deleteByEeid(eeid);
     }
@@ -71,6 +74,7 @@ public class ExaminationExternalServiceImpl implements ExaminationExternalServic
      * @return 返回更新结果
      */
     @Override
+    @Transactional
     public int updateExaminationExternalByEeid(ExaminationExternal examinationExternal) {
         return examinationExternalMapper.updateByEeidSelective(examinationExternal);
     }

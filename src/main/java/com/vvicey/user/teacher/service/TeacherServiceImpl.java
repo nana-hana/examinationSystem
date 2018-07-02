@@ -4,6 +4,7 @@ import com.vvicey.user.teacher.dao.TeacherMapper;
 import com.vvicey.user.teacher.entity.Teacher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @Author nana
@@ -23,6 +24,7 @@ public class TeacherServiceImpl implements TeacherService {
      * @return 返回创建成功与否
      */
     @Override
+    @Transactional
     public int createTeacherInfo(Teacher teacher) {
         teacherMapper.insertTeacherRole(teacher.getUid());
         return teacherMapper.insertSelective(teacher);
@@ -35,6 +37,7 @@ public class TeacherServiceImpl implements TeacherService {
      * @return 返回删除成功与否
      */
     @Override
+    @Transactional
     public int deleteTeacher(int uid) {
         return teacherMapper.deleteByUid(uid);
     }
@@ -68,6 +71,7 @@ public class TeacherServiceImpl implements TeacherService {
      * @return 返回更新成功与否
      */
     @Override
+    @Transactional
     public int updateTeacherInfoByTeacherNumber(Teacher teacher) {
         return teacherMapper.updateByTeacherNumberSelective(teacher);
     }
@@ -79,6 +83,7 @@ public class TeacherServiceImpl implements TeacherService {
      * @return 返回更新成功与否
      */
     @Override
+    @Transactional
     public int updateTeacherInfoByUid(Teacher teacher) {
         return teacherMapper.updateByUidSelective(teacher);
     }

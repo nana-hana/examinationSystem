@@ -12,28 +12,18 @@
         <result column="paper_level" property="paperLevel" jdbcType="INTEGER"/>
         <result column="paper_kind" property="paperKind" jdbcType="INTEGER"/>
         <result column="subject_id" property="subjectId" jdbcType="INTEGER"/>
-        <result column="submit_teacherNumber" property="submitTeacherNumber" jdbcType="INTEGER"/>
         <result column="student_class" property="studentClass" jdbcType="INTEGER"/>
         <result column="examination_time" property="examinationTime" jdbcType="INTEGER"/>
-        <result column="approval_status" property="approvalStatus" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
     eiid, single_number, single_score, multiple_number, multiple_score, checking_number, 
-    checking_score, paper_level, paper_kind, subject_id, submit_teacherNumber, student_class,
-    examination_time,approval_status
+    checking_score, paper_level, paper_kind, subject_id,student_class,examination_time
   </sql>
     <select id="selectByEiid" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
         from examination_internal
         where eiid = #{eiid,jdbcType=INTEGER}
-    </select>
-    <select id="selectByTeacherNumber" parameterType="java.lang.Integer"
-            resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from examination_internal
-        where submit_teacherNumber = #{submitTeacherNumber,jdbcType=INTEGER}
     </select>
     <delete id="deleteByEiid" parameterType="java.lang.Integer">
     delete from examination_internal
@@ -73,17 +63,11 @@
             <if test="subjectId != null">
                 subject_id,
             </if>
-            <if test="submitTeacherNumber != null">
-                submit_teacherNumber,
-            </if>
             <if test="studentClass != null">
                 student_class,
             </if>
             <if test="examinationTime != null">
                 examination_time,
-            </if>
-            <if test="approvalStatus != null">
-                approval_status,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -117,17 +101,11 @@
             <if test="subjectId != null">
                 #{subjectId,jdbcType=INTEGER},
             </if>
-            <if test="submitTeacherNumber != null">
-                #{submitTeacherNumber,jdbcType=INTEGER},
-            </if>
             <if test="studentClass != null">
                 #{studentClass,jdbcType=INTEGER},
             </if>
             <if test="examinationTime != null">
                 #{examinationTime,jdbcType=INTEGER},
-            </if>
-            <if test="approvalStatus != null">
-                #{approval_status,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -164,14 +142,8 @@
             <if test="subjectId != null">
                 submit_teacherNumber = #{submitTeacherNumber,jdbcType=INTEGER},
             </if>
-            <if test="studentClass != null">
-                student_class = #{studentClass,jdbcType=INTEGER},
-            </if>
             <if test="examinationTime != null">
                 examination_time = #{examinationTime,jdbcType=INTEGER},
-            </if>
-            <if test="approvalStatus != null">
-                approval_status = #{approvalStatus,jdbcType=INTEGER},
             </if>
         </set>
         where eiid = #{eiid,jdbcType=INTEGER}

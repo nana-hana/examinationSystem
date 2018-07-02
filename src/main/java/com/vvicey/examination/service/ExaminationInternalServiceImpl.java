@@ -4,8 +4,7 @@ import com.vvicey.examination.dao.ExaminationInternalMapper;
 import com.vvicey.examination.entity.ExaminationInternal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @Author nana
@@ -25,6 +24,7 @@ public class ExaminationInternalServiceImpl implements ExaminationInternalServic
      * @return 返回创建成功与否
      */
     @Override
+    @Transactional
     public int createExamination(ExaminationInternal examinationInternal) {
         return examinationInternalMapper.insertSelective(examinationInternal);
     }
@@ -36,19 +36,20 @@ public class ExaminationInternalServiceImpl implements ExaminationInternalServic
      * @return 返回删除成功与否
      */
     @Override
+    @Transactional
     public int deleteExamination(int eiid) {
         return examinationInternalMapper.deleteByEiid(eiid);
     }
 
     /**
-     * 根据提交考试事情的教师编号查询考试信息
+     * 根据提交考试事情的eiid查询考试信息
      *
-     * @param teacherNumber 考试编号id
+     * @param eiid 考试编号id
      * @return 返回查询结果
      */
     @Override
-    public List<ExaminationInternal> queryExaminationByTeacherNumber(int teacherNumber) {
-        return examinationInternalMapper.selectByTeacherNumber(teacherNumber);
+    public ExaminationInternal queryExaminationInternalByEiid(int eiid) {
+        return examinationInternalMapper.selectByEiid(eiid);
     }
 
     /**
@@ -58,6 +59,7 @@ public class ExaminationInternalServiceImpl implements ExaminationInternalServic
      * @return 返回更新结果
      */
     @Override
+    @Transactional
     public int updateExaminationByEiid(ExaminationInternal examinationInternal) {
         return examinationInternalMapper.updateByEiidSelective(examinationInternal);
     }

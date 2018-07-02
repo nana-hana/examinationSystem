@@ -12,6 +12,8 @@ import com.vvicey.user.student.entity.Student;
 import com.vvicey.user.student.service.StudentService;
 import com.vvicey.user.teacher.entity.Teacher;
 import com.vvicey.user.teacher.service.TeacherService;
+import com.vvicey.workflow.entity.ActivityApprovalRequest;
+import com.vvicey.workflow.service.ActivityApprovalRequestService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +47,8 @@ public class TeacherController {
     private ExaminationInternalService examinationInternalService;
     @Autowired
     private ExaminationExternalService examinationExternalService;
+    @Autowired
+    private ActivityApprovalRequestService activityApprovalRequestService;
 
     /**
      * 跳转教师界面
@@ -248,23 +253,24 @@ public class TeacherController {
     }
 
     /**
-     * 创建考试事件
+     * 创建考试事件(workflow)
      *
-     * @param request             用于获取提交老师的编号
-     * @param examinationInternal 需要创建的考试试卷详情
+     * @param request                用于获取提交老师的编号
+     * @param activityAndExamination 需要创建的考试试卷详情和activity流
      * @return 返回创建成功失败的信息
      */
     @RequestMapping(value = "createExamination", method = RequestMethod.POST)
     @ResponseBody
     @Transactional
-    public int createExamination(HttpServletRequest request, @RequestBody ExaminationInternal examinationInternal) {
+    public int createExamination(HttpServletRequest request, @RequestBody Map<String, Object> activityAndExamination) {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         int teacherNumber = teacherService.queryTeacherInfoByUid(loginer.getUid()).getTeacherNumber();
-        examinationInternal.setSubmitTeacherNumber(teacherNumber);
-        int examinationResult = examinationInternalService.createExamination(examinationInternal);
-        if (examinationResult == 0) {
-            return Status.FAIL.getSign();
-        }
+        ActivityApprovalRequest activityApprovalRequest = JSON.parseObject(JSON.toJSONString(activityAndExamination
+                .get("activityApprovalRequest")), ActivityApprovalRequest.class);
+        ExaminationInternal examinationInternal = JSON.parseObject(JSON.toJSONString(activityAndExamination
+                .get("examinationInternal")), ExaminationInternal.class);
+        activityApprovalRequest.setSubmitTeacherNumber(teacherNumber);
+        activityApprovalRequestService.createRequest(examinationInternal, activityApprovalRequest);
         return Status.SUCCESS.getSign();
     }
 
@@ -295,9 +301,10 @@ public class TeacherController {
     @RequestMapping(value = "queryExaminationSelf", method = RequestMethod.GET)
     @ResponseBody
     public List<ExaminationInternal> queryExaminationSelf(HttpServletRequest request) {
-        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
-        int teacherNumber = teacherService.queryTeacherInfoByUid(loginer.getUid()).getTeacherNumber();
-        return examinationInternalService.queryExaminationByTeacherNumber(teacherNumber);
+//        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+//        int teacherNumber = teacherService.queryTeacherInfoByUid(loginer.getUid()).getTeacherNumber();
+//        return examinationInternalService.queryExaminationByTeacherNumber(teacherNumber);
+        return new ArrayList<>();
     }
 
     /**
@@ -322,16 +329,16 @@ public class TeacherController {
     @ResponseBody
     @Transactional
     public int updateExamination(@RequestBody Map<String, Object> examinationAndEiid, HttpServletRequest request) {
-        ExaminationInternal examinationInternal = JSON.parseObject(JSON.toJSONString(examinationAndEiid.get("examination")), ExaminationInternal.class);
-        int eiid = JSON.parseObject(JSON.toJSONString(examinationAndEiid.get("eiid")), Integer.class);
-        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
-        int teacherNumber = teacherService.queryTeacherInfoByUid(loginer.getUid()).getTeacherNumber();
-        examinationInternal.setEiid(eiid);
-        examinationInternal.setSubmitTeacherNumber(teacherNumber);
-        int result = examinationInternalService.updateExaminationByEiid(examinationInternal);
-        if (result == 0) {
-            return Status.FAIL.getSign();
-        }
+//        ExaminationInternal examinationInternal = JSON.parseObject(JSON.toJSONString(examinationAndEiid.get("examination")), ExaminationInternal.class);
+//        int eiid = JSON.parseObject(JSON.toJSONString(examinationAndEiid.get("eiid")), Integer.class);
+//        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+//        int teacherNumber = teacherService.queryTeacherInfoByUid(loginer.getUid()).getTeacherNumber();
+//        examinationInternal.setEiid(eiid);
+//        examinationInternal.setSubmitTeacherNumber(teacherNumber);
+//        int result = examinationInternalService.updateExaminationByEiid(examinationInternal);
+//        if (result == 0) {
+//            return Status.FAIL.getSign();
+//        }
         return Status.SUCCESS.getSign();
     }
 

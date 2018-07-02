@@ -2,14 +2,13 @@ package com.vvicey.user.administrator.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.vvicey.common.information.Status;
-import com.vvicey.common.task.BeginExamination;
-import com.vvicey.common.utils.QuartzManagerUtils;
-import com.vvicey.user.login.entity.Loginer;
-import com.vvicey.user.login.service.LoginService;
 import com.vvicey.user.administrator.entity.Administrator;
 import com.vvicey.user.administrator.service.AdministratorService;
+import com.vvicey.user.login.entity.Loginer;
+import com.vvicey.user.login.service.LoginService;
 import com.vvicey.user.teacher.entity.Teacher;
 import com.vvicey.user.teacher.service.TeacherService;
+import com.vvicey.workflow.service.ActivityApprovalRequestService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,6 +37,8 @@ public class AdministratorController {
     private AdministratorService administratorService;
     @Autowired
     private TeacherService teacherService;
+    @Autowired
+    private ActivityApprovalRequestService activityApprovalRequestService;
 
     /**
      * 跳转管理员界面
@@ -240,48 +242,36 @@ public class AdministratorController {
         return administratorService.queryAdministratorInfoByUid(loginer.getUid());
     }
 
-    @RequestMapping(value = "test", method = RequestMethod.GET)
+    /**
+     * 更新ExaminationInternal审核状态信息，创建ExaminationExternal信息(创建)。
+     * 前端传值的时候判断操作人员做出的操作(1通过，2不通过)，如果是1就要附带传ExaminationExternal的参数，
+     * 否则只需要传eiid和approvalStatus。
+     *
+     * @param statusAndExaminationExternal 审批状态和需要创建的信息
+     * @return 返回增添失败或成功的状态信息
+     */
+    @RequestMapping(value = "approvalExamination", method = RequestMethod.POST)
     @ResponseBody
-    public int test() {
-        QuartzManagerUtils.addJob("英语考试", "1", BeginExamination.class,
-                "0 0 10 2 7 ? *", 1, "2018");
+    @Transactional
+    public int approvalExamination(@RequestBody Map<String, Object> statusAndExaminationExternal) {
+        activityApprovalRequestService.approveCreate(statusAndExaminationExternal);
         return Status.SUCCESS.getSign();
     }
 
-//    /**
-//     *
-//     *
-//     * @param loginAndInfo 增添的教师个人信息和登陆信息
-//     * @return 返回增添失败或成功的状态信息
-//     * @throws UnsupportedEncodingException 编码不支持
-//     * @throws NoSuchAlgorithmException     请求的加密算法无法实现
-//     */
-//    @RequestMapping(value = "addTeacher", method = RequestMethod.POST)
-//    @ResponseBody
-//    @Transactional
-//    public int addTeacher(@RequestBody Map<String, Object> loginAndInfo) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-//        Loginer loginer = JSON.parseObject(JSON.toJSONString(loginAndInfo.get("loginer")), Loginer.class);
-//        Teacher teacher = JSON.parseObject(JSON.toJSONString(loginAndInfo.get("teacher")), Teacher.class);
-//        //检查账号重复
-//        Loginer checkResult = loginService.queryUser(loginer.getName());
-//        if (checkResult != null) {
-//            return Status.FAIL_REPETITION.getSign();
-//        }
-//        //创建账号
-//        int loginerResult = loginService.createUser(loginer);
-//        if (loginerResult == 0) {
-//            return Status.FAIL.getSign();
-//        }
-//        //创建教师信息身份，教师uid与账号uid相关联
-//        loginer = loginService.queryUser(loginer.getName());
-//        teacher.setUid(loginer.getUid());
-//        int teacherResult = teacherService.createTeacherInfo(teacher);
-//        if (teacherResult == 0) {
-//            return Status.FAIL.getSign();
-//        }
-//        return Status.SUCCESS.getSign();
-//    }
-//
+    /**
+     * 查询管理员个人信息(个人)
+     *
+     * @param request 管理员uid
+     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的管理员信息
+     */
+    @RequestMapping(value = "queryNeedApprovalExamination", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Map<String, Object>> queryNeedApprovalExamination(HttpServletRequest request) {
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        return activityApprovalRequestService.approvalQueryList(loginer.getName());
+    }
+
+
 //    /**
 //     * 删除教师登陆账号及个人信息
 //     *

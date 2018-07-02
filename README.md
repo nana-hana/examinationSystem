@@ -32,6 +32,9 @@
 * Bootstrap
 * Junit
 * shiro
+* activity
+* log4j
+* velocity
 
 # 开发环境
 * Ubuntu 18.04 LTS
@@ -40,3 +43,4 @@
 * Tomcat 8.5.24
 * java-8-oracle(1.8)
 * Chrome
+* github

@@ -43,6 +43,9 @@
       <if test="teacherNumber != null" >
         teacher_number,
       </if>
+      <if test="institute != null" >
+        institute,
+      </if>
       <if test="eiid != null" >
         eiid,
       </if>
@@ -60,6 +63,9 @@
       <if test="teacherNumber != null" >
         #{teacherNumber,jdbcType=INTEGER},
       </if>
+      <if test="institute != null" >
+        #{institute,jdbcType=INTEGER},
+      </if>
       <if test="eiid != null" >
         #{eiid,jdbcType=INTEGER},
       </if>
@@ -76,6 +82,9 @@
       </if>
       <if test="teacherNumber != null" >
         teacher_number = #{teacherNumber,jdbcType=INTEGER},
+      </if>
+      <if test="institute != null" >
+        institute = #{institute,jdbcType=INTEGER},
       </if>
       <if test="eiid != null" >
         eiid = #{eiid,jdbcType=INTEGER},

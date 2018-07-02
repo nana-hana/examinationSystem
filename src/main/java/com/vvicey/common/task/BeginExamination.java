@@ -1,12 +1,11 @@
 package com.vvicey.common.task;
 
+import com.vvicey.examination.entity.ExaminationPaper;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.stereotype.Component;
-
-import java.awt.print.Paper;
 
 /**
  * @Author nana
@@ -16,21 +15,43 @@ import java.awt.print.Paper;
 @Component
 public class BeginExamination implements Job {
 
+    /**
+     * 试卷类型
+     */
+    private static final int PAPER_RANDOM = 1;//随机不同卷
+    private static final int PAPER_AB = 0;//AB卷
 
-    private void paperGeneration(int i) {
-        if (i == 0) {
-            System.out.println(0);
-        } else {
-            System.out.println(1);
+    /**
+     * 试卷生成
+     *
+     * @param i 试卷类型
+     */
+    private ExaminationPaper paperGeneration(int i) {
+        if (i == PAPER_AB) {
+            return paperABGeneration();
         }
+        if (i == PAPER_RANDOM) {
+            return paperRandomGeneration();
+        }
+        return null;
     }
 
-    private Paper paperABGeneration() {
+    /**
+     * 试卷AB
+     *
+     * @return 返回生成的试卷
+     */
+    private ExaminationPaper paperABGeneration() {
 
         return null;
     }
 
-    private Paper paperRandomGeneration() {
+    /**
+     * 试卷随机
+     *
+     * @return 返回生成的试卷
+     */
+    private ExaminationPaper paperRandomGeneration() {
 
         return null;
     }
@@ -39,6 +60,7 @@ public class BeginExamination implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         JobDataMap dataMap = context.getJobDetail().getJobDataMap();
         int examinationKind = (Integer) dataMap.get("data1");
-        paperGeneration(examinationKind);
+        ExaminationPaper examinationPaper = paperGeneration(examinationKind);
+        //如何返回paper？
     }
 }

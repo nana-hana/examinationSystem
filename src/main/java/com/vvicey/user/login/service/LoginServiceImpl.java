@@ -5,6 +5,7 @@ import com.vvicey.user.login.dao.LoginMapper;
 import com.vvicey.user.login.entity.Loginer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -29,6 +30,7 @@ public class LoginServiceImpl implements LoginService {
      * @throws NoSuchAlgorithmException     请求的加密算法无法实现
      */
     @Override
+    @Transactional
     public int createUser(Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         loginer.setPassword(MD5Utils.encryptPassword(loginer.getPassword()));//将密码进行编译在存入数据库
         return loginMapper.insertSelective(loginer);
@@ -54,6 +56,7 @@ public class LoginServiceImpl implements LoginService {
      * @throws NoSuchAlgorithmException     请求的加密算法无法实现
      */
     @Override
+    @Transactional
     public int updateUserByUid(Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         loginer.setPassword(MD5Utils.encryptPassword(loginer.getPassword()));
         return loginMapper.updateByUidSelective(loginer);

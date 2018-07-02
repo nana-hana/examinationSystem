@@ -15,7 +15,7 @@ public interface ExaminationInternalMapper {
 
     int insertSelective(ExaminationInternal examinationInternal);
 
-    List<ExaminationInternal> selectByTeacherNumber(Integer teacherNumber);
+    ExaminationInternal selectByEiid(int eiid);
 
     int updateByEiidSelective(ExaminationInternal examinationInternal);
 

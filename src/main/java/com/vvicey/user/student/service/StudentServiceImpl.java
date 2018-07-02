@@ -4,6 +4,7 @@ import com.vvicey.user.student.dao.StudentMapper;
 import com.vvicey.user.student.entity.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @Author nana
@@ -23,6 +24,7 @@ public class StudentServiceImpl implements StudentService {
      * @return 返回删除成功与否
      */
     @Override
+    @Transactional
     public int deleteStudent(int uid) {
         return studentMapper.deleteByUid(uid);
     }
@@ -34,6 +36,7 @@ public class StudentServiceImpl implements StudentService {
      * @return 返回插入成功与否
      */
     @Override
+    @Transactional
     public int createStudentInfo(Student student) {
         studentMapper.insertStudentRole(student.getUid());
         return studentMapper.insertSelective(student);
@@ -68,6 +71,7 @@ public class StudentServiceImpl implements StudentService {
      * @return 返回更新结果
      */
     @Override
+    @Transactional
     public int updateStudentInfoByStudentNumber(Student student) {
         return studentMapper.updateByStudentNumberSelective(student);
     }
@@ -79,6 +83,7 @@ public class StudentServiceImpl implements StudentService {
      * @return 返回更新结果
      */
     @Override
+    @Transactional
     public int updateStudentInfoByUid(Student student) {
         return studentMapper.updateByUidSelective(student);
     }

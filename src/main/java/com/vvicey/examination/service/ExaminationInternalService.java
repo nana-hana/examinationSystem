@@ -15,7 +15,7 @@ public interface ExaminationInternalService {
 
     int deleteExamination(int eiid);
 
-    List<ExaminationInternal> queryExaminationByTeacherNumber(int teacherNumber);
+    ExaminationInternal queryExaminationInternalByEiid(int eiid);
 
     int updateExaminationByEiid(ExaminationInternal examinationInternal);
 

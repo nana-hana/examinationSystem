@@ -4,6 +4,7 @@ import com.vvicey.user.administrator.dao.AdministratorMapper;
 import com.vvicey.user.administrator.entity.Administrator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @Author nana
@@ -23,6 +24,7 @@ public class AdministratorServiceImpl implements AdministratorService {
      * @return 返回创建成功与否
      */
     @Override
+    @Transactional
     public int createAdministratorInfo(Administrator administrator) {
         administratorMapper.insertAdministratorRole(administrator.getUid());
         return administratorMapper.insertSelective(administrator);
@@ -35,6 +37,7 @@ public class AdministratorServiceImpl implements AdministratorService {
      * @return 返回删除成功与否
      */
     @Override
+    @Transactional
     public int deleteAdministrator(int uid) {
         return administratorMapper.deleteByUid(uid);
     }
@@ -68,6 +71,7 @@ public class AdministratorServiceImpl implements AdministratorService {
      * @return 返回更新成功与否
      */
     @Override
+    @Transactional
     public int updateAdministratorInfoByName(Administrator administrator) {
         return administratorMapper.updateByAdministratorNameSelective(administrator);
     }
@@ -79,6 +83,7 @@ public class AdministratorServiceImpl implements AdministratorService {
      * @return 返回更新成功与否
      */
     @Override
+    @Transactional
     public int updateAdministratorInfoByUid(Administrator administrator) {
         return administratorMapper.updateByUidSelective(administrator);
     }

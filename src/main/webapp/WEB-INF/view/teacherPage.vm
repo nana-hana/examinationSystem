@@ -205,18 +205,23 @@
                     url: "/teacher/createExamination",
                     contentType: 'application/json',
                     data: JSON.stringify({
-                        //数据包含单选、多选、判断题的总分值和数量，试卷难度，试卷生成类型，科目id，考试持续时间
-                        examinationTime:120,
-                        singleNumber: 1,
-                        singleScore: 1,
-                        multipleNumber: 1,
-                        multipleScore: 1,
-                        checkingNumber: 1,
-                        checkingScore: 1,
-                        paperLevel: 1,
-                        paperKind: 1,
-                        subjectId: 1,
-                        studentClass: 1
+                        activityApprovalRequest: {
+                            comments:"测试一下"
+                        },
+                        examinationInternal: {
+                            //数据包含单选、多选、判断题的总分值和数量，试卷难度，试卷生成类型，科目id，考试持续时间
+                            singleNumber: 1,
+                            singleScore: 1,
+                            multipleNumber: 1,
+                            multipleScore: 1,
+                            checkingNumber: 1,
+                            checkingScore: 1,
+                            paperLevel: 1,
+                            paperKind: 1,
+                            subjectId: 1,
+                            studentClass: 1,
+                            examinationTime: 120
+                        }
                     }),
                     success: function (data) {
                         data = JSON.parse(data);
@@ -250,10 +255,9 @@
                     url: "/teacher/updateExamination",
                     contentType: 'application/json',
                     data: JSON.stringify({
-                        //数据包含单选、多选、判断题的总分值和数量，试卷难度，试卷生成类型，科目id，考试持续事件
+                        //根据eiid查询考试事件，更新数据数据包含单选、多选、判断题的总分值和数量，试卷难度，试卷生成类型，科目id，考试持续事件
                         eiid: 12,
                         examination: {
-                            examinationTime: 120,
                             singleNumber: 2,
                             singleScore: 2,
                             multipleNumber: 2,
@@ -263,7 +267,8 @@
                             paperLevel: 2,
                             paperKind: 2,
                             subjectId: 2,
-                            studentClass: 2
+                            studentClass: 2,
+                            examinationTime: 120
                         }
                     }),
                     success: function (data) {

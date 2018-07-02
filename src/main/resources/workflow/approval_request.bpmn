@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1530505880149" name="" targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema">
+  <process id="approval_request" isClosed="false" isExecutable="true" name="批准申请工作流" processType="None">
+    <startEvent id="approval_request_start" name="批准申请开启"/>
+    <endEvent id="approval_request_end" name="批准申请结束"/>
+    <userTask activiti:exclusive="true" id="approval_request_active" name="教师申请"/>
+    <userTask activiti:exclusive="true" id="approval_request_check" name="学院审批"/>
+    <sequenceFlow id="_6" sourceRef="approval_request_start" targetRef="approval_request_active"/>
+    <sequenceFlow id="_7" sourceRef="approval_request_active" targetRef="approval_request_check"/>
+    <sequenceFlow id="_8" sourceRef="approval_request_check" targetRef="approval_request_end"/>
+  </process>
+  <bpmndi:BPMNDiagram documentation="background=#3C3F41;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
+    <bpmndi:BPMNPlane bpmnElement="approval_request">
+      <bpmndi:BPMNShape bpmnElement="approval_request_start" id="Shape-approval_request_start">
+        <omgdc:Bounds height="32.0" width="32.0" x="80.0" y="220.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="approval_request_end" id="Shape-approval_request_end">
+        <omgdc:Bounds height="32.0" width="32.0" x="705.0" y="245.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="approval_request_active" id="Shape-approval_request_active">
+        <omgdc:Bounds height="55.0" width="85.0" x="295.0" y="230.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="approval_request_check" id="Shape-approval_request_check">
+        <omgdc:Bounds height="55.0" width="85.0" x="515.0" y="245.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_6" id="BPMNEdge__6" sourceElement="approval_request_start" targetElement="_4">
+        <omgdi:waypoint x="112.0" y="236.0"/>
+        <omgdi:waypoint x="295.0" y="257.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_7" id="BPMNEdge__7" sourceElement="_4" targetElement="_5">
+        <omgdi:waypoint x="380.0" y="257.5"/>
+        <omgdi:waypoint x="515.0" y="272.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_8" id="BPMNEdge__8" sourceElement="_5" targetElement="approval_request_end">
+        <omgdi:waypoint x="600.0" y="272.5"/>
+        <omgdi:waypoint x="705.0" y="261.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -194,6 +194,64 @@
                 });
             });
 
+            //对教师考试申请进行审批
+            $("#approvalExamination").on("click", function () {
+                var status = 1;
+                if (status == 1) {
+                    $.ajax({
+                        //通过便提交审批状态和ExaminationExternal数据
+                        type: "POST",
+                        url: "/administrator/approvalExamination",
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            //试卷id号及审批状态信息，考试开始时间，考试地点，监考老师编号，归属的学院
+                            eiid: 5,
+                            taskId: 14,
+                            status: status,
+                            examinationExternal: {
+                                examTime: "2018-07-02 10:00:00",
+                                examPlace: "计算机学院",
+                                teacherNumber: 10086,
+                                institute: 1
+                            }
+                        }),
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            console.log(data)
+                        }
+                    });
+                } else {
+                    //不通过只需提交审批状态
+                    $.ajax({
+                        type: "POST",
+                        url: "/administrator/approvalExamination",
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            //试卷id号及审批状态信息
+                            eiid: 5,
+                            taskId: 14,
+                            status: status,
+                        }),
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            console.log(data)
+                        }
+                    });
+                }
+            });
+
+            //查询待审批信息
+            $("#queryNeedApprovalExamination").on("click", function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/administrator/queryNeedApprovalExamination",
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+
             //测试触发事件
             $("#test").on("click", function () {
                 $.ajax({
@@ -225,6 +283,9 @@
 <button id="queryTeacherInfo">查询教师个人信息</button>
 <button id="queryAdministratorSelfLoginer">查询管理员登陆信息</button>
 <button id="queryAdministratorSelfInfo">查询管理员个人信息</button>
+<br>
+<button id="approvalExamination">审批</button>
+<button id="queryNeedApprovalExamination">待审批</button>
 <br>
 <button id="test">测试触发事件</button>
 <footer></footer>
