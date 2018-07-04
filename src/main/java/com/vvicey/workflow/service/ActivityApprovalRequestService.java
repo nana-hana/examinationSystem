@@ -15,17 +15,11 @@ public interface ActivityApprovalRequestService {
 
     void createRequest(ExaminationInternal examinationInternal, ActivityApprovalRequest activityApprovalRequest);
 
-    void deleteRequest(int eiid);
+    void updateRequest(int taskId, ExaminationInternal examinationInternal);
 
-    void updateRequest(ExaminationInternal examinationInternal);
-
-    void approveCreate(Map<String, Object> statusAndExaminationExternal);
-
-    void approveDelete();
-
-    void approveUpdate();
+    void approve(Map<String, Object> statusAndExaminationExternal);
 
     List<Map<String, Object>> approvalQueryList(String username);
 
-    List<Map<String, Object>> queryListRequest();
+    List<Map<String, Object>> queryListRequest(String username);
 }

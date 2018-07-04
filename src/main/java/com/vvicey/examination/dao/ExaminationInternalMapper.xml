@@ -139,9 +139,6 @@
             <if test="subjectId != null">
                 subject_id = #{subjectId,jdbcType=INTEGER},
             </if>
-            <if test="subjectId != null">
-                submit_teacherNumber = #{submitTeacherNumber,jdbcType=INTEGER},
-            </if>
             <if test="examinationTime != null">
                 examination_time = #{examinationTime,jdbcType=INTEGER},
             </if>

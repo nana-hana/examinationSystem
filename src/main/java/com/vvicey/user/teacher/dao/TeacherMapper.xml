@@ -10,20 +10,36 @@
     <result column="phone" jdbcType="INTEGER" property="phone" />
     <result column="uid" jdbcType="INTEGER" property="uid" />
   </resultMap>
+  <resultMap id="TeacherLoginerResultMap" type="com.vvicey.user.tempEntity.TeacherLoginer">
+    <result column="name" property="name" jdbcType="VARCHAR"/>
+    <result column="teacher_number" property="teacherNumber" jdbcType="INTEGER"/>
+    <result column="major" property="major" jdbcType="INTEGER"/>
+    <result column="institute" property="institute" jdbcType="INTEGER"/>
+    <result column="phone" property="phone" jdbcType="INTEGER"/>
+    <result column="uid" property="uid" jdbcType="INTEGER"/>
+    <result column="username" property="username" jdbcType="INTEGER"/>
+    <result column="password" property="password" jdbcType="INTEGER"/>
+  </resultMap>
   <sql id="Base_Column_List">
-    tid, name, teacher_number, major, institute, phone, uid
+    tid, name, teacher_number, major, institute, phone, t.uid
   </sql>
-  <select id="selectByTeacherNumber" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <sql id="Loginer_Column_List">
+      l.uid,username, password
+    </sql>
+  <select id="selectAllTeacher" resultMap="TeacherLoginerResultMap">
     select
-    <include refid="Base_Column_List" />
-    from teacher
-    where teacher_number = #{teacher_number,jdbcType=INTEGER}
+    <include refid="Base_Column_List"/>,
+    <include refid="Loginer_Column_List"/>
+    from teacher t
+    left join login l on t.uid = l.uid
   </select>
-  <select id="selectByUid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectTeacherSelf" resultMap="TeacherLoginerResultMap">
     select
-    <include refid="Base_Column_List" />
-    from teacher
-    where uid = #{uid,jdbcType=INTEGER}
+    <include refid="Base_Column_List"/>,
+    <include refid="Loginer_Column_List"/>
+    from teacher t
+    left join login l on t.uid = l.uid
+    where t.uid = #{uid,jdbcType=INTEGER}
   </select>
     <delete id="deleteByUid" parameterType="java.lang.Integer" >
     delete login,role_login,teacher

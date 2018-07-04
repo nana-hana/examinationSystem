@@ -1,6 +1,9 @@
 package com.vvicey.user.teacher.dao;
 
 import com.vvicey.user.teacher.entity.Teacher;
+import com.vvicey.user.tempEntity.TeacherLoginer;
+
+import java.util.List;
 
 /**
  * @Author nana
@@ -15,9 +18,9 @@ public interface TeacherMapper {
 
     void insertTeacherRole(int uid);
 
-    Teacher selectByTeacherNumber(int teacherNumber);
+    List<TeacherLoginer> selectAllTeacher();
 
-    Teacher selectByUid(int uid);
+    TeacherLoginer selectTeacherSelf(int uid);
 
     int updateByTeacherNumberSelective(Teacher teacher);
 

@@ -1,6 +1,9 @@
 package com.vvicey.user.student.service;
 
 import com.vvicey.user.student.entity.Student;
+import com.vvicey.user.tempEntity.StudentLoginer;
+
+import java.util.List;
 
 /**
  * @Author nana
@@ -11,11 +14,11 @@ public interface StudentService {
 
     int deleteStudent(int uid);
 
-    int createStudentInfo(Student student);
+    void createStudentInfo(Student student);
 
-    Student queryStudentInfoByStudentNumber(int studentNumber);
+    List<StudentLoginer> queryAllStudent();
 
-    Student queryStudentInfoByUid(int uid);
+    StudentLoginer queryStudentSelf(int uid);
 
     int updateStudentInfoByStudentNumber(Student student);
 

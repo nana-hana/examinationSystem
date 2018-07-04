@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>在线考试系统</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <script src="/static/jquery/jquery-3.3.1.min.js"></script>
+    <script src="/static/script/load_footer.js"></script>
+    <link rel="shortcut icon" href="/static/images/favicon.png"/>
+    <link rel="bookmark" href="/static/images/favicon.png" type="image/x-icon"/>
+    <script>
+        $(function () {
+            //更新学生个人登陆密码
+            $("#updateStudentSelfLoginer").on("click", function () {
+                $.ajax({
+                    type: "PUT",
+                    url: "/student/updateStudentSelfLoginer",
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        //数据仅包含密码
+                        password: "test"
+                    }),
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+
+            //更新学生个人信息
+            $("#updateStudentSelfInfo").on("click", function () {
+                $.ajax({
+                    type: "PUT",
+                    url: "/student/updateStudentSelfInfo",
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        //数据包含学生班级，专业，学院，电话号码
+                        studentClass: 2,
+                        major: 2,
+                        institute: 2,
+                        phone: 2,
+                    }),
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+
+            //查询学生自己登陆信息
+            $("#queryStudentSelfLoginer").on("click", function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/student/queryStudentSelfLoginer",
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+
+            //查询学生自己个人信息
+            $("#queryStudentSelfInfo").on("click", function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/student/queryStudentSelfInfo",
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        console.log(data)
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<header></header>
+学生
+<br>
+<button id="updateStudentSelfLoginer">更新密码</button>
+<button id="updateStudentSelfInfo">更新个人信息</button>
+<br>
+<button id="queryStudentSelfLoginer">查询登陆信息</button>
+<button id="queryStudentSelfInfo">查询自己个人信息</button>
+<footer></footer>
+</body>
+</html>

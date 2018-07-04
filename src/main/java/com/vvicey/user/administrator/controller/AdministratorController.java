@@ -2,17 +2,21 @@ package com.vvicey.user.administrator.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.vvicey.common.information.Status;
+import com.vvicey.examination.entity.ExaminationExternal;
+import com.vvicey.examination.service.ExaminationExternalService;
 import com.vvicey.user.administrator.entity.Administrator;
 import com.vvicey.user.administrator.service.AdministratorService;
 import com.vvicey.user.login.entity.Loginer;
 import com.vvicey.user.login.service.LoginService;
 import com.vvicey.user.teacher.entity.Teacher;
 import com.vvicey.user.teacher.service.TeacherService;
+import com.vvicey.user.tempEntity.TeacherLoginer;
 import com.vvicey.workflow.service.ActivityApprovalRequestService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,115 +43,76 @@ public class AdministratorController {
     private TeacherService teacherService;
     @Autowired
     private ActivityApprovalRequestService activityApprovalRequestService;
+    @Autowired
+    private ExaminationExternalService examinationExternalService;
 
     /**
-     * 跳转管理员界面
+     * 跳转管理员界面,获取教师数据
      *
      * @return 管理员界面文件名
      */
     @RequestMapping
-    public String toAdministratorPage() {
-        return "administratorPage";
+    public String toAdministratorPage(Model model) {
+        List<TeacherLoginer> teacherLoginers = teacherService.queryAllTeacher();
+        model.addAttribute("teacherLoginers", teacherLoginers);
+        return "/administrator/administratorTeacherManage";
     }
 
     /**
      * 增添教师登陆账号及个人信息
      *
      * @param loginAndInfo 增添的教师个人信息和登陆信息
-     * @return 返回增添失败或成功的状态信息
      * @throws UnsupportedEncodingException 编码不支持
      * @throws NoSuchAlgorithmException     请求的加密算法无法实现
      */
     @RequestMapping(value = "addTeacher", method = RequestMethod.POST)
-    @ResponseBody
     @Transactional
-    public int addTeacher(@RequestBody Map<String, Object> loginAndInfo) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        Loginer loginer = JSON.parseObject(JSON.toJSONString(loginAndInfo.get("loginer")), Loginer.class);
+    @ResponseBody
+    public TeacherLoginer addTeacher(@RequestBody Map<String, Object> loginAndInfo) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        String loginerInfo = JSON.toJSONString(loginAndInfo.get("loginer"));
+        Loginer loginer = JSON.parseObject(loginerInfo, Loginer.class);
         Teacher teacher = JSON.parseObject(JSON.toJSONString(loginAndInfo.get("teacher")), Teacher.class);
-        //检查账号重复
-        Loginer checkResult = loginService.queryUser(loginer.getName());
-        if (checkResult != null) {
-            return Status.FAIL_REPETITION.getSign();
-        }
         //创建账号
-        int loginerResult = loginService.createUser(loginer);
-        if (loginerResult == 0) {
-            return Status.FAIL.getSign();
-        }
+        loginService.createUser(loginer);
         //创建教师信息身份，教师uid与账号uid相关联
-        loginer = loginService.queryUser(loginer.getName());
-        teacher.setUid(loginer.getUid());
-        int teacherResult = teacherService.createTeacherInfo(teacher);
-        if (teacherResult == 0) {
-            return Status.FAIL.getSign();
-        }
-        return Status.SUCCESS.getSign();
+        loginer = loginService.queryUser(loginer.getUsername());
+        int uid = loginer.getUid();
+        teacher.setUid(uid);
+        teacherService.createTeacherInfo(teacher);
+        return teacherService.queryTeacherSelf(uid);
     }
 
     /**
      * 删除教师登陆账号及个人信息
      *
-     * @param teacher 获取教师学号
-     * @return 返回删除失败或成功的状态信息
+     * @param uid 根据uid删除教师
      */
-    @RequestMapping(value = "deleteTeacher", method = RequestMethod.DELETE)
+    @RequestMapping(value = "deleteTeacher/{uid}", method = RequestMethod.DELETE)
     @ResponseBody
     @Transactional
-    public int deleteTeacher(@RequestBody Teacher teacher) {
-        teacher = teacherService.queryTeacherInfoByTeacherNumber(teacher.getTeacherNumber());
-        if (teacher == null) {
-            return Status.NOT_EXIST.getSign();
-        }
-        int result = teacherService.deleteTeacher(teacher.getUid());
-        if (result == 0) {
-            return Status.FAIL.getSign();
-        }
-        return Status.SUCCESS.getSign();
+    public void deleteTeacher(@PathVariable int uid) {
+        teacherService.deleteTeacher(uid);
     }
 
     /**
-     * 更新教师登陆信息
+     * 更新教师信息
      *
-     * @param loginAndTeacherNumber 要更新的教师账号信息和编号
+     * @param loginAndTeacherInfo 要更新的教师账号信息和个人信息
      * @return 返回更新失败或成功的状态信息
      * @throws UnsupportedEncodingException 编码不支持
      * @throws NoSuchAlgorithmException     请求的加密算法无法实现
      */
-    @RequestMapping(value = "updateTeacherLoginer", method = RequestMethod.PUT)
+    @RequestMapping(value = "updateTeacher", method = RequestMethod.PUT)
     @ResponseBody
     @Transactional
-    public int updateTeacherLoginer(@RequestBody Map<String, Object> loginAndTeacherNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        Loginer loginer = JSON.parseObject(JSON.toJSONString(loginAndTeacherNumber.get("loginer")), Loginer.class);
-        int teacherNumber = JSON.parseObject(JSON.toJSONString(loginAndTeacherNumber.get("teacherNumber")), Integer.class);
-        Teacher teacher = teacherService.queryTeacherInfoByTeacherNumber(teacherNumber);
-        int uid = teacher.getUid();
-        loginer.setUid(uid);
-        int result = loginService.updateUserByUid(loginer);
-        if (result == 0) {
-            return Status.FAIL.getSign();
-        }
-        return Status.SUCCESS.getSign();
-    }
-
-    /**
-     * 更新教师个人信息
-     *
-     * @param teacherAndTeacherNumber 要更新的教师个人信息和学号
-     * @return 返回更新失败或成功的状态信息
-     */
-    @RequestMapping(value = "updateTeacherInfo", method = RequestMethod.PUT)
-    @ResponseBody
-    @Transactional
-    public int updateTeacherInfo(@RequestBody Map<String, Object> teacherAndTeacherNumber) {
-        Teacher teacher = JSON.parseObject(JSON.toJSONString(teacherAndTeacherNumber.get("teacher")), Teacher.class);
-        int teacherNumber = JSON.parseObject(JSON.toJSONString(teacherAndTeacherNumber.get("teacherNumber")), Integer.class);
-        int uid = teacherService.queryTeacherInfoByTeacherNumber(teacherNumber).getUid();
-        teacher.setUid(uid);
-        int result = teacherService.updateTeacherInfoByUid(teacher);
-        if (result == 0) {
-            return Status.FAIL.getSign();
-        }
-        return Status.SUCCESS.getSign();
+    public TeacherLoginer updateTeacher(@RequestBody Map<String, Object> loginAndTeacherInfo) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        Loginer loginer = JSON.parseObject(JSON.toJSONString(loginAndTeacherInfo.get("loginer")), Loginer.class);
+        Teacher teacher = JSON.parseObject(JSON.toJSONString(loginAndTeacherInfo.get("teacher")), Teacher.class);
+        teacher.setUid(loginer.getUid());
+        loginer.setPassword(teacherService.queryTeacherSelf(loginer.getUid()).getPassword());
+        loginService.updateUserByUid(loginer);
+        teacherService.updateTeacherInfoByUid(teacher);
+        return teacherService.queryTeacherSelf(loginer.getUid());
     }
 
     /**
@@ -192,30 +157,6 @@ public class AdministratorController {
     }
 
     /**
-     * 查询教师登陆信息
-     *
-     * @param name 教师账号
-     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的教师信息
-     */
-    @RequestMapping(value = "queryTeacherLoginer/{name}", method = RequestMethod.GET)
-    @ResponseBody
-    public Loginer queryTeacherLoginer(@PathVariable String name) {
-        return loginService.queryUser(name);
-    }
-
-    /**
-     * 查询教师个人信息
-     *
-     * @param teacherNumber 教师编号
-     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的教师信息
-     */
-    @RequestMapping(value = "queryTeacherInfo/{teacherNumber}", method = RequestMethod.GET)
-    @ResponseBody
-    public Teacher queryTeacherInfo(@PathVariable int teacherNumber) {
-        return teacherService.queryTeacherInfoByTeacherNumber(teacherNumber);
-    }
-
-    /**
      * 查询管理员登陆信息(个人)
      *
      * @param request 管理员账号
@@ -225,7 +166,7 @@ public class AdministratorController {
     @ResponseBody
     public Loginer queryAdministratorSelfLoginer(HttpServletRequest request) {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
-        loginer = loginService.queryUser(loginer.getName());
+        loginer = loginService.queryUser(loginer.getUsername());
         return loginer;
     }
 
@@ -254,7 +195,7 @@ public class AdministratorController {
     @ResponseBody
     @Transactional
     public int approvalExamination(@RequestBody Map<String, Object> statusAndExaminationExternal) {
-        activityApprovalRequestService.approveCreate(statusAndExaminationExternal);
+        activityApprovalRequestService.approve(statusAndExaminationExternal);
         return Status.SUCCESS.getSign();
     }
 
@@ -268,65 +209,25 @@ public class AdministratorController {
     @ResponseBody
     public List<Map<String, Object>> queryNeedApprovalExamination(HttpServletRequest request) {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
-        return activityApprovalRequestService.approvalQueryList(loginer.getName());
+        return activityApprovalRequestService.approvalQueryList(loginer.getUsername());
     }
 
+    /**
+     * 更新ExaminationExternal信息
+     *
+     * @param examinationExternalAndEiid 修改考试外在信息及该考试对应的eiid
+     * @return 返回修改失败或成功的状态信息
+     */
+    @RequestMapping(value = "updateExaminationExternal", method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public int updateExaminationExternal(@RequestBody Map<String, Object> examinationExternalAndEiid) {
+        int eiid = JSON.parseObject(JSON.toJSONString(examinationExternalAndEiid.get("eiid")), Integer.class);
+        ExaminationExternal examinationExternal = JSON.parseObject(JSON.toJSONString(examinationExternalAndEiid
+                .get("examinationExternal")), ExaminationExternal.class);
+        examinationExternal.setEiid(eiid);
+        examinationExternalService.updateExaminationExternalByEeid(examinationExternal);
+        return Status.SUCCESS.getSign();
+    }
 
-//    /**
-//     * 删除教师登陆账号及个人信息
-//     *
-//     * @param teacher 获取教师学号
-//     * @return 返回删除失败或成功的状态信息
-//     */
-//    @RequestMapping(value = "deleteTeacher", method = RequestMethod.DELETE)
-//    @ResponseBody
-//    @Transactional
-//    public int deleteTeacher(@RequestBody Teacher teacher) {
-//        teacher = teacherService.queryTeacherInfoByTeacherNumber(teacher.getTeacherNumber());
-//        if (teacher == null) {
-//            return Status.NOT_EXIST.getSign();
-//        }
-//        int result = teacherService.deleteTeacher(teacher.getUid());
-//        if (result == 0) {
-//            return Status.FAIL.getSign();
-//        }
-//        return Status.SUCCESS.getSign();
-//    }
-//
-//    /**
-//     * 更新教师登陆信息
-//     *
-//     * @param loginAndTeacherNumber 要更新的教师账号信息和编号
-//     * @return 返回更新失败或成功的状态信息
-//     * @throws UnsupportedEncodingException 编码不支持
-//     * @throws NoSuchAlgorithmException     请求的加密算法无法实现
-//     */
-//    @RequestMapping(value = "updateTeacherLoginer", method = RequestMethod.PUT)
-//    @ResponseBody
-//    @Transactional
-//    public int updateTeacherLoginer(@RequestBody Map<String, Object> loginAndTeacherNumber) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-//        Loginer loginer = JSON.parseObject(JSON.toJSONString(loginAndTeacherNumber.get("loginer")), Loginer.class);
-//        int teacherNumber = JSON.parseObject(JSON.toJSONString(loginAndTeacherNumber.get("teacherNumber")), Integer.class);
-//        Teacher teacher = teacherService.queryTeacherInfoByTeacherNumber(teacherNumber);
-//        int uid = teacher.getUid();
-//        loginer.setUid(uid);
-//        int result = loginService.updateUserByUid(loginer);
-//        if (result == 0) {
-//            return Status.FAIL.getSign();
-//        }
-//        return Status.SUCCESS.getSign();
-//    }
-//
-//    /**
-//     * 查询管理员个人信息(个人)
-//     *
-//     * @param request 管理员uid
-//     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的管理员信息
-//     */
-//    @RequestMapping(value = "queryAdministratorSelfInfo", method = RequestMethod.GET)
-//    @ResponseBody
-//    public Administrator queryAdministratorSelfInfo(HttpServletRequest request) {
-//        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
-//        return administratorService.queryAdministratorInfoByUid(loginer.getUid());
-//    }
 }

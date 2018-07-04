@@ -1,6 +1,9 @@
 package com.vvicey.user.teacher.service;
 
 import com.vvicey.user.teacher.entity.Teacher;
+import com.vvicey.user.tempEntity.TeacherLoginer;
+
+import java.util.List;
 
 /**
  * @Author nana
@@ -9,13 +12,13 @@ import com.vvicey.user.teacher.entity.Teacher;
  */
 public interface TeacherService {
 
-    int createTeacherInfo(Teacher teacher);
+    void createTeacherInfo(Teacher teacher);
 
     int deleteTeacher(int uid);
 
-    Teacher queryTeacherInfoByTeacherNumber(int teacherNumber);
+    List<TeacherLoginer> queryAllTeacher();
 
-    Teacher queryTeacherInfoByUid(int uid);
+    TeacherLoginer queryTeacherSelf(int uid);
 
     int updateTeacherInfoByTeacherNumber(Teacher teacher);
 

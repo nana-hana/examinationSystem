@@ -5,6 +5,7 @@ import com.vvicey.user.login.entity.Loginer;
 import com.vvicey.user.login.service.LoginService;
 import com.vvicey.user.student.entity.Student;
 import com.vvicey.user.student.service.StudentService;
+import com.vvicey.user.tempEntity.StudentLoginer;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,7 +41,7 @@ public class StudentController {
      */
     @RequestMapping
     public String toStudentPage() {
-        return "studentPage";
+        return "/student/studentIndex";
     }
 
     /**
@@ -86,29 +87,15 @@ public class StudentController {
     }
 
     /**
-     * 查询学生自身登陆信息(个人）
+     * 查询学生自身信息(个人）
      *
-     * @param request 学生账号
-     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的学生信息
+     * @param request 登陆的uid
+     * @return 学生信息
      */
-    @RequestMapping(value = "queryStudentSelfLoginer", method = RequestMethod.GET)
+    @RequestMapping(value = "queryStudentSelf", method = RequestMethod.GET)
     @ResponseBody
-    public Loginer queryStudentSelfLoginer(HttpServletRequest request) {
+    public StudentLoginer queryStudentSelf(HttpServletRequest request) {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
-        loginer = loginService.queryUser(loginer.getName());
-        return loginer;
-    }
-
-    /**
-     * 查询学生自身个人信息(个人）
-     *
-     * @param request 学生学号
-     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的学生信息
-     */
-    @RequestMapping(value = "queryStudentSelfInfo", method = RequestMethod.GET)
-    @ResponseBody
-    public Student queryStudentSelfInfo(HttpServletRequest request) {
-        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
-        return studentService.queryStudentInfoByUid(loginer.getUid());
+        return studentService.queryStudentSelf(loginer.getUid());
     }
 }

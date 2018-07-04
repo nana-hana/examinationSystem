@@ -2,9 +2,12 @@ package com.vvicey.user.teacher.service;
 
 import com.vvicey.user.teacher.dao.TeacherMapper;
 import com.vvicey.user.teacher.entity.Teacher;
+import com.vvicey.user.tempEntity.TeacherLoginer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @Author nana
@@ -21,13 +24,12 @@ public class TeacherServiceImpl implements TeacherService {
      * 创建教师个人信息(包含创建教师身份)
      *
      * @param teacher 需要创建的教师信息
-     * @return 返回创建成功与否
      */
     @Override
     @Transactional
-    public int createTeacherInfo(Teacher teacher) {
+    public void createTeacherInfo(Teacher teacher) {
         teacherMapper.insertTeacherRole(teacher.getUid());
-        return teacherMapper.insertSelective(teacher);
+        teacherMapper.insertSelective(teacher);
     }
 
     /**
@@ -43,25 +45,24 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     /**
-     * 查询教师个人信息
+     * 查询所有教师
      *
-     * @param teacherNumber 教师编号
      * @return 返回查询的教师数据
      */
     @Override
-    public Teacher queryTeacherInfoByTeacherNumber(int teacherNumber) {
-        return teacherMapper.selectByTeacherNumber(teacherNumber);
+    public List<TeacherLoginer> queryAllTeacher() {
+        return teacherMapper.selectAllTeacher();
     }
 
     /**
-     * 查询教师个人信息
+     * 查询登陆教师自己
      *
-     * @param uid 用户id
-     * @return 返回查询的教师数据
+     * @param uid 传入uid
+     * @return 返回教师数据
      */
     @Override
-    public Teacher queryTeacherInfoByUid(int uid) {
-        return teacherMapper.selectByUid(uid);
+    public TeacherLoginer queryTeacherSelf(int uid) {
+        return teacherMapper.selectTeacherSelf(uid);
     }
 
     /**

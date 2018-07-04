@@ -1,148 +1,165 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.vvicey.user.student.dao.StudentMapper" >
-  <resultMap id="BaseResultMap" type="com.vvicey.user.student.entity.Student" >
-    <id column="sid" property="sid" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="student_number" property="studentNumber" jdbcType="INTEGER" />
-    <result column="student_class" property="studentClass" jdbcType="INTEGER" />
-    <result column="major" property="major" jdbcType="INTEGER" />
-    <result column="institute" property="institute" jdbcType="INTEGER" />
-    <result column="phone" property="phone" jdbcType="INTEGER" />
-    <result column="uid" property="uid" jdbcType="INTEGER" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    sid, name, student_number, student_class, major, institute, phone, uid
+<mapper namespace="com.vvicey.user.student.dao.StudentMapper">
+    <resultMap id="BaseResultMap" type="com.vvicey.user.student.entity.Student">
+        <id column="sid" property="sid" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="student_number" property="studentNumber" jdbcType="INTEGER"/>
+        <result column="student_class" property="studentClass" jdbcType="INTEGER"/>
+        <result column="major" property="major" jdbcType="INTEGER"/>
+        <result column="institute" property="institute" jdbcType="INTEGER"/>
+        <result column="phone" property="phone" jdbcType="INTEGER"/>
+        <result column="uid" property="uid" jdbcType="INTEGER"/>
+    </resultMap>
+    <resultMap id="StudentLoginerResultMap" type="com.vvicey.user.tempEntity.StudentLoginer">
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="student_number" property="studentNumber" jdbcType="INTEGER"/>
+        <result column="student_class" property="studentClass" jdbcType="INTEGER"/>
+        <result column="major" property="major" jdbcType="INTEGER"/>
+        <result column="institute" property="institute" jdbcType="INTEGER"/>
+        <result column="phone" property="phone" jdbcType="INTEGER"/>
+        <result column="uid" property="uid" jdbcType="INTEGER"/>
+        <result column="username" property="username" jdbcType="INTEGER"/>
+        <result column="password" property="password" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    sid, name, student_number, student_class, major, institute, phone, s.uid
   </sql>
-  <select id="selectByStudentNumber" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select
-    <include refid="Base_Column_List" />
-    from student
-    where student_number = #{student_number,jdbcType=INTEGER}
-  </select>
-  <select id="selectByUid" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select
-    <include refid="Base_Column_List" />
-    from student
-    where uid = #{uid,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByUid" parameterType="java.lang.Integer" >
+    <sql id="Loginer_Column_List">
+      l.uid,username, password
+    </sql>
+    <select id="selectAllStudent" resultMap="StudentLoginerResultMap">
+        select
+        <include refid="Base_Column_List"/>,
+        <include refid="Loginer_Column_List"/>
+        from student s
+        left join login l on s.uid = l.uid
+    </select>
+    <select id="selectStudentSelf" resultMap="StudentLoginerResultMap">
+        select
+        <include refid="Base_Column_List"/>,
+        <include refid="Loginer_Column_List"/>
+        from student s
+        left join login l on s.uid = l.uid
+        where s.uid = #{uid,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByUid" parameterType="java.lang.Integer">
     delete login,role_login,student
     from login
     left join student on login.uid = student.uid
     left join role_login on login.uid = role_login.uid
     where login.uid = #{uid,jdbcType=INTEGER}
   </delete>
-  <insert id="insertStudentRole">
+    <insert id="insertStudentRole">
     insert into role_login(rid,uid) value (2,#{uid,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.vvicey.user.student.entity.Student" >
-    insert into student
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="sid != null" >
-        sid,
-      </if>
-      <if test="name != null" >
-        name,
-      </if>
-      <if test="studentNumber != null" >
-        student_number,
-      </if>
-      <if test="studentClass != null" >
-        student_class,
-      </if>
-      <if test="major != null" >
-        major,
-      </if>
-      <if test="institute != null" >
-        institute,
-      </if>
-      <if test="phone != null" >
-        phone,
-      </if>
-      <if test="uid != null" >
-        uid,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="sid != null" >
-        #{sid,jdbcType=INTEGER},
-      </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="studentNumber != null" >
-        #{studentNumber,jdbcType=INTEGER},
-      </if>
-      <if test="studentClass != null" >
-        #{studentClass,jdbcType=INTEGER},
-      </if>
-      <if test="major != null" >
-        #{major,jdbcType=INTEGER},
-      </if>
-      <if test="institute != null" >
-        #{institute,jdbcType=INTEGER},
-      </if>
-      <if test="phone != null" >
-        #{phone,jdbcType=INTEGER},
-      </if>
-      <if test="uid != null" >
-        #{uid,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByStudentNumberSelective" parameterType="com.vvicey.user.student.entity.Student" >
-    update student
-    <set >
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="studentNumber != null" >
-        student_number = #{studentNumber,jdbcType=INTEGER},
-      </if>
-      <if test="studentClass != null" >
-        student_class = #{studentClass,jdbcType=INTEGER},
-      </if>
-      <if test="major != null" >
-        major = #{major,jdbcType=INTEGER},
-      </if>
-      <if test="institute != null" >
-        institute = #{institute,jdbcType=INTEGER},
-      </if>
-      <if test="phone != null" >
-        phone = #{phone,jdbcType=INTEGER},
-      </if>
-      <if test="uid != null" >
-        uid = #{uid,jdbcType=INTEGER},
-      </if>
-    </set>
-    where student_number = #{student_number,jdbcType=INTEGER}
-  </update>
-  <update id="updateByUidSelective" parameterType="com.vvicey.user.student.entity.Student" >
-    update student
-    <set >
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="studentNumber != null" >
-        student_number = #{studentNumber,jdbcType=INTEGER},
-      </if>
-      <if test="studentClass != null" >
-        student_class = #{studentClass,jdbcType=INTEGER},
-      </if>
-      <if test="major != null" >
-        major = #{major,jdbcType=INTEGER},
-      </if>
-      <if test="institute != null" >
-        institute = #{institute,jdbcType=INTEGER},
-      </if>
-      <if test="phone != null" >
-        phone = #{phone,jdbcType=INTEGER},
-      </if>
-      <if test="uid != null" >
-        uid = #{uid,jdbcType=INTEGER},
-      </if>
-    </set>
-    where uid = #{uid,jdbcType=INTEGER}
-  </update>
+    <insert id="insertSelective" parameterType="com.vvicey.user.student.entity.Student">
+        insert into student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                sid,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="studentNumber != null">
+                student_number,
+            </if>
+            <if test="studentClass != null">
+                student_class,
+            </if>
+            <if test="major != null">
+                major,
+            </if>
+            <if test="institute != null">
+                institute,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="uid != null">
+                uid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sid != null">
+                #{sid,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="studentNumber != null">
+                #{studentNumber,jdbcType=INTEGER},
+            </if>
+            <if test="studentClass != null">
+                #{studentClass,jdbcType=INTEGER},
+            </if>
+            <if test="major != null">
+                #{major,jdbcType=INTEGER},
+            </if>
+            <if test="institute != null">
+                #{institute,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=INTEGER},
+            </if>
+            <if test="uid != null">
+                #{uid,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByStudentNumberSelective" parameterType="com.vvicey.user.student.entity.Student">
+        update student
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="studentNumber != null">
+                student_number = #{studentNumber,jdbcType=INTEGER},
+            </if>
+            <if test="studentClass != null">
+                student_class = #{studentClass,jdbcType=INTEGER},
+            </if>
+            <if test="major != null">
+                major = #{major,jdbcType=INTEGER},
+            </if>
+            <if test="institute != null">
+                institute = #{institute,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=INTEGER},
+            </if>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=INTEGER},
+            </if>
+        </set>
+        where student_number = #{student_number,jdbcType=INTEGER}
+    </update>
+    <update id="updateByUidSelective" parameterType="com.vvicey.user.student.entity.Student">
+        update student
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="studentNumber != null">
+                student_number = #{studentNumber,jdbcType=INTEGER},
+            </if>
+            <if test="studentClass != null">
+                student_class = #{studentClass,jdbcType=INTEGER},
+            </if>
+            <if test="major != null">
+                major = #{major,jdbcType=INTEGER},
+            </if>
+            <if test="institute != null">
+                institute = #{institute,jdbcType=INTEGER},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=INTEGER},
+            </if>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=INTEGER},
+            </if>
+        </set>
+        where uid = #{uid,jdbcType=INTEGER}
+    </update>
 </mapper>

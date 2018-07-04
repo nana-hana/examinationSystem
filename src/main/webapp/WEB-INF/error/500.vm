@@ -2,17 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
     <title>在线考试系统</title>
-    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
-    <script src="/static/script/jquery-3.3.1.min.js"></script>
-    <script src="/static/script/loadHeadAndFoot.js"></script>
-    <link rel="shortcut icon" href="/static/images/favicon.png"/>
-    <link rel="bookmark" href="/static/images/favicon.png" type="image/x-icon"/>
+
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/static/dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/static/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="/static/plugins/toastr/toastr.css"/>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+    <script src="/static/plugins/jquery/jquery-3.3.1.min.js"></script>
+    <script src="/static/plugins/bootstrap/js/bootstrap.js"></script>
+    <script src="/static/plugins/toastr/toastr.min.js"></script>
+    <script src="/static/script/toastrSet.js"></script>
+    <script src="/static/script/loginCheck.js"></script>
 </head>
 <body>
-<header></header>
-500
-<footer></footer>
+<div class="wrapper hold-transition skin-blue sidebar-mini">
+    <header class="main-header">
+        <a href="javascript:void(0)" class="logo">
+            <span class="logo-lg"><b>500 Error Page</b></span>
+        </a>
+        <nav class="navbar navbar-static-top" role="navigation">
+            <div class="navbar-custom-menu">
+            </div>
+        </nav>
+    </header>
+    <section>
+    </section>
+    <section class="content">
+        <div class="error-page">
+            <h2 class="headline text-red">500</h2>
+            <div class="error-content">
+                <h3><i class="fa fa-warning text-red"></i>服务器出错</h3>
+                <p>
+                    我们会尽快修复该错误，单击<a href="/login">此处</a>返回首页。
+                </p>
+                <form class="search-form">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="搜索">
+                        <div class="input-group-btn">
+                            <button type="submit" name="submit" class="btn btn-danger btn-flat"><i
+                                    class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <footer class="footer navbar-fixed-bottom text-center" style="margin: 0">
+        <strong>Copyright &copy; 2018 <a href="https://github.com/nana-hana">nana-hana</a>.</strong>
+        All rights reserved.
+    </footer>
+</div>
 </body>
 </html>

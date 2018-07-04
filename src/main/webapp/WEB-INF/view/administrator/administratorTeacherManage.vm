@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>在线考试系统</title>
+
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/static/plugins/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="/static/dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/static/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="/static/plugins/toastr/toastr.css"/>
+    <link rel="stylesheet" href="/static/plugins/bootstrap3-editable/css/bootstrap-editable.css"/>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+    <script src="/static/plugins/jquery/jquery-3.3.1.min.js"></script>
+    <script src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/plugins/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="/static/plugins/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="/static/dist/js/adminlte.min.js"></script>
+    <script src="/static/dist/js/demo.js"></script>
+    <script src="/static/dist/js/app.js"></script>
+    <script src="/static/plugins/toastr/toastr.min.js"></script>
+    <script src="/static/script/load_header.js"></script>
+    <script src="/static/script/load_footer.js"></script>
+    <script src="/static/script/administrator/load_administrator_menu.js"></script>
+    <script src="/static/script/administrator/administratorAuthority.js"></script>
+    <script src="/static/script/toastrSet.js"></script>
+    <script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <script src="/static/plugins/fastclick/fastclick.js"></script>
+    <script src="/static/plugins/bootstrap3-editable/js/bootstrap-editable.js"></script>
+    <script src="/static/script/bootstrapDialogPackage.js"></script>
+    <script>
+        $(function () {
+            $('#teacherTable').DataTable({
+                "aoColumnDefs": [{"bSortable": false, "aTargets": [0, 8]}],//禁用排序的列0开始
+                "aaSorting": [[0, "asc"]]//默认排序0开开始
+            })
+        })
+    </script>
+    <style>
+        .content-wrapper {
+            background-color: white;
+        }
+    </style>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <header></header>
+    <aside></aside>
+    <div class="content-wrapper">
+        <section class="content-header text-center">
+            <h1>教师信息管理</h1>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">教师数据信息</h3>
+                            <button type="button" class="btn btn-info pull-right" data-toggle="modal"
+                                    data-target="#addTeacherModal">
+                                创建
+                            </button>
+                        </div>
+                        <div class="box-body">
+                            <table id="teacherTable" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>账号</th>
+                                    <th>姓名</th>
+                                    <th>编号</th>
+                                    <th>专业</th>
+                                    <th>学院</th>
+                                    <th>电话</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                #foreach($teacherLoinger in $teacherLoginers)
+                                    <tr>
+                                        <td>$foreach.count</td>
+                                        <td class="editable_username">$teacherLoinger.username</td>
+                                        <td class="editable_name">$teacherLoinger.name</td>
+                                        <td class="editable_teacherNumber">$teacherLoinger.teacherNumber</td>
+                                        <td class="editable_major">$teacherLoinger.major</td>
+                                        <td class="editable_institute">$teacherLoinger.institute</td>
+                                        <td class="editable_phone">$teacherLoinger.phone</td>
+                                        <input type="hidden" value="$teacherLoinger.uid">
+                                        <td>
+                                            <button type="button" class="btn btn-warning update_button">
+                                                更新
+                                            </button>
+                                            <button type="button" class="btn btn-danger delete_button">
+                                                删除
+                                            </button>
+                                        </td>
+                                    </tr>
+                                #end
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="addTeacherModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                创建教师信息
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label for="username" class="col-sm-2 control-label">教师账号*</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="username"
+                                               placeholder="请输入教师账号">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password" class="col-sm-2 control-label">教师密码*</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="password"
+                                               placeholder="请输入教师密码">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name" class="col-sm-2 control-label">教师姓名*</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="name"
+                                               placeholder="请输入教师姓名">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="teacherNumber" class="col-sm-2 control-label">教师编号*</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="teacherNumber"
+                                               placeholder="请输入教师编号">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="major" class="col-sm-2 control-label">教师专业*</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="major"
+                                               placeholder="请输入教师专业">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="institute" class="col-sm-2 control-label">教师学院*</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="institute"
+                                               placeholder="请输入教师学院">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone" class="col-sm-2 control-label">教师号码&nbsp&nbsp</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="phone"
+                                               placeholder="请输入教师手机号码">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                            </button>
+                            <button type="submit" class="btn btn-primary" id="submitAdd">
+                                提交
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer></footer>
+</div>
+</body>
+</html>
+
+##<button id="addTeacher">创建教师账号信息</button>
+##<br>
+##<button id="deleteTeacher">删除教师账号信息</button>
+##<br>
+##<button id="updateTeacherLoginer">更新教师登陆信息</button>
+##<button id="updateTeacherInfo">更新教师个人信息</button>
+##<button id="updateAdministratorSelfLoginer">更新管理员登陆信息</button>
+##<button id="updateAdministratorSelfInfo">更新管理员个人信息</button>
+##<br>
+##<button id="queryTeacherLoginer">查询教师登陆信息</button>
+##<button id="queryTeacherInfo">查询教师个人信息</button>
+##<button id="queryAdministratorSelfLoginer">查询管理员登陆信息</button>
+##<button id="queryAdministratorSelfInfo">查询管理员个人信息</button>
+##<br>
+##<button id="approvalExamination">审批</button>
+##<button id="queryNeedApprovalExamination">待审批</button>
+##<br>
+##<button id="updateExaminationExternal">更新考试外在信息</button>
+
+##<script>
+##    $(function () {
+##        //创建教师账号信息
+##        $("#addTeacher").on("click", function () {
+##            $.ajax({
+##                type: "POST",
+##                url: "/administrator/addTeacher",
+##                contentType: 'application/json',
+##                data: JSON.stringify({
+##                    //教师登陆信息
+##                    loginer: {
+##                        name: "teacherT",
+##                        password: "test"
+##                    },
+##                    //教师个人信息
+##                    teacher: {
+##                        name: "bb",
+##                        teacherNumber: 10086,
+##                        major: 1,
+##                        institute: 1,
+##                        phone: 110
+##                    }
+##                }),
+##                success: function (data) {
+##                    data = JSON.parse(data);
+##                    console.log(data)
+##                }
+##            });
+##        });
+##
+##        //删除教师账号信息
+##        $("#deleteTeacher").on("click", function () {
+##            $.ajax({
+##                type: "DELETE",
+##                url: "/administrator/deleteTeacher",
+##                contentType: 'application/json',
+##                data: JSON.stringify({
+##                    //需要删除的教师编号
+##                    teacherNumber: 10086
+##                }),
+##                success: function (data) {
+##                    data = JSON.parse(data);
+##                    console.log(data)
+##                }
+##            });
+##        });
+##
+##        //更新教师登陆信息
+##        $("#updateTeacherLoginer").on("click", function () {
+##            $.ajax({
+##                type: "PUT",
+##                url: "/administrator/updateTeacherLoginer",
+##                contentType: 'application/json',
+##                data: JSON.stringify({
+##                    //数据仅包含密码
+##                    teacherNumber: 10086,
+##                    loginer: {
+##                        name: "teacherGai",
+##                        password: "test"
+##                    }
+##                }),
+##                success: function (data) {
+##                    data = JSON.parse(data);
+##                    console.log(data)
+##                }
+##            });
+##        });
+##
+##        //更新教师个人信息
+##        $("#updateTeacherInfo").on("click", function () {
+##            $.ajax({
+##                type: "PUT",
+##                url: "/administrator/updateTeacherInfo",
+##                contentType: 'application/json',
+##                data: JSON.stringify({
+##                    //数据包含教师姓名，编号，专业，学院，电话号码
+##                    teacherNumber: 10086,
+##                    teacher: {
+##                        name: "cc",
+##                        teacherNumber: 10086,
+##                        major: 2,
+##                        institute: 2,
+##                        phone: 2
+##                    }
+##                }),
+##                success: function (data) {
+##                    data = JSON.parse(data);
+##                    console.log(data)
+##                }
+##            });
+##        });
+##
+##        //更新管理员个人登陆密码
+##        $("#updateAdministratorSelfLoginer").on("click", function () {
+##            $.ajax({
+##                type: "PUT",
+##                url: "/administrator/updateAdministratorSelfLoginer",
+##                contentType: 'application/json',
+##                data: JSON.stringify({
+##                    //数据仅包含密码
+##                    password: "123"
+##                }),
+##                success: function (data) {
+##                    data = JSON.parse(data);
+##                    console.log(data)
+##                }
+##            });
+##        });
+##
+##        //更新管理员个人信息
+##        $("#updateAdministratorSelfInfo").on("click", function () {
+##            $.ajax({
+##                type: "PUT",
+##                url: "/administrator/updateAdministratorSelfInfo",
+##                contentType: 'application/json',
+##                data: JSON.stringify({
+##                    //数据包含管理员，学院，电话号码
+##                    institute: 3,
+##                    phone: 3,
+##                }),
+##                success: function (data) {
+##                    data = JSON.parse(data);
+##                    console.log(data)
+##                }
+##            });
+##        });
+##
+##        //查询教师登陆信息
+##        $("#queryTeacherLoginer").on("click", function () {
+##            var name = "teacher";
+##            $.ajax({
+##                type: "GET",
+##                url: "/administrator/queryTeacherLoginer/" + name,
+##                success: function (data) {
+##                    if (data === "") {
+##                        console.log("403");
+##                    } else {
+##                        data = JSON.parse(data);
+##                        console.log(data)
+##                    }
+##                }
+##            });
+##        });
+##
+##        //查询教师个人信息
+##        $("#queryTeacherInfo").on("click", function () {
+##            var teacherNumber = "10086";
+##            $.ajax({
+##                type: "GET",
+##                url: "/administrator/queryTeacherInfo/" + teacherNumber,
+##                success: function (data) {
+##                    if (data === "") {
+##                        console.log("403");
+##                    } else {
+##                        data = JSON.parse(data);
+##                        console.log(data)
+##                    }
+##                }
+##            });
+##        });
+##
+##        //查询管理员自己登陆信息
+##        $("#queryAdministratorSelfLoginer").on("click", function () {
+##            $.ajax({
+##                type: "GET",
+##                url: "/administrator/queryAdministratorSelfLoginer",
+##                success: function (data) {
+##                    data = JSON.parse(data);
+##                    console.log(data)
+##                }
+##            });
+##        });
+##
+##        //查询管理员自己个人信息
+##        $("#queryAdministratorSelfInfo").on("click", function () {
+##            $.ajax({
+##                type: "GET",
+##                url: "/administrator/queryAdministratorSelfInfo",
+##                success: function (data) {
+##                    data = JSON.parse(data);
+##                    console.log(data)
+##                }
+##            });
+##        });
+##
+##        //对教师考试申请进行审批
+##        $("#approvalExamination").on("click", function () {
+##            var status = 1;
+##            if (status == 1) {
+##                $.ajax({
+##                    //通过便提交审批状态和ExaminationExternal数据
+##                    type: "POST",
+##                    url: "/administrator/approvalExamination",
+##                    contentType: 'application/json',
+##                    data: JSON.stringify({
+##                        //试卷id号及审批状态信息，考试开始时间，考试地点，监考老师编号，归属的学院
+##                        eiid: 5,
+##                        taskId: 14,
+##                        status: status,
+##                        examinationExternal: {
+##                            //考试事件，地点，监考老师，学院
+##                            examTime: "2018-07-02 10:00:00",
+##                            examPlace: "计算机学院",
+##                            teacherNumber: 10086,
+##                            institute: 1
+##                        }
+##                    }),
+##                    success: function (data) {
+##                        data = JSON.parse(data);
+##                        console.log(data)
+##                    }
+##                });
+##            } else {
+##                //不通过只需提交审批状态
+##                $.ajax({
+##                    type: "POST",
+##                    url: "/administrator/approvalExamination",
+##                    contentType: 'application/json',
+##                    data: JSON.stringify({
+##                        //试卷id号及审批状态信息
+##                        eiid: 5,
+##                        taskId: 14,
+##                        status: status,
+##                    }),
+##                    success: function (data) {
+##                        data = JSON.parse(data);
+##                        console.log(data)
+##                    }
+##                });
+##            }
+##        });
+##
+##        //查询待审批信息
+##        $("#queryNeedApprovalExamination").on("click", function () {
+##            $.ajax({
+##                type: "GET",
+##                url: "/administrator/queryNeedApprovalExamination",
+##                success: function (data) {
+##                    data = JSON.parse(data);
+##                    console.log(data)
+##                }
+##            });
+##        });
+##
+##        //更新考试外在信息
+##        $("#updateExaminationExternal").on("click", function () {
+##            $.ajax({
+##                type: "PUT",
+##                url: "/administrator/updateExaminationExternal",
+##                contentType: 'application/json',
+##                data: JSON.stringify({
+##                    eiid: 5,
+##                    examinationExternal: {
+##                        //考试事件，地点，监考老师，学院
+##                        examTime: "2019-07-02 10:00:00",
+##                        examPlace: "计算机学院",
+##                        teacherNumber: 10086,
+##                        institute: 1
+##                    }
+##                }),
+##                success: function (data) {
+##                    data = JSON.parse(data);
+##                    console.log(data)
+##                }
+##            });
+##        });
+##
+##    });
+##</script>

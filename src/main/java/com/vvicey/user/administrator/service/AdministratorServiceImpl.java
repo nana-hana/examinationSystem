@@ -2,6 +2,8 @@ package com.vvicey.user.administrator.service;
 
 import com.vvicey.user.administrator.dao.AdministratorMapper;
 import com.vvicey.user.administrator.entity.Administrator;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

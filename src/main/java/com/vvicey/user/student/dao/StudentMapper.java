@@ -1,6 +1,9 @@
 package com.vvicey.user.student.dao;
 
 import com.vvicey.user.student.entity.Student;
+import com.vvicey.user.tempEntity.StudentLoginer;
+
+import java.util.List;
 
 /**
  * @Author nana
@@ -15,9 +18,9 @@ public interface StudentMapper {
 
     void insertStudentRole(int uid);
 
-    Student selectByStudentNumber(int studentNumber);
+    List<StudentLoginer> selectAllStudent();
 
-    Student selectByUid(int uid);
+    StudentLoginer selectStudentSelf(int uid);
 
     int updateByStudentNumberSelective(Student student);
 

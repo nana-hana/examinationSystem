@@ -6,14 +6,18 @@
 $(function () {
     var verify = true;
     $("#submitId").on("click", function () {
-        var user = $("#user").val();
-        var pwd = $("#pwd").val();
+        var _user = $("#user");
+        var _pwd = $("#pwd");
+        var user = _user.val();
+        var pwd = _pwd.val();
+        var userParent = _user.parent();
+        var pwdParent = _pwd.parent();
         if (user.length === 0) {
-            $("#user_alert").css("visibility", "visible");
+            userParent.addClass("has-error");
             verify = false;
         }
         if (pwd.length === 0) {
-            $("#pwd_alert").text("请输入密码").css("visibility", "visible");
+            pwdParent.addClass("has-error");
             verify = false;
         }
         if (verify) {
@@ -23,31 +27,31 @@ $(function () {
                 data: {"username": user, "password": pwd},
                 success: function (data) {
                     if (data !== "") {
+                        toastr.success('登陆成功');
                         data = JSON.parse(data);
                         switch (data.roleList[0].rid) {
                             case 0:
-                                setTimeout("window.location.href='administrator'", 2000);
+                                setTimeout("window.location.href = 'administrator'", 2000);
                                 break;
                             case 1:
-                                setTimeout("window.location.href='teacher'", 2000);
+                                setTimeout("window.location.href = 'teacher'", 2000);
                                 break;
                             case 2:
-                                setTimeout("window.location.href='student'", 2000);
+                                setTimeout("window.location.href = 'student'", 2000);
                                 break;
                         }
                     } else {
-                        $("#pwd_alert").text("用户名密码不匹配，请重新输入").css("visibility", "visible");
+                        toastr.error("账号密码错误");
+                        userParent.addClass("has-error");
+                        pwdParent.addClass("has-error");
                     }
                 }
             });
         }
     });
-    $("#user").on("click", function () {
-        $("#user_alert").css("visibility", "hidden");
-        verify = true;
-    });
-    $("#pwd").on("click", function () {
-        $("#pwd_alert").css("visibility", "hidden");
+
+    $(".form-group").on("click", function () {
+        $(this).removeClass("has-error");
         verify = true;
     });
 });

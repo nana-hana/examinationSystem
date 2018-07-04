@@ -2,9 +2,12 @@ package com.vvicey.user.student.service;
 
 import com.vvicey.user.student.dao.StudentMapper;
 import com.vvicey.user.student.entity.Student;
+import com.vvicey.user.tempEntity.StudentLoginer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @Author nana
@@ -33,35 +36,33 @@ public class StudentServiceImpl implements StudentService {
      * 插入学生个人信息(包含创建学生身份)
      *
      * @param student 要插入的学生信息
-     * @return 返回插入成功与否
      */
     @Override
     @Transactional
-    public int createStudentInfo(Student student) {
+    public void createStudentInfo(Student student) {
         studentMapper.insertStudentRole(student.getUid());
-        return studentMapper.insertSelective(student);
+        studentMapper.insertSelective(student);
     }
 
     /**
-     * 查询学生个人信息
+     * 查询所有学生
      *
-     * @param studentNumber 学生学号
      * @return 返回查询的学生数据
      */
     @Override
-    public Student queryStudentInfoByStudentNumber(int studentNumber) {
-        return studentMapper.selectByStudentNumber(studentNumber);
+    public List<StudentLoginer> queryAllStudent() {
+        return studentMapper.selectAllStudent();
     }
 
     /**
-     * 查询学生个人信息
+     * 查询登陆学生自己
      *
-     * @param uid 用户id
-     * @return 返回查询的学生数据
+     * @param uid 传入uid
+     * @return 返回学生数据
      */
     @Override
-    public Student queryStudentInfoByUid(int uid) {
-        return studentMapper.selectByUid(uid);
+    public StudentLoginer queryStudentSelf(int uid) {
+        return studentMapper.selectStudentSelf(uid);
     }
 
     /**

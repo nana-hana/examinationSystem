@@ -61,4 +61,15 @@ public class LoginController {
         request.getSession().setAttribute("loginerInfo", loginer);
         return loginer;
     }
+
+    /**
+     * 账号登出
+     *
+     * @return 返回登陆界面
+     */
+    @RequestMapping(value = "loginOut", method = RequestMethod.GET)
+    public String loginOut() {
+        SecurityUtils.getSubject().getSession().stop();
+        return "login";
+    }
 }
