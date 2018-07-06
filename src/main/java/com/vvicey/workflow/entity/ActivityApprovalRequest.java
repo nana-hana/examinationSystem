@@ -16,7 +16,7 @@ public class ActivityApprovalRequest implements Serializable {
     private Integer submitTeacherNumber;//申请老师编号
     private String comments;//申请信息
     private Integer eiid;//相关考试事件编号
-    private String taskId;//(非数据库)activity传递数据使用
+    private String taskId;//试卷任务id
 
     public Integer getId() {
         return id;

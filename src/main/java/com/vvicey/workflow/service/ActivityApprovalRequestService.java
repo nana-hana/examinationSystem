@@ -1,6 +1,7 @@
 package com.vvicey.workflow.service;
 
 import com.vvicey.examination.entity.ExaminationInternal;
+import com.vvicey.user.tempEntity.ActivityInternal;
 import com.vvicey.workflow.entity.ActivityApprovalRequest;
 
 import java.util.List;
@@ -13,13 +14,15 @@ import java.util.Map;
  */
 public interface ActivityApprovalRequestService {
 
-    void createRequest(ExaminationInternal examinationInternal, ActivityApprovalRequest activityApprovalRequest);
+    ActivityInternal createRequest(ExaminationInternal examinationInternal, ActivityApprovalRequest activityApprovalRequest, int uid);
 
-    void updateRequest(int taskId, ExaminationInternal examinationInternal);
+    ActivityInternal updateRequest(String taskId, ExaminationInternal examinationInternal);
+
+    void deleteRequest(String taskId);
 
     void approve(Map<String, Object> statusAndExaminationExternal);
 
-    List<Map<String, Object>> approvalQueryList(String username);
+    List<ActivityInternal> queryListRequest(int uid);
 
-    List<Map<String, Object>> queryListRequest(String username);
+    List<ActivityInternal> approvalQueryList();
 }

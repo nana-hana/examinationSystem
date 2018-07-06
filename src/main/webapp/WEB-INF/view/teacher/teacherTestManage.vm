@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>在线考试系统</title>
+
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/static/plugins/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="/static/dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/static/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="/static/plugins/toastr/toastr.css"/>
+    <link rel="stylesheet" href="/static/plugins/bootstrap3-editable/css/bootstrap-editable.css"/>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+    <script src="/static/plugins/jquery/jquery-3.3.1.min.js"></script>
+    <script src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/plugins/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="/static/plugins/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="/static/dist/js/adminlte.min.js"></script>
+    <script src="/static/dist/js/demo.js"></script>
+    <script src="/static/dist/js/app.js"></script>
+    <script src="/static/plugins/toastr/toastr.min.js"></script>
+    <script src="/static/script/load_header.js"></script>
+    <script src="/static/script/load_footer.js"></script>
+    <script src="/static/script/teacher/load_teacher_menu.js"></script>
+    <script src="/static/script/teacher/teacherAuthority.js"></script>
+    <script src="/static/script/toastrSet.js"></script>
+    <script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <script src="/static/plugins/fastclick/fastclick.js"></script>
+    <script src="/static/plugins/bootstrap3-editable/js/bootstrap-editable.js"></script>
+    <script src="/static/script/bootstrapDialogPackage.js"></script>
+    <script>
+        $(function () {
+            $('#examinationTable').DataTable({
+                "aoColumnDefs": [{"bSortable": false, "aTargets": [0, 13]}],//禁用排序的列0开始
+                "aaSorting": [[0, "asc"]]//默认排序0开开始
+            });
+        })
+        window.onload = function () {
+            $('#thirdLi').addClass("active");
+        }
+    </script>
+    <style>
+        .content-wrapper {
+            background-color: white;
+        }
+    </style>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <header></header>
+    <aside></aside>
+    <div class="content-wrapper">
+        <section class="content-header text-center">
+            <h1>考试申请信息管理</h1>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">考试申请信息</h3>
+                            <button type="button" class="btn btn-info pull-right" data-toggle="modal"
+                                    data-target="#addTestModal">
+                                创建
+                            </button>
+                        </div>
+                        <div class="box-body">
+                            <table id="examinationTable" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>单选题数量</th>
+                                    <th>单选题分值</th>
+                                    <th>多选题数量</th>
+                                    <th>多选题分值</th>
+                                    <th>判断题数量</th>
+                                    <th>判断题分值</th>
+                                    <th>试卷难度系数</th>
+                                    <th>试卷生成类型</th>
+                                    <th>考试科目</th>
+                                    <th>参考班级</th>
+                                    <th>考试持续事件</th>
+                                    <th>审核状态</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                #foreach($activityInternal in $activityInternals)
+                                    <tr>
+                                        <td>$foreach.count</td>
+                                        <td><a href="javascript:void(0)"
+                                               class="editable_singleNumber">$activityInternal.singleNumber</a></td>
+                                        <td><a href="javascript:void(0)"
+                                               class="editable_singleScore">$activityInternal.singleScore</a></td>
+                                        <td><a href="javascript:void(0)"
+                                               class="editable_multipleNumber">$activityInternal.multipleNumber</a></td>
+                                        <td><a href="javascript:void(0)"
+                                               class="editable_multipleScore">$activityInternal.multipleScore</a></td>
+                                        <td><a href="javascript:void(0)"
+                                               class="editable_checkingNumber">$activityInternal.checkingNumber</a></td>
+                                        <td><a href="javascript:void(0)"
+                                               class="editable_checkingScore">$activityInternal.checkingScore</a></td>
+                                        <td><a href="javascript:void(0)"
+                                               class="editable_paperLevel">$activityInternal.paperLevel</a></td>
+                                        <td><a href="javascript:void(0)"
+                                               class="editable_paperKind">$activityInternal.paperKind</a></td>
+                                        <td><a href="javascript:void(0)"
+                                               class="editable_subjectId">$activityInternal.subjectId</a></td>
+                                        <td><a href="javascript:void(0)"
+                                               class="editable_examinationStudentClass">$activityInternal.studentClass</a>
+                                        </td>
+                                        <td><a href="javascript:void(0)"
+                                               class="editable_examinationTime">$activityInternal.examinationTime</a>
+                                        </td>
+                                        <td class="editable_status">
+                                            #if($activityInternal.status==0)
+                                                <span class="label label-warning">审核中</span>
+                                            #elseif($activityInternal.status==1)
+                                                <span class="label label-success">通过</span>
+                                            #elseif($activityInternal.status==2)
+                                                <span class="label label-danger">拒绝</span>
+                                            #end
+                                        </td>
+                                        <input type="hidden" value=$activityInternal.taskId>
+                                        <td>
+                                            #if($activityInternal.status==0)
+                                                <button type="button" class="btn btn-warning update_examination">
+                                                    更新
+                                                </button>
+                                                <button type="button" class="btn btn-danger delete_examination">
+                                                    删除
+                                                </button>
+                                            #end
+                                        </td>
+                                    </tr>
+                                #end
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="addTestModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                考试申请
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="box">
+                                <table class="table table-bordered table-striped">
+                                    <tr>
+                                        <th class="col-sm-3">单选题数量*</th>
+                                        <td id="editable_singleNumber" class="col-sm-9">0</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">单选题分值*</th>
+                                        <td id="editable_singleScore" class="col-sm-9">0</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">多选题数量*</th>
+                                        <td id="editable_multipleNumber" class="col-sm-9">0</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">多选题分值*</th>
+                                        <td id="editable_multipleScore" class="col-sm-9">0</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">判断题数量*</th>
+                                        <td id="editable_checkingNumber" class="col-sm-9">0</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">判断题分值*</th>
+                                        <td id="editable_checkingScore" class="col-sm-9">0</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">试卷难度系数*</th>
+                                        <td id="editable_paperLevel" class="col-sm-9">0</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">试卷生成类型*</th>
+                                        <td id="editable_paperKind" class="col-sm-9">0</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">考试科目*</th>
+                                        <td id="editable_subjectId" class="col-sm-9">0</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">参考班级*</th>
+                                        <td id="editable_examinationStudentClass" class="col-sm-9">0</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">考试持续事件*</th>
+                                        <td id="editable_examinationTime" class="col-sm-9">0</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">申请信息</th>
+                                        <td id="editable_comments" class="col-sm-9">0</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                            </button>
+                            <button type="submit" class="btn btn-primary" id="submitAddExamination">
+                                提交
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer></footer>
+</div>
+</body>
+</html>

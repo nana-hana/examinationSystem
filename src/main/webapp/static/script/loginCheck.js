@@ -31,13 +31,13 @@ $(function () {
                         data = JSON.parse(data);
                         switch (data.roleList[0].rid) {
                             case 0:
-                                setTimeout("window.location.href = 'administrator'", 2000);
+                                setTimeout("window.location.href = '/administrator/administratorTeacherManage'", 2000);
                                 break;
                             case 1:
-                                setTimeout("window.location.href = 'teacher'", 2000);
+                                setTimeout("window.location.href = '/teacher/teacherStudentManage'", 2000);
                                 break;
                             case 2:
-                                setTimeout("window.location.href = 'student'", 2000);
+                                setTimeout("window.location.href = '/student/studentSelfInfo'", 2000);
                                 break;
                         }
                     } else {

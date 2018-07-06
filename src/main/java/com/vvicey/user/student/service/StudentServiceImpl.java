@@ -81,11 +81,10 @@ public class StudentServiceImpl implements StudentService {
      * 更新学生个人信息(根据账号id)
      *
      * @param student 学生数据
-     * @return 返回更新结果
      */
     @Override
     @Transactional
-    public int updateStudentInfoByUid(Student student) {
-        return studentMapper.updateByUidSelective(student);
+    public void updateStudentInfoByUid(Student student) {
+        studentMapper.updateByUidSelective(student);
     }
 }

@@ -2,11 +2,14 @@ package com.vvicey.user.administrator.service;
 
 import com.vvicey.user.administrator.dao.AdministratorMapper;
 import com.vvicey.user.administrator.entity.Administrator;
+import com.vvicey.user.tempEntity.AdministratorLoginer;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @Author nana
@@ -45,25 +48,24 @@ public class AdministratorServiceImpl implements AdministratorService {
     }
 
     /**
-     * 查询管理员个人信息
+     * 查询所有管理员
      *
-     * @param name 管理员姓名
      * @return 返回查询的管理员数据
      */
     @Override
-    public Administrator queryAdministratorInfoByName(String name) {
-        return administratorMapper.selectByAdministratorName(name);
+    public List<AdministratorLoginer> queryAllAdministrator() {
+        return administratorMapper.selectAllAdministrator();
     }
 
     /**
-     * 查询管理员个人信息
+     * 查询登陆管理员自己
      *
      * @param uid 用户id
-     * @return 返回查询的管理员数据
+     * @return 返回登陆管理员数据
      */
     @Override
-    public Administrator queryAdministratorInfoByUid(int uid) {
-        return administratorMapper.selectByUid(uid);
+    public AdministratorLoginer queryAdministratorSelf(int uid) {
+        return administratorMapper.selectAdministratorSelf(uid);
     }
 
     /**
@@ -82,11 +84,10 @@ public class AdministratorServiceImpl implements AdministratorService {
      * 更新管理员个人信息(根据账号id)
      *
      * @param administrator 管理员数据
-     * @return 返回更新成功与否
      */
     @Override
     @Transactional
-    public int updateAdministratorInfoByUid(Administrator administrator) {
-        return administratorMapper.updateByUidSelective(administrator);
+    public void updateAdministratorInfoByUid(Administrator administrator) {
+        administratorMapper.updateByUidSelective(administrator);
     }
 }

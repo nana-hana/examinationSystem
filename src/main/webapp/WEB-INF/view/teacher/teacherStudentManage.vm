@@ -39,8 +39,11 @@
             $('#studentTable').DataTable({
                 "aoColumnDefs": [{"bSortable": false, "aTargets": [0, 8]}],//禁用排序的列0开始
                 "aaSorting": [[0, "asc"]]//默认排序0开开始
-            })
+            });
         })
+        window.onload = function () {
+            $('#firstLi').addClass("active");
+        }
     </script>
     <style>
         .content-wrapper {
@@ -196,139 +199,3 @@
 </div>
 </body>
 </html>
-##            //更新教师个人登陆密码
-##            $("#updateTeacherSelfLoginer").on("click", function () {
-##                $.ajax({
-##                    type: "PUT",
-##                    url: "/teacher/updateTeacherLoginer",
-##                    contentType: 'application/json',
-##                    data: JSON.stringify({
-##                        //数据仅包含密码
-##                        password: "123"
-##                    }),
-##                    success: function (data) {
-##                        data = JSON.parse(data);
-##                        console.log(data)
-##                    }
-##                });
-##            });
-##
-##            //更新教师个人信息
-##            $("#updateTeacherSelfInfo").on("click", function () {
-##                $.ajax({
-##                    type: "PUT",
-##                    url: "/teacher/updateTeacherInfo",
-##                    contentType: 'application/json',
-##                    data: JSON.stringify({
-##                        //数据包含学生班级，专业，学院，电话号码
-##                        major: 3,
-##                        institute: 3,
-##                        phone: 3,
-##                    }),
-##                    success: function (data) {
-##                        data = JSON.parse(data);
-##                        console.log(data)
-##                    }
-##                });
-##            });
-##
-##            //查询教师自己登陆信息
-##            $("#queryTeacherSelfLoginer").on("click", function () {
-##                $.ajax({
-##                    type: "GET",
-##                    url: "/teacher/queryTeacherSelfLoginer",
-##                    success: function (data) {
-##                        data = JSON.parse(data);
-##                        console.log(data)
-##                    }
-##                });
-##            });
-##
-##            //查询教师自己个人信息
-##            $("#queryTeacherSelfInfo").on("click", function () {
-##                $.ajax({
-##                    type: "GET",
-##                    url: "/teacher/queryTeacherSelfInfo",
-##                    success: function (data) {
-##                        data = JSON.parse(data);
-##                        console.log(data)
-##                    }
-##                });
-##            });
-##
-##            //创建考试事件
-##            $("#createExamination").on("click", function () {
-##                $.ajax({
-##                    type: "POST",
-##                    url: "/teacher/createExamination",
-##                    contentType: 'application/json',
-##                    data: JSON.stringify({
-##                        activityApprovalRequest: {
-##                            comments: "测试一下"
-##                        },
-##                        examinationInternal: {
-##                            //数据包含单选、多选、判断题的总分值和数量，试卷难度，试卷生成类型，科目id，考试持续时间
-##                            singleNumber: 1,
-##                            singleScore: 1,
-##                            multipleNumber: 1,
-##                            multipleScore: 1,
-##                            checkingNumber: 1,
-##                            checkingScore: 1,
-##                            paperLevel: 1,
-##                            paperKind: 1,
-##                            subjectId: 1,
-##                            studentClass: 1,
-##                            examinationTime: 120
-##                        }
-##                    }),
-##                    success: function (data) {
-##                        data = JSON.parse(data);
-##                        console.log(data)
-##                    }
-##                });
-##            });
-##
-##            //更新考试事件
-##            $("#updateExamination").on("click", function () {
-##                $.ajax({
-##                    type: "PUT",
-##                    url: "/teacher/updateExamination",
-##                    contentType: 'application/json',
-##                    data: JSON.stringify({
-##                        //根据eiid查询考试事件，更新数据数据包含单选、多选、判断题的总分值和数量，试卷难度，试卷生成类型，科目id，考试持续事件
-##                        eiid: 7,
-##                        taskId: 409,
-##                        examination: {
-##                            singleNumber: 2,
-##                            singleScore: 2,
-##                            multipleNumber: 2,
-##                            multipleScore: 2,
-##                            checkingNumber: 2,
-##                            checkingScore: 2,
-##                            paperLevel: 2,
-##                            paperKind: 2,
-##                            subjectId: 2,
-##                            studentClass: 2,
-##                            examinationTime: 120
-##                        }
-##                    }),
-##                    success: function (data) {
-##                        data = JSON.parse(data);
-##                        console.log(data)
-##                    }
-##                });
-##            });
-##
-##            //查询申请的考试事件
-##            $("#queryExamination").on("click", function () {
-##                $.ajax({
-##                    type: "GET",
-##                    url: "/teacher/queryExaminationSelf",
-##                    success: function (data) {
-##                        data = JSON.parse(data);
-##                        console.log(data)
-##                    }
-##                });
-##            });
-##        });
-##    </script>

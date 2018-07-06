@@ -9,7 +9,95 @@ $(function () {
     addTeacher();
     deleteTeacher();
     updateTeacher();
+    updateAdministratorInfo();
+    updateAdministratorPassword();
+
+    passRequest();
+    refuseRequest();
+
 });
+
+//审批请求通过
+function passRequest() {
+    $(".pass_button").on("click", function () {
+        var taskId = $(this).parent().siblings("input").val();
+        var _td = $(this).parent();
+        var status = 1;
+        var _modal = $("#addOtherModal");
+        _modal.modal();
+        $("#submitApprovalExamination").on("click", function () {
+            var examTime = $('#editable_examTime').text();
+            var examPlace = $('#editable_examPlace').text();
+            var teacherNumber = $('#editable_examinationTeacherNumber').text();
+            var institute = $('#editable_examinationInstitute').text();
+            Ewin.confirm({message: "确认要进行该操作吗？"}).on(function (e) {
+                if (!e) {
+                    return;
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "/administrator/approvalRequest",
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        //审批状态信息，考试开始时间，考试地点，监考老师编号，归属的学院
+                        taskId: taskId,
+                        status: status,
+                        examinationExternal: {
+                            //考试事件，地点，监考老师，学院
+                            examTime: examTime,
+                            examPlace: examPlace,
+                            teacherNumber: teacherNumber,
+                            institute: institute
+                        }
+                    }),
+                    success: function () {
+                        _modal.modal('hide');
+                        _td.empty();
+                        _td.append("<span class='label label-success'>通过</span>");
+                        toastr.success("更新成功");
+                    },
+                    error: function () {
+                        _modal.modal('hide');
+                        toastr.error("更新失败");
+                    }
+                });
+            });
+        });
+    });
+}
+
+//审批请求拒绝
+function refuseRequest() {
+    $(".refuse_button").on("click", function () {
+        var taskId = $(this).parent().siblings("input").val();
+        var _td = $(this).parent();
+        var status = 2;//代表拒绝
+        Ewin.confirm({message: "确认要进行该操作吗？"}).on(function (e) {
+            if (!e) {
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: "/administrator/approvalRequest",
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    //审批状态信息，考试开始时间，考试地点，监考老师编号，归属的学院
+                    taskId: taskId,
+                    status: status,
+                    examinationExternal: {}
+                }),
+                success: function () {
+                    toastr.success("操作成功");
+                    _td.empty();
+                    _td.append("<span class='label label-danger'>拒绝</span>");
+                },
+                error: function () {
+                    toastr.error("操作失败");
+                }
+            });
+        });
+    });
+}
 
 //更新教师
 function updateTeacher() {
@@ -194,6 +282,79 @@ function addTeacher() {
     });
 }
 
+//更新管理员信息
+function updateAdministratorInfo() {
+    $(".update_administrator_info").on("click", function () {
+        var _name = $("#editable_name");
+        var _institute = $("#editable_institute");
+        var _phone = $("#editable_phone");
+
+        var name = _name.text();
+        var institute = _institute.text();
+        var phone = _phone.text();
+
+        Ewin.confirm({message: "确认要更新选择的数据吗？"}).on(function (e) {
+            if (!e) {
+                return;
+            }
+            $.ajax({
+                type: "PUT",
+                url: "/administrator/updateAdministratorInfo/",
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    name: name,
+                    institute: institute,
+                    phone: phone
+                }),
+                success: function (data) {
+                    toastr.success("更新成功");
+                    data = JSON.parse(data);
+                    _name.text(data.name);
+                    _institute.text(data.institute);
+                    _phone.text(data.phone);
+                },
+                error: function () {
+                    toastr.error("更新失败");
+                }
+            });
+        });
+    });
+}
+
+//更新管理员密码
+function updateAdministratorPassword() {
+    $(".update_administrator_password").on("click", function () {
+
+        var oldPassword = $("#editable_old_password").text();
+        var newPassword = $("#editable_new_password").text();
+
+        Ewin.confirm({message: "确认要修改密码吗？"}).on(function (e) {
+            if (!e) {
+                return;
+            }
+            $.ajax({
+                type: "PUT",
+                url: "/administrator/updateAdministratorLoginer",
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: oldPassword, //username做老密码校验用
+                    password: newPassword  //新密码
+                }),
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data === 200) {
+                        toastr.success("修改成功");
+                        $("#editable_old_password").text('empty');
+                        $("#editable_new_password").text('empty');
+                    } else {
+                        toastr.error("修改失败");
+                    }
+                }
+            });
+        });
+    });
+}
+
 //表格编辑
 function lineEditable() {
     $('.editable_username').editable({
@@ -255,6 +416,113 @@ function lineEditable() {
     $('.editable_phone').editable({
         mode: "inline",
         validate: function (value) {
+            if (isNaN(value)) {
+                return '必须是数字';
+            }
+        }
+    });
+
+    //管理员信息表格
+    $('#editable_old_password').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#editable_new_password').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#editable_name').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#editable_teacherNumber').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+            if (isNaN(value)) {
+                return '必须是数字';
+            }
+        }
+    });
+    $('#editable_major').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+            if (isNaN(value)) {
+                return '必须是数字';
+            }
+        }
+    });
+    $('#editable_institute').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+            if (isNaN(value)) {
+                return '必须是数字';
+            }
+        }
+    });
+    $('#editable_phone').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (isNaN(value)) {
+                return '必须是数字';
+            }
+        }
+    });
+
+    //考试外在信息表格
+    $('#editable_examTime').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#editable_examPlace').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#editable_examinationTeacherNumber').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+            if (isNaN(value)) {
+                return '必须是数字';
+            }
+        }
+    });
+    $('#editable_examinationInstitute').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
             if (isNaN(value)) {
                 return '必须是数字';
             }

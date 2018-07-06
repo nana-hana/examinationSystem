@@ -1,6 +1,9 @@
 package com.vvicey.user.administrator.service;
 
 import com.vvicey.user.administrator.entity.Administrator;
+import com.vvicey.user.tempEntity.AdministratorLoginer;
+
+import java.util.List;
 
 /**
  * @Author nana
@@ -13,11 +16,11 @@ public interface AdministratorService {
 
     int deleteAdministrator(int uid);
 
-    Administrator queryAdministratorInfoByName(String name);
+    List<AdministratorLoginer> queryAllAdministrator();
 
-    Administrator queryAdministratorInfoByUid(int uid);
+    AdministratorLoginer queryAdministratorSelf(int uid);
 
     int updateAdministratorInfoByName(Administrator administrator);
 
-    int updateAdministratorInfoByUid(Administrator administrator);
+    void updateAdministratorInfoByUid(Administrator administrator);
 }

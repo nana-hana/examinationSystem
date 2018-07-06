@@ -8,20 +8,35 @@
     <result column="phone" property="phone" jdbcType="INTEGER" />
     <result column="uid" property="uid" jdbcType="INTEGER" />
   </resultMap>
+  <resultMap id="AdministratorLoginerResultMap" type="com.vvicey.user.tempEntity.AdministratorLoginer" >
+    <id column="aid" property="aid" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="institute" property="institute" jdbcType="INTEGER" />
+    <result column="phone" property="phone" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="username" property="username" jdbcType="INTEGER"/>
+    <result column="password" property="password" jdbcType="INTEGER"/>
+  </resultMap>
   <sql id="Base_Column_List" >
-    aid, name, institute, phone, uid
+    aid, name, institute, phone, a.uid
   </sql>
-  <select id="selectByAdministratorName" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from administrator
-    where name = #{name,jdbcType=VARCHAR}
+  <sql id="Loginer_Column_List">
+      l.uid,username, password
+    </sql>
+  <select id="selectAllAdministrator" resultMap="AdministratorLoginerResultMap">
+      select
+      <include refid="Base_Column_List"/>,
+      <include refid="Loginer_Column_List"/>
+      from administrator a
+      left join login l on a.uid = l.uid
   </select>
-  <select id="selectByUid" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select
-    <include refid="Base_Column_List" />
-    from administrator
-    where uid = #{uid,jdbcType=INTEGER}
+  <select id="selectAdministratorSelf" resultMap="AdministratorLoginerResultMap">
+      select
+      <include refid="Base_Column_List"/>,
+      <include refid="Loginer_Column_List"/>
+      from administrator a
+      left join login l on a.uid = l.uid
+      where a.uid = #{uid,jdbcType=INTEGER}
   </select>
   <delete id="deleteByUid" parameterType="java.lang.Integer" >
     delete login,role_login,administrator

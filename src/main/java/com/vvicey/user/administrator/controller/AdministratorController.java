@@ -2,6 +2,7 @@ package com.vvicey.user.administrator.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.vvicey.common.information.Status;
+import com.vvicey.common.utils.MD5Utils;
 import com.vvicey.examination.entity.ExaminationExternal;
 import com.vvicey.examination.service.ExaminationExternalService;
 import com.vvicey.user.administrator.entity.Administrator;
@@ -10,6 +11,8 @@ import com.vvicey.user.login.entity.Loginer;
 import com.vvicey.user.login.service.LoginService;
 import com.vvicey.user.teacher.entity.Teacher;
 import com.vvicey.user.teacher.service.TeacherService;
+import com.vvicey.user.tempEntity.ActivityInternal;
+import com.vvicey.user.tempEntity.AdministratorLoginer;
 import com.vvicey.user.tempEntity.TeacherLoginer;
 import com.vvicey.workflow.service.ActivityApprovalRequestService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -51,11 +54,50 @@ public class AdministratorController {
      *
      * @return 管理员界面文件名
      */
-    @RequestMapping
-    public String toAdministratorPage(Model model) {
+    @RequestMapping(value = "administratorTeacherManage", method = RequestMethod.GET)
+    public String administratorTeacherManage(Model model) {
         List<TeacherLoginer> teacherLoginers = teacherService.queryAllTeacher();
         model.addAttribute("teacherLoginers", teacherLoginers);
         return "/administrator/administratorTeacherManage";
+    }
+
+    /**
+     * 跳转管理员个人信息界面，获取登陆管理员信息
+     *
+     * @return 管理员个人数据
+     */
+    @RequestMapping(value = "administratorSelfInfo", method = RequestMethod.GET)
+    public String administratorSelfInfo(Model model, HttpServletRequest request) {
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        AdministratorLoginer administratorLoginer = administratorService.queryAdministratorSelf(loginer.getUid());
+        model.addAttribute("administratorLoginer", administratorLoginer);
+        return "/administrator/administratorSelfInfo";
+    }
+
+    /**
+     * 跳转管理员考试管理界面，获取待审批信息
+     *
+     * @return 待审批信息
+     */
+    @RequestMapping(value = "administratorTestManage", method = RequestMethod.GET)
+    public String administratorTestManage(Model model) {
+        List<ActivityInternal> approvalList = activityApprovalRequestService.approvalQueryList();
+        model.addAttribute("approvalList", approvalList);
+        return "/administrator/AdministratorTestManage";
+    }
+
+    /**
+     * 更新ExaminationInternal审核状态信息，创建ExaminationExternal信息(创建)。
+     * 前端传值的时候判断操作人员做出的操作(1通过，2不通过)，如果是1就要附带传ExaminationExternal的参数，
+     * 否则只需要传eiid和approvalStatus。
+     *
+     * @param statusAndExaminationExternal 审批状态和需要创建的信息
+     */
+    @RequestMapping(value = "approvalRequest", method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public void approvalRequest(@RequestBody Map<String, Object> statusAndExaminationExternal) {
+        activityApprovalRequestService.approve(statusAndExaminationExternal);
     }
 
     /**
@@ -118,21 +160,23 @@ public class AdministratorController {
     /**
      * 更新管理员自身登陆信息(个人)
      *
-     * @param request  要更新的管理员账号信息
-     * @param password 需要更新的密码
+     * @param request 要更新的管理员账号信息
+     * @param local   需要更新的密码封装
      * @return 返回更新失败或成功的状态信息
      * @throws UnsupportedEncodingException 编码不支持
      * @throws NoSuchAlgorithmException     请求的加密算法无法实现
      */
-    @RequestMapping(value = "updateAdministratorSelfLoginer", method = RequestMethod.PUT)
+    @RequestMapping(value = "updateAdministratorLoginer", method = RequestMethod.PUT)
     @ResponseBody
     @Transactional
-    public int updateAdministratorLoginer(HttpServletRequest request, @RequestBody Loginer password) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public int updateAdministratorLoginer(HttpServletRequest request, @RequestBody Loginer local) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
-        loginer.setPassword(password.getPassword());
-        if (loginService.updateUserByUid(loginer) == 0) {
+        String remotePassword = loginService.queryUser(loginer.getUsername()).getPassword();
+        if (!MD5Utils.encryptPassword(local.getUsername()).equals(remotePassword)) {
             return Status.FAIL.getSign();
         }
+        loginer.setPassword(local.getPassword());
+        loginService.updateUserByUid(loginer);
         return Status.SUCCESS.getSign();
     }
 
@@ -141,75 +185,14 @@ public class AdministratorController {
      *
      * @param request       需要更新的管理员
      * @param administrator 要更新的管理员个人信息
-     * @return 返回更新失败或成功的状态信息
      */
-    @RequestMapping(value = "updateAdministratorSelfInfo", method = RequestMethod.PUT)
+    @RequestMapping(value = "updateAdministratorInfo", method = RequestMethod.PUT)
     @ResponseBody
     @Transactional
-    public int updateAdministratorInfo(HttpServletRequest request, @RequestBody Administrator administrator) {
+    public void updateAdministratorInfo(HttpServletRequest request, @RequestBody Administrator administrator) {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         administrator.setUid(loginer.getUid());
-        int result = administratorService.updateAdministratorInfoByUid(administrator);
-        if (result == 0) {
-            return Status.FAIL.getSign();
-        }
-        return Status.SUCCESS.getSign();
-    }
-
-    /**
-     * 查询管理员登陆信息(个人)
-     *
-     * @param request 管理员账号
-     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的管理员信息
-     */
-    @RequestMapping(value = "queryAdministratorSelfLoginer", method = RequestMethod.GET)
-    @ResponseBody
-    public Loginer queryAdministratorSelfLoginer(HttpServletRequest request) {
-        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
-        loginer = loginService.queryUser(loginer.getUsername());
-        return loginer;
-    }
-
-    /**
-     * 查询管理员个人信息(个人)
-     *
-     * @param request 管理员uid
-     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的管理员信息
-     */
-    @RequestMapping(value = "queryAdministratorSelfInfo", method = RequestMethod.GET)
-    @ResponseBody
-    public Administrator queryAdministratorSelfInfo(HttpServletRequest request) {
-        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
-        return administratorService.queryAdministratorInfoByUid(loginer.getUid());
-    }
-
-    /**
-     * 更新ExaminationInternal审核状态信息，创建ExaminationExternal信息(创建)。
-     * 前端传值的时候判断操作人员做出的操作(1通过，2不通过)，如果是1就要附带传ExaminationExternal的参数，
-     * 否则只需要传eiid和approvalStatus。
-     *
-     * @param statusAndExaminationExternal 审批状态和需要创建的信息
-     * @return 返回增添失败或成功的状态信息
-     */
-    @RequestMapping(value = "approvalExamination", method = RequestMethod.POST)
-    @ResponseBody
-    @Transactional
-    public int approvalExamination(@RequestBody Map<String, Object> statusAndExaminationExternal) {
-        activityApprovalRequestService.approve(statusAndExaminationExternal);
-        return Status.SUCCESS.getSign();
-    }
-
-    /**
-     * 查询管理员个人信息(个人)
-     *
-     * @param request 管理员uid
-     * @return 返回查询失败或成功的状态信息，成功返回状态信息及查询的管理员信息
-     */
-    @RequestMapping(value = "queryNeedApprovalExamination", method = RequestMethod.GET)
-    @ResponseBody
-    public List<Map<String, Object>> queryNeedApprovalExamination(HttpServletRequest request) {
-        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
-        return activityApprovalRequestService.approvalQueryList(loginer.getUsername());
+        administratorService.updateAdministratorInfoByUid(administrator);
     }
 
     /**

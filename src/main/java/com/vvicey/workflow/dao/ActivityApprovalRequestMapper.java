@@ -1,6 +1,9 @@
 package com.vvicey.workflow.dao;
 
+import com.vvicey.user.tempEntity.ActivityInternal;
 import com.vvicey.workflow.entity.ActivityApprovalRequest;
+
+import java.util.List;
 
 /**
  * @Author nana
@@ -9,12 +12,18 @@ import com.vvicey.workflow.entity.ActivityApprovalRequest;
  */
 public interface ActivityApprovalRequestMapper {
 
-    int deleteByEiid(Integer eiid);
+    void deleteByEiid(Integer eiid);
 
     int insertSelective(ActivityApprovalRequest activityApprovalRequest);
 
-    ActivityApprovalRequest selectByEiid(Integer eiid);
+    List<ActivityInternal> selectByTeacherNumber(int teacherNumber);
 
-    int updateByEiidSelective(ActivityApprovalRequest activityApprovalRequest);
+    List<ActivityInternal> selectAll();
+
+    ActivityInternal selectByEiidAI(int eiid);
+
+    ActivityApprovalRequest selectByEiidA(int eiid);
+
+    void updateByEiidSelective(ActivityApprovalRequest activityApprovalRequest);
 
 }

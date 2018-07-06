@@ -8,12 +8,17 @@ import com.vvicey.examination.entity.ExaminationExternal;
 import com.vvicey.examination.entity.ExaminationInternal;
 import com.vvicey.examination.service.ExaminationExternalService;
 import com.vvicey.examination.service.ExaminationInternalService;
+import com.vvicey.user.administrator.service.AdministratorService;
+import com.vvicey.user.teacher.service.TeacherService;
+import com.vvicey.user.tempEntity.ActivityInternal;
 import com.vvicey.workflow.dao.ActivityApprovalRequestMapper;
 import com.vvicey.workflow.entity.ActivityApprovalRequest;
-import org.activiti.engine.task.Task;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,11 +50,16 @@ public class ActivityApprovalRequestServiceImpl implements ActivityApprovalReque
     @Autowired
     private TaskService taskService;
     @Autowired
+    private TeacherService teacherService;
+    @Autowired
+    private AdministratorService administratorService;
+    @Autowired
     private ActivityApprovalRequestMapper activityApprovalRequestMapper;
     @Autowired
     private ExaminationInternalService examinationInternalService;
     @Autowired
     private ExaminationExternalService examinationExternalService;
+
 
     /**
      * 工作流申请创建考试事件
@@ -59,15 +69,18 @@ public class ActivityApprovalRequestServiceImpl implements ActivityApprovalReque
      */
     @Override
     @Transactional
-    public void createRequest(ExaminationInternal examinationInternal, ActivityApprovalRequest activityApprovalRequest) {
+    public ActivityInternal createRequest(ExaminationInternal examinationInternal, ActivityApprovalRequest activityApprovalRequest, int uid) {
         examinationInternalService.createExamination(examinationInternal);
         activityApprovalRequest.setEiid(examinationInternal.getEiid());
         activityApprovalRequestMapper.insertSelective(activityApprovalRequest);
         Map<String, Object> map = new HashMap<>();
         map.put("activity", activityApprovalRequest);
-        ProcessInstance instance = runtimeService.startProcessInstanceByKey(APPROVAL_REQUEST_FLOW_ID);
+        map.put("teacherUid", uid);
+        //给map增加条目指定受理请求的人，受理人通过processVariableValueEquals名字对申请进行审批
+        ProcessInstance instance = runtimeService.startProcessInstanceByKey(APPROVAL_REQUEST_FLOW_ID, map);
         Task task = taskService.createTaskQuery().processInstanceId(instance.getId()).singleResult();
         taskService.complete(task.getId(), map);
+        return activityApprovalRequestMapper.selectByEiidAI(examinationInternal.getEiid());
     }
 
     /**
@@ -78,45 +91,63 @@ public class ActivityApprovalRequestServiceImpl implements ActivityApprovalReque
      */
     @Override
     @Transactional
-    public void updateRequest(int taskId, ExaminationInternal examinationInternal) {
+    public ActivityInternal updateRequest(String taskId, ExaminationInternal examinationInternal) {
+        Map<String, Object> map = taskService.getVariables(taskId);
+        ActivityApprovalRequest activityApprovalRequest = (ActivityApprovalRequest) map.get("activity");
+        int eiid = activityApprovalRequest.getEiid();
+        examinationInternal.setEiid(eiid);
         examinationInternalService.updateExaminationByEiid(examinationInternal);
-        taskService.complete(String.valueOf(taskId));
-        taskService.deleteTask(String.valueOf(taskId));
-        ActivityApprovalRequest activityApprovalRequest = activityApprovalRequestMapper.selectByEiid(examinationInternal.getEiid());
+        activityApprovalRequest = activityApprovalRequestMapper.selectByEiidA(eiid);
         activityApprovalRequest.setStatus(0);
         activityApprovalRequestMapper.updateByEiidSelective(activityApprovalRequest);
-        Map<String, Object> map = new HashMap<>();
-        map.put("activity", activityApprovalRequest);
-        ProcessInstance instance = runtimeService.startProcessInstanceByKey(APPROVAL_REQUEST_FLOW_ID);
-        Task task = taskService.createTaskQuery().processInstanceId(instance.getId()).singleResult();
-        taskService.complete(task.getId(), map);
+        map.replace("activity", activityApprovalRequest);
+        taskService.setVariables(taskId, map);
+        return activityApprovalRequestMapper.selectByEiidAI(activityApprovalRequest.getEiid());
     }
 
     /**
-     * 根据用户名查询申请的任务
+     * 根据老师uid查询申请的任务
      *
-     * @param username 用户名
+     * @param uid 登陆者老师uid
      * @return 返回申请的任务
      */
     @Override
-    public List<Map<String, Object>> queryListRequest(String username) {
-        List<Map<String, Object>> requestList = new ArrayList<>();
-        List<Task> taskList = taskService.createTaskQuery().processVariableValueEquals(username).list();
-        //转换成页面实体
-//        if (CollectionUtils.isNotEmpty(taskList)) {
-//            for (Task task : taskList) {
-//                Map<String, Object> variable = taskService.getVariables(task.getId());
-//                ActivityApprovalRequest activityApprovalRequest = (ActivityApprovalRequest) variable.get("activity");
-//                activityApprovalRequest = activityApprovalRequestMapper.selectByEiid(activityApprovalRequest.getEiid());
-//                activityApprovalRequest.setTaskId(task.getId());
-//                ExaminationInternal examinationInternal = examinationInternalService.queryExaminationInternalByEiid(
-//                        activityApprovalRequest.getEiid());
-//                variable.put("activity", activityApprovalRequest);
-//                variable.put("examinationInternal", examinationInternal);
-//                requestList.add(variable);
-//            }
-//        }
+    public List<ActivityInternal> queryListRequest(int uid) {
+        List<ActivityInternal> requestList = new ArrayList<>();
+        List<Task> tasks = taskService.createTaskQuery().processVariableValueEquals(uid).list();
+        if (CollectionUtils.isNotEmpty(tasks)) {
+            for (Task task : tasks) {
+                Map<String, Object> variable = taskService.getVariables(task.getId());
+                ActivityApprovalRequest activityApprovalRequest = (ActivityApprovalRequest) variable.get("activity");
+                ActivityInternal activityInternal = activityApprovalRequestMapper.selectByEiidAI(activityApprovalRequest.getEiid());
+                activityInternal.setTaskId(task.getId());
+                requestList.add(activityInternal);
+            }
+        }
+        List<ActivityInternal> lists = activityApprovalRequestMapper.selectByTeacherNumber
+                (teacherService.queryTeacherSelf(uid).getTeacherNumber());
+        for (ActivityInternal activityInternal : lists) {
+            if (activityInternal.getStatus() != 0) {
+                requestList.add(activityInternal);
+            }
+        }
         return requestList;
+    }
+
+    /**
+     * 根据taskId删除考试申请
+     *
+     * @param taskId 任务id
+     */
+    @Override
+    public void deleteRequest(String taskId) {
+        Map<String, Object> variable = taskService.getVariables(taskId);
+        ActivityApprovalRequest activityApprovalRequest = (ActivityApprovalRequest) variable.get("activity");
+        int eiid = activityApprovalRequest.getEiid();
+        activityApprovalRequestMapper.deleteByEiid(eiid);
+        examinationInternalService.deleteExamination(eiid);
+        taskService.complete(taskId);
+        taskService.deleteTask(taskId, true);
     }
 
     /**
@@ -131,10 +162,9 @@ public class ActivityApprovalRequestServiceImpl implements ActivityApprovalReque
                 Integer.class);
         String taskId = JSON.parseObject(JSON.toJSONString(statusAndExaminationExternal.get("taskId")),
                 String.class);
-        int eiid = JSON.parseObject(JSON.toJSONString(statusAndExaminationExternal.get("eiid")),
-                Integer.class);
-        Map<String, Object> variable = taskService.getVariables(taskId);
-        ActivityApprovalRequest activityApprovalRequest = (ActivityApprovalRequest) variable.get("activity");
+        ActivityApprovalRequest activityApprovalRequest = (ActivityApprovalRequest) taskService.getVariables(taskId)
+                .get("activity");
+        int eiid = activityApprovalRequest.getEiid();
         if (status == APPROVAL_REQUEST_STATUS_PSSS) {
             activityApprovalRequest.setStatus(APPROVAL_REQUEST_STATUS_PSSS);
             activityApprovalRequestMapper.updateByEiidSelective(activityApprovalRequest);
@@ -164,30 +194,29 @@ public class ActivityApprovalRequestServiceImpl implements ActivityApprovalReque
     }
 
     /**
-     * 审批者查询需要审批的申请
+     * 审批者查询需要审批的申请(获取所有申请)
      *
-     * @param username 审批者账号
      * @return 返回需要审批的申请list
      */
     @Override
-    public List<Map<String, Object>> approvalQueryList(String username) {
-        List<Map<String, Object>> requestList = new ArrayList<>();
-        List<Task> taskList = taskService.createTaskQuery().processVariableValueEquals(username).list();
+    public List<ActivityInternal> approvalQueryList() {
+        List<ActivityInternal> approvalList = new ArrayList<>();
+        List<Task> taskList = taskService.createTaskQuery().taskDefinitionKey("approval_request_check").list();
         //转换成页面实体
         if (CollectionUtils.isNotEmpty(taskList)) {
             for (Task task : taskList) {
-                Map<String, Object> variable = taskService.getVariables(task.getId());
-                ActivityApprovalRequest activityApprovalRequest = (ActivityApprovalRequest) variable.get("activity");
-                activityApprovalRequest = activityApprovalRequestMapper.selectByEiid(activityApprovalRequest.getEiid());
-                activityApprovalRequest.setTaskId(task.getId());
-                ExaminationInternal examinationInternal = examinationInternalService.queryExaminationInternalByEiid(
-                        activityApprovalRequest.getEiid());
-                variable.put("activity", activityApprovalRequest);
-                variable.put("examinationInternal", examinationInternal);
-                requestList.add(variable);
+                ActivityApprovalRequest activityApprovalRequest = (ActivityApprovalRequest) taskService.getVariables(task.getId()).get("activity");
+                ActivityInternal activityInternal = activityApprovalRequestMapper.selectByEiidAI(activityApprovalRequest.getEiid());
+                activityInternal.setTaskId(task.getId());
+                approvalList.add(activityInternal);
             }
         }
-        return requestList;
+        List<ActivityInternal> lists = activityApprovalRequestMapper.selectAll();
+        for (ActivityInternal activityInternal : lists) {
+            if (activityInternal.getStatus() != 0) {
+                approvalList.add(activityInternal);
+            }
+        }
+        return approvalList;
     }
-
 }

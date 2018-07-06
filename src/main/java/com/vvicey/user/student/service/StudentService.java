@@ -22,5 +22,5 @@ public interface StudentService {
 
     int updateStudentInfoByStudentNumber(Student student);
 
-    int updateStudentInfoByUid(Student student);
+    void updateStudentInfoByUid(Student student);
 }

@@ -1,6 +1,9 @@
 package com.vvicey.user.administrator.dao;
 
 import com.vvicey.user.administrator.entity.Administrator;
+import com.vvicey.user.tempEntity.AdministratorLoginer;
+
+import java.util.List;
 
 /**
  * @Author nana
@@ -8,15 +11,16 @@ import com.vvicey.user.administrator.entity.Administrator;
  * @Description 管理员数据库CRUD映射抽象类
  */
 public interface AdministratorMapper {
+
     int deleteByUid(int aid);
 
     int insertSelective(Administrator administrator);
 
     void insertAdministratorRole(int uid);
 
-    Administrator selectByAdministratorName(String name);
+    List<AdministratorLoginer> selectAllAdministrator();
 
-    Administrator selectByUid(int uid);
+    AdministratorLoginer selectAdministratorSelf(int uid);
 
     int updateByAdministratorNameSelective(Administrator administrator);
 

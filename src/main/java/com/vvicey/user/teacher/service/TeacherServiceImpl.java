@@ -81,11 +81,10 @@ public class TeacherServiceImpl implements TeacherService {
      * 更新教师个人信息(根据账号id)
      *
      * @param teacher 教师数据
-     * @return 返回更新成功与否
      */
     @Override
     @Transactional
-    public int updateTeacherInfoByUid(Teacher teacher) {
-        return teacherMapper.updateByUidSelective(teacher);
+    public void updateTeacherInfoByUid(Teacher teacher) {
+        teacherMapper.updateByUidSelective(teacher);
     }
 }

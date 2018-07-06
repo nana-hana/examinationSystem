@@ -7,16 +7,65 @@
     <result column="submit_teacherNumber" property="submitTeacherNumber" jdbcType="INTEGER" />
     <result column="comments" property="comments" jdbcType="VARCHAR" />
     <result column="eiid" property="eiid" jdbcType="INTEGER" />
+    <result column="task_id" property="taskId" jdbcType="VARCHAR"/>
+  </resultMap>
+  <resultMap id="ActivityInternalResultMap" type="com.vvicey.user.tempEntity.ActivityInternal">
+    <id column="eiid" property="eiid" jdbcType="INTEGER"/>
+    <result column="single_number" property="singleNumber" jdbcType="INTEGER"/>
+    <result column="single_score" property="singleScore" jdbcType="INTEGER"/>
+    <result column="multiple_number" property="multipleNumber" jdbcType="INTEGER"/>
+    <result column="multiple_score" property="multipleScore" jdbcType="INTEGER"/>
+    <result column="checking_number" property="checkingNumber" jdbcType="INTEGER"/>
+    <result column="checking_score" property="checkingScore" jdbcType="INTEGER"/>
+    <result column="paper_level" property="paperLevel" jdbcType="INTEGER"/>
+    <result column="paper_kind" property="paperKind" jdbcType="INTEGER"/>
+    <result column="subject_id" property="subjectId" jdbcType="INTEGER"/>
+    <result column="student_class" property="studentClass" jdbcType="INTEGER"/>
+    <result column="examination_time" property="examinationTime" jdbcType="INTEGER"/>
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="submit_teacherNumber" property="submitTeacherNumber" jdbcType="INTEGER" />
+    <result column="comments" property="comments" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, status, submit_teacherNumber, comments, eiid
+    id, status, submit_teacherNumber, comments, i.eiid, task_id
   </sql>
-  <select id="selectByEiid" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from activity_approval_request
-    where eiid = #{eiid,jdbcType=INTEGER}
+  <sql id="Activity_Column_List">
+    a.eiid, single_number, single_score, multiple_number, multiple_score, checking_number,
+    checking_score, paper_level, paper_kind, subject_id,student_class,examination_time
+  </sql>
+  <select id="selectByTeacherNumber" resultMap="ActivityInternalResultMap">
+    select
+    <include refid="Base_Column_List"/>,
+    <include refid="Activity_Column_List"/>
+    from examination_internal i
+    left join activity_approval_request a on a.eiid = i.eiid
+    where submit_teacherNumber = #{submitTeacherNumber,jdbcType=INTEGER}
   </select>
+  <select id="selectAll" resultMap="ActivityInternalResultMap">
+    select
+    <include refid="Base_Column_List"/>,
+    <include refid="Activity_Column_List"/>
+    from examination_internal i
+    left join activity_approval_request a on a.eiid = i.eiid
+  </select>
+    <select id="selectByEiidAI" resultMap="ActivityInternalResultMap">
+        select
+        <include refid="Base_Column_List"/>,
+        <include refid="Activity_Column_List"/>
+        from examination_internal i
+        left join activity_approval_request a on a.eiid = i.eiid
+        where i.eiid = #{eiid,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByEiidA" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>,
+        <include refid="Activity_Column_List"/>
+        from examination_internal i
+        left join activity_approval_request a on a.eiid = i.eiid
+        where i.eiid = #{eiid,jdbcType=VARCHAR}
+    </select>
   <delete id="deleteByEiid" parameterType="java.lang.Integer" >
     delete from activity_approval_request
     where eiid = #{eiid,jdbcType=INTEGER}
@@ -37,6 +86,9 @@
       <if test="comments != null" >
         comments,
       </if>
+      <if test="taskId != null" >
+        task_id,
+      </if>
       <if test="eiid != null" >
         eiid,
       </if>
@@ -54,6 +106,9 @@
       <if test="comments != null" >
         #{comments,jdbcType=VARCHAR},
       </if>
+      <if test="taskId != null" >
+        #{task_id,jdbcType=VARCHAR},
+      </if>
       <if test="eiid != null" >
         #{eiid,jdbcType=INTEGER},
       </if>
@@ -70,6 +125,9 @@
       </if>
       <if test="comments != null" >
         comments = #{comments,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null" >
+          task_id = #{taskId,jdbcType=VARCHAR},
       </if>
       <if test="eiid != null" >
         eiid = #{eiid,jdbcType=INTEGER},
