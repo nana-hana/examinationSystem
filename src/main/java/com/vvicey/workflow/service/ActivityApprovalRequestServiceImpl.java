@@ -1,22 +1,16 @@
 package com.vvicey.workflow.service;
 
 import com.alibaba.fastjson.JSON;
-import com.vvicey.common.task.BeginExamination;
-import com.vvicey.common.utils.QuartzCronDateUtils;
-import com.vvicey.common.utils.QuartzManagerUtils;
 import com.vvicey.examination.entity.ExaminationExternal;
 import com.vvicey.examination.entity.ExaminationInternal;
 import com.vvicey.examination.service.ExaminationExternalService;
 import com.vvicey.examination.service.ExaminationInternalService;
-import com.vvicey.user.administrator.service.AdministratorService;
 import com.vvicey.user.teacher.service.TeacherService;
 import com.vvicey.user.tempEntity.ActivityInternal;
 import com.vvicey.workflow.dao.ActivityApprovalRequestMapper;
 import com.vvicey.workflow.entity.ActivityApprovalRequest;
-import org.activiti.engine.HistoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.collections.CollectionUtils;
@@ -51,8 +45,6 @@ public class ActivityApprovalRequestServiceImpl implements ActivityApprovalReque
     private TaskService taskService;
     @Autowired
     private TeacherService teacherService;
-    @Autowired
-    private AdministratorService administratorService;
     @Autowired
     private ActivityApprovalRequestMapper activityApprovalRequestMapper;
     @Autowired
@@ -180,12 +172,6 @@ public class ActivityApprovalRequestServiceImpl implements ActivityApprovalReque
                 examinationExternal.setEiid(eiid);
                 examinationExternalService.updateExaminationExternalByEeid(examinationExternal);
             }
-            ExaminationInternal examinationInternal = examinationInternalService.queryExaminationInternalByEiid(eiid);
-            String subject = examinationInternal.getSubjectId().toString();
-            String institute = examinationExternal.getInstitute().toString();
-            String time = QuartzCronDateUtils.getCron(examinationExternal.getExamTime());
-            int paperKind = examinationInternal.getPaperKind();
-            QuartzManagerUtils.addJob(subject + "考试", institute, BeginExamination.class, time, paperKind);
         } else {
             activityApprovalRequest.setStatus(APPROVAL_REQUEST_STATUS_REFUSE);
             activityApprovalRequestMapper.updateByEiidSelective(activityApprovalRequest);

@@ -49,6 +49,12 @@ public class StudentController {
         return "/student/studentSelfInfo";
     }
 
+    @RequestMapping(value = "studentBeginExamination", method = RequestMethod.GET)
+    public String studentBeginExamination(Model model, HttpServletRequest request) {
+
+        return "/student/studentBeginExamination";
+    }
+
     /**
      * 更新学生自身登陆信息(个人)
      *
