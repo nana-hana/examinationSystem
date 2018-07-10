@@ -56,11 +56,15 @@ public class ExaminationInternalServiceImpl implements ExaminationInternalServic
      * 根据考试编号id对考试信息进行更新
      *
      * @param examinationInternal 试卷详情
-     * @return 返回更新结果
      */
     @Override
     @Transactional
-    public int updateExaminationByEiid(ExaminationInternal examinationInternal) {
-        return examinationInternalMapper.updateByEiidSelective(examinationInternal);
+    public void updateExaminationByEiid(ExaminationInternal examinationInternal) {
+        examinationInternalMapper.updateByEiidSelective(examinationInternal);
+    }
+
+    @Override
+    public ExaminationInternal queryExaminationInternalByStudentClass(int studentClass) {
+        return examinationInternalMapper.selectByStudentClass(studentClass);
     }
 }

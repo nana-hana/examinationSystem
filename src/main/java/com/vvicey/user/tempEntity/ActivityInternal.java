@@ -18,7 +18,7 @@ public class ActivityInternal {
     private Integer paperKind;//试卷生成类型(0:a、b卷型，1:全随机型)
     private Integer subjectId;//考试科目id
     private Integer studentClass;//参加考试的班级
-    private Integer examinationTime;//考试持续事件
+    private Integer examinationTime;//考试持续时间
 
     private Integer id;//id
     private Integer status;//审批状态

@@ -25,6 +25,12 @@
         from examination_internal
         where eiid = #{eiid,jdbcType=INTEGER}
     </select>
+    <select id="selectByStudentClass" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from examination_internal
+        where student_class = #{studentClass,jdbcType=INTEGER}
+    </select>
     <delete id="deleteByEiid" parameterType="java.lang.Integer">
     delete from examination_internal
     where eiid = #{eiid,jdbcType=INTEGER}

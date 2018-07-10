@@ -17,6 +17,7 @@ public interface ExaminationInternalService {
 
     ExaminationInternal queryExaminationInternalByEiid(int eiid);
 
-    int updateExaminationByEiid(ExaminationInternal examinationInternal);
+    void updateExaminationByEiid(ExaminationInternal examinationInternal);
 
+    ExaminationInternal queryExaminationInternalByStudentClass(int studentClass);
 }

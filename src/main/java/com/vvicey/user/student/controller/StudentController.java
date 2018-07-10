@@ -1,7 +1,16 @@
 package com.vvicey.user.student.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.vvicey.common.information.Status;
 import com.vvicey.common.utils.MD5Utils;
+import com.vvicey.examination.entity.ExaminationInternal;
+import com.vvicey.examination.service.ExaminationInternalService;
+import com.vvicey.testPaper.entity.CheckingQuestion;
+import com.vvicey.testPaper.entity.MultipleChoice;
+import com.vvicey.testPaper.entity.SingleChoice;
+import com.vvicey.testPaper.service.CheckingQuestionService;
+import com.vvicey.testPaper.service.MultipleChoiceService;
+import com.vvicey.testPaper.service.SingleChoiceService;
 import com.vvicey.user.login.entity.Loginer;
 import com.vvicey.user.login.service.LoginService;
 import com.vvicey.user.student.entity.Student;
@@ -19,7 +28,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author nana
@@ -35,6 +49,14 @@ public class StudentController {
     private StudentService studentService;
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private ExaminationInternalService examinationInternalService;
+    @Autowired
+    private SingleChoiceService singleChoiceService;
+    @Autowired
+    private MultipleChoiceService multipleChoiceService;
+    @Autowired
+    private CheckingQuestionService checkingQuestionService;
 
     /**
      * 跳转学生界面
@@ -49,10 +71,61 @@ public class StudentController {
         return "/student/studentSelfInfo";
     }
 
+    /**
+     * 学生进行考试
+     *
+     * @return 返回考试界面
+     */
     @RequestMapping(value = "studentBeginExamination", method = RequestMethod.GET)
     public String studentBeginExamination(Model model, HttpServletRequest request) {
-
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        StudentLoginer studentLoginer = studentService.queryStudentSelf(loginer.getUid());
+        int studentClass = studentLoginer.getStudentClass();
+        ExaminationInternal examinationInternal = examinationInternalService.queryExaminationInternalByStudentClass(studentClass);
+        List<SingleChoice> singleChoiceList = singleChoiceService.querySingleChoiceBySubjectId
+                (examinationInternal.getSubjectId(), examinationInternal.getSingleNumber());
+        List<MultipleChoice> multipleChoiceList = multipleChoiceService.queryMultipleChoiceBySubjectId
+                (examinationInternal.getSubjectId(), examinationInternal.getMultipleNumber());
+        List<CheckingQuestion> checkingQuestionList = checkingQuestionService.queryCheckingQuestionBySubjectId
+                (examinationInternal.getSubjectId(), examinationInternal.getCheckingNumber());
+        request.getSession().setAttribute("singleChoiceList", singleChoiceList);
+        request.getSession().setAttribute("multipleChoiceList", multipleChoiceList);
+        request.getSession().setAttribute("checkingQuestionList", checkingQuestionList);
+        String singleAnswers = (String) request.getSession().getAttribute("singleAnswers");
+        String multipleAnswers = (String) request.getSession().getAttribute("multipleAnswers");
+        String checkingAnswers = (String) request.getSession().getAttribute("checkingAnswers");
+        if (singleAnswers != null) {
+            model.addAttribute("singleAnswers", singleAnswers);
+        }
+        if (multipleAnswers != null) {
+            model.addAttribute("multipleAnswers", multipleAnswers);
+        }
+        if (checkingAnswers != null) {
+            model.addAttribute("checkingAnswers", checkingAnswers);
+        }
+        model.addAttribute("singleChoiceList", singleChoiceList);
+        model.addAttribute("multipleChoiceList", multipleChoiceList);
+        model.addAttribute("checkingQuestionList", checkingQuestionList);
+        model.addAttribute("examinationTime", examinationInternal.getExaminationTime());
+        model.addAttribute("examinationSubjectId", examinationInternal.getSubjectId());
         return "/student/studentBeginExamination";
+    }
+
+    /**
+     * 保存学生考试答案
+     *
+     * @param request 获取session
+     * @param sMCList 单、多、判答案
+     */
+    @RequestMapping(value = "storeStudentAnswer", method = RequestMethod.POST)
+    @ResponseBody
+    public void storeStudentAnswer(HttpServletRequest request, @RequestBody Map<String, Integer[]> sMCList) {
+        String singleAnswers = JSON.toJSONString(sMCList.get("singleAnswers"));
+        String multipleAnswers = JSON.toJSONString(sMCList.get("multipleAnswers"));
+        String checkingAnswers = JSON.toJSONString(sMCList.get("checkingAnswers"));
+        request.getSession().setAttribute("singleAnswers", singleAnswers);
+        request.getSession().setAttribute("multipleAnswers", multipleAnswers);
+        request.getSession().setAttribute("checkingAnswers", checkingAnswers);
     }
 
     /**

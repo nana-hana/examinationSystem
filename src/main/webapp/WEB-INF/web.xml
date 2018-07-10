@@ -51,7 +51,7 @@
 
     <!--session时效设置-->
     <session-config>
-        <session-timeout>5</session-timeout>
+        <session-timeout>120</session-timeout>
     </session-config>
 
     <!--防止静态资源被拦截器拦截，拦截路径由哪一个拦截器去拦截（此处静态资源被放行）-->

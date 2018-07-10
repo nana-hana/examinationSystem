@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>在线考试系统</title>
+
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/static/dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/static/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="/static/plugins/toastr/toastr.css"/>
+    <link rel="stylesheet" href="/static/plugins/iCheck/all.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+    <script src="/static/plugins/jquery/jquery-3.3.1.min.js"></script>
+    <script src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/plugins/iCheck/icheck.min.js"></script>
+    <script src="/static/dist/js/adminlte.min.js"></script>
+    <script src="/static/dist/js/demo.js"></script>
+    <script src="/static/dist/js/app.js"></script>
+    <script src="/static/plugins/toastr/toastr.min.js"></script>
+    <script src="/static/script/toastrSet.js"></script>
+    <script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <script src="/static/plugins/fastclick/fastclick.js"></script>
+    <script src="/static/script/bootstrapDialogPackage.js"></script>
+    <script>
+        $(function () {
+            $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
+                checkboxClass: 'icheckbox_minimal-blue',
+                radioClass: 'iradio_minimal-blue'
+            })
+
+            var _sTopic = $(".singleTopic");
+            var _mTopic = $(".multipleTopic");
+            var _cTopic = $(".checkingTopic");
+
+            //恢复数据
+            var singleAnsers = '$singleAnswers';
+            var multipleAnswers = '$multipleAnswers';
+            var checkingAnswers = '$checkingAnswers';
+
+            var i, j, k, g;
+            if (singleAnsers != "$" + "singleAnswers" && singleAnsers != "[]") {
+                singleAnsers = JSON.parse(singleAnsers);
+                for (i = 0; i < singleAnsers.length; i++) {
+                    var singleChecked = singleAnsers[i];
+                    var now_sTopic = _sTopic.eq(i).find("input");
+                    now_sTopic.eq(singleChecked).iCheck("check");
+                }
+            }
+
+
+            if (multipleAnswers != "$" + "multipleAnswers" && multipleAnswers != "[]") {
+                multipleAnswers = JSON.parse(multipleAnswers);
+                for (i = 0; i < multipleAnswers.length; i++) {
+                    for (j = 0; j < multipleAnswers[i].length; j++) {
+                        var multipleCheckedTwo = multipleAnswers[i][j];
+                        var now_mTopic = _mTopic.eq(i).find("input");
+                        now_mTopic.eq(multipleCheckedTwo).iCheck("check");
+                    }
+                }
+            }
+
+            if (checkingAnswers != "$" + "checkingAnswers" && checkingAnswers != "[]") {
+                checkingAnswers = JSON.parse(checkingAnswers);
+                for (i = 0; i < checkingAnswers.length; i++) {
+                    var checkingChecked = checkingAnswers[i];
+                    var now_cTopic = _cTopic.eq(i).find("input");
+                    now_cTopic.eq(checkingChecked).iCheck("check");
+                }
+            }
+
+            $("#multiple-table").hide();
+            $("#checking-table").hide();
+
+            //单选题按钮控制
+            var now_single_topic = 0;
+            $("#previous-single-topic").attr("disabled", true);
+            _sTopic.hide();
+            _sTopic.eq(now_single_topic).show();
+            $("#next-single-topic").on("click", function () {
+                _sTopic.eq(now_single_topic).hide();
+                now_single_topic++;
+                _sTopic.eq(now_single_topic).show();
+                if (now_single_topic === _sTopic.length - 1) {
+                    $(this).attr("disabled", true);
+                    return;
+                }
+                if (now_single_topic != 0) {
+                    $("#previous-single-topic").attr("disabled", false);
+                }
+            });
+            $("#previous-single-topic").on("click", function () {
+                _sTopic.eq(now_single_topic).hide();
+                now_single_topic--;
+                _sTopic.eq(now_single_topic).show();
+                if (now_single_topic === 0) {
+                    $(this).attr("disabled", true);
+                    return;
+                }
+                if (now_single_topic != _sTopic.length - 1) {
+                    $("#next-single-topic").attr("disabled", false);
+                }
+            });
+
+            $(".jumpSingleTopic").on("click", function () {
+                $("#single-table").show();
+                $("#multiple-table").hide();
+                $("#checking-table").hide();
+                _sTopic.eq(now_single_topic).hide();
+                now_single_topic = parseInt($(this).text()) - 1;
+                _sTopic.eq(now_single_topic).show();
+                if (now_single_topic === 0) {
+                    $("#previous-single-topic").attr("disabled", true);
+                }
+                if (now_single_topic != _sTopic.length - 1) {
+                    $("#next-single-topic").attr("disabled", false);
+                }
+                if (now_single_topic === _sTopic.length - 1) {
+                    $("#next-single-topic").attr("disabled", true);
+                }
+                if (now_single_topic != 0) {
+                    $("#previous-single-topic").attr("disabled", false);
+                }
+            });
+
+            //多选题按钮控制
+            var now_multiple_topic = 0;
+            $("#previous-multiple-topic").attr("disabled", true);
+            _mTopic.hide();
+            _mTopic.eq(now_multiple_topic).show();
+            $("#next-multiple-topic").on("click", function () {
+                _mTopic.eq(now_multiple_topic).hide();
+                now_multiple_topic++;
+                _mTopic.eq(now_multiple_topic).show();
+                if (now_multiple_topic === _mTopic.length - 1) {
+                    $(this).attr("disabled", true);
+                    return;
+                }
+                if (now_multiple_topic != 0) {
+                    $("#previous-multiple-topic").attr("disabled", false);
+                }
+            });
+            $("#previous-multiple-topic").on("click", function () {
+                _mTopic.eq(now_multiple_topic).hide();
+                now_multiple_topic--;
+                _mTopic.eq(now_multiple_topic).show();
+                if (now_multiple_topic === 0) {
+                    $(this).attr("disabled", true);
+                    return;
+                }
+                if (now_multiple_topic != _mTopic.length - 1) {
+                    $("#next-multiple-topic").attr("disabled", false);
+                }
+            });
+
+            $(".jumpMultipleTopic").on("click", function () {
+                $("#single-table").hide();
+                $("#multiple-table").show();
+                $("#checking-table").hide();
+                _mTopic.eq(now_multiple_topic).hide();
+                now_multiple_topic = parseInt($(this).text()) - 1;
+                _mTopic.eq(now_multiple_topic).show();
+                if (now_multiple_topic === 0) {
+                    $("#previous-multiple-topic").attr("disabled", true);
+                }
+                if (now_multiple_topic != _mTopic.length - 1) {
+                    $("#next-multiple-topic").attr("disabled", false);
+                }
+                if (now_multiple_topic === _mTopic.length - 1) {
+                    $("#next-multiple-topic").attr("disabled", true);
+                }
+                if (now_multiple_topic != 0) {
+                    $("#previous-multiple-topic").attr("disabled", false);
+                }
+            });
+
+            //判断题按钮控制
+            var now_checking_topic = 0;
+            $("#previous-checking-topic").attr("disabled", true);
+            _cTopic.hide();
+            _cTopic.eq(now_checking_topic).show();
+            $("#next-checking-topic").on("click", function () {
+                _cTopic.eq(now_checking_topic).hide();
+                now_checking_topic++;
+                _cTopic.eq(now_checking_topic).show();
+                if (now_checking_topic === _cTopic.length - 1) {
+                    $(this).attr("disabled", true);
+                    return;
+                }
+                if (now_checking_topic != 0) {
+                    $("#previous-checking-topic").attr("disabled", false);
+                }
+            });
+            $("#previous-checking-topic").on("click", function () {
+                _cTopic.eq(now_checking_topic).hide();
+                now_checking_topic--;
+                _cTopic.eq(now_checking_topic).show();
+                if (now_checking_topic === 0) {
+                    $(this).attr("disabled", true);
+                    return;
+                }
+                if (now_checking_topic != _cTopic.length - 1) {
+                    $("#next-checking-topic").attr("disabled", false);
+                }
+            });
+
+            $(".jumpCheckingTopic").on("click", function () {
+                $("#single-table").hide();
+                $("#multiple-table").hide();
+                $("#checking-table").show();
+                _cTopic.eq(now_checking_topic).hide();
+                now_checking_topic = parseInt($(this).text()) - 1;
+                _cTopic.eq(now_checking_topic).show();
+                if (now_checking_topic === 0) {
+                    $("#previous-checking-topic").attr("disabled", true);
+                }
+                if (now_checking_topic != _cTopic.length - 1) {
+                    $("#next-checking-topic").attr("disabled", false);
+                }
+                if (now_checking_topic === _cTopic.length - 1) {
+                    $("#next-checking-topic").attr("disabled", true);
+                }
+                if (now_checking_topic != 0) {
+                    $("#previous-checking-topic").attr("disabled", false);
+                }
+            });
+
+            window.setInterval(storeAnswer, 12000);
+            // var examinationTime = parseInt($("#time").text()) * 6000;
+            // window.setTimeout(clearTimer(timer), examinationTime);
+        });
+
+        // function clearTimer(timer) {
+        //     window.clearInterval(timer);
+        // }
+
+        function storeAnswer() {
+            var _sTopic = $(".singleTopic");
+            var _mTopic = $(".multipleTopic");
+            var _cTopic = $(".checkingTopic");
+
+            var singleAnswers = new Array();
+            var multipleAnswers = new Array();
+            var checkingAnswers = new Array();
+
+            var i, k, j, g = 0;
+            //single answer
+            for (i = 0, k = 0; i < _sTopic.length; i++) {
+                var now_sTopic = _sTopic.eq(i).find("input");
+                for (j = 0; j < now_sTopic.length; j++) {
+                    if (now_sTopic.eq(j).is(":checked")) {
+                        singleAnswers[k] = j;
+                        k++;
+                    }
+                }
+            }
+            //multiple answer
+            for (i = 0, k = 0; i < _mTopic.length; i++) {
+                var now_mTopic = _mTopic.eq(i).find("input");
+                multipleAnswers[k] = new Array();
+                for (j = 0, g = 0; j < now_mTopic.length; j++) {
+                    if (now_mTopic.eq(j).is(":checked")) {
+                        multipleAnswers[k][g] = j;
+                        g++;
+                    }
+                }
+                k++;
+            }
+            //checking answer
+            for (i = 0, k = 0; i < _sTopic.length; i++) {
+                var now_cTopic = _cTopic.eq(i).find("input");
+                for (j = 0; j < now_cTopic.length; j++) {
+                    if (now_cTopic.eq(j).is(":checked")) {
+                        checkingAnswers[k] = j;
+                        k++;
+                    }
+                }
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/student/storeStudentAnswer/",
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    singleAnswers: singleAnswers,
+                    multipleAnswers: multipleAnswers,
+                    checkingAnswers: checkingAnswers
+                }),
+                success: function (data) {
+                }
+            });
+        }
+    </script>
+    <style>
+        .content-wrapper {
+            background-color: white;
+        }
+    </style>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <header>
+        <div class="main-header">
+            <a href="javascript:void(0)" class="logo">
+                <span class="logo-mini"><b>TEST</b></span>
+                <span class="logo-lg"><b>$examinationSubjectId 考试</b></span>
+            </a>
+            <nav class="navbar navbar-static-top" role="navigation">
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button"></a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown user user-menu">
+                            <a href="javascript:void(0)">
+                                <span class="hidden-xs user_name">考试时间剩余: <b id="time">$examinationTime</b></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <aside>
+        <div class="main-sidebar">
+            <section class="sidebar">
+                <ul class="sidebar-menu">
+                    <li class="treeview">
+                        <a href="#"><i class="fa fa-link"></i>
+                            <span>单选题</span>
+                            <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            #foreach($singleChoice in $singleChoiceList)
+                                <li><a href="javascript:void(0)" class="jumpSingleTopic">$foreach.count</a></li>
+                            #end
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#"><i class="fa fa-link"></i>
+                            <span>多选题</span>
+                            <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            #foreach($multipleChoice in $multipleChoiceList)
+                                <li><a href="javascript:void(0)" class="jumpMultipleTopic">$foreach.count</a></li>
+                            #end
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#"><i class="fa fa-link"></i>
+                            <span>判断题</span>
+                            <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            #foreach($checkingQuestion in $checkingQuestionList)
+                                <li><a href="javascript:void(0)" class="jumpCheckingTopic">$foreach.count</a></li>
+                            #end
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+        </div>
+    </aside>
+    <div class="content-wrapper">
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-offset-3 col-xs-6">
+                    <div class="box" style="margin-top: 20%">
+                        <div class="box-body">
+                            <table id="single-table" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <td class="text-center">单选题</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    #foreach($singleChoice in $singleChoiceList)
+                                    <tr class="singleTopic form-group" id=$foreach.count>
+                                        <td>
+                                            $foreach.count. $singleChoice.question<br><br>
+                                            <input type="radio" name=single$foreach.count class="minimal">
+                                            A. $singleChoice.answerA<br><br>
+                                            <input type="radio" name=single$foreach.count class="minimal">
+                                            B. $singleChoice.answerB<br><br>
+                                            <input type="radio" name=single$foreach.count class="minimal">
+                                            C. $singleChoice.answerC<br><br>
+                                            <input type="radio" name=single$foreach.count class="minimal">
+                                            D. $singleChoice.answerD
+                                        </td>
+                                    </tr>
+                                    #end
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td class="pull-left">
+                                        <button class="btn btn-default" id="previous-single-topic">上一题</button>
+                                    </td>
+                                    <td class="pull-right">
+                                        <button class="btn btn-default" id="next-single-topic">下一题</button>
+                                    </td>
+                                </tr>
+                                </tfoot>
+                            </table>
+
+                            <table id="multiple-table" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <td class="text-center">多选题</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    #foreach($multipleChoice in $multipleChoiceList)
+                                    <tr class="multipleTopic form-group" id=$foreach.count>
+                                        <td>
+                                            $foreach.count. $multipleChoice.question<br><br>
+                                            <input type="checkbox" name=multiple$foreach.count class="minimal">
+                                            A. $multipleChoice.answerA<br><br>
+                                            <input type="checkbox" name=multiple$foreach.count class="minimal">
+                                            B. $multipleChoice.answerB<br><br>
+                                            <input type="checkbox" name=multiple$foreach.count class="minimal">
+                                            C. $multipleChoice.answerC<br><br>
+                                            <input type="checkbox" name=multiple$foreach.count class="minimal">
+                                            D. $multipleChoice.answerD
+                                        </td>
+                                    </tr>
+                                    #end
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td class="pull-left">
+                                        <button class="btn btn-default" id="previous-multiple-topic">上一题</button>
+                                    </td>
+                                    <td class="pull-right">
+                                        <button class="btn btn-default" id="next-multiple-topic">下一题</button>
+                                    </td>
+                                </tr>
+                                </tfoot>
+                            </table>
+
+                            <table id="checking-table" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <td class="text-center">判断题</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    #foreach($checkingQuestion in $checkingQuestionList)
+                                    <tr class="checkingTopic form-group" id=$foreach.count>
+                                        <td>
+                                            $foreach.count. $checkingQuestion.question<br><br>
+                                            <input type="radio" name=checking$foreach.count class="minimal">
+                                            A. $checkingQuestion.answerA<br><br>
+                                            <input type="radio" name=checking$foreach.count class="minimal">
+                                            B. $checkingQuestion.answerB<br><br>
+                                        </td>
+                                    </tr>
+                                    #end
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td class="pull-left">
+                                        <button class="btn btn-default" id="previous-checking-topic">上一题</button>
+                                    </td>
+                                    <td class="pull-right">
+                                        <button class="btn btn-default" id="next-checking-topic">下一题</button>
+                                    </td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer>
+        <div class="main-footer text-center">
+            <strong>Copyright &copy; 2018 <a href="https://github.com/nana-hana">nana-hana</a>.</strong> All rights
+            reserved.
+        </div>
+    </footer>
+</div>
+</body>
+</html>

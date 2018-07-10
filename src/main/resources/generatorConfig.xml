@@ -38,7 +38,7 @@
         <!-- 必须的（1 required） -->
         <!-- java模型生成器 -->
         <!-- targetProject:自动生成代码的位置 -->
-        <javaModelGenerator targetPackage="com.vvicey.workflow.entity"
+        <javaModelGenerator targetPackage="com.vvicey.testPaper.entity"
                             targetProject="/home/nana/IdeaProjects/examinationSystem/src/main/java"
         >
             <property name="enableSubPackages" value="true"/>
@@ -48,14 +48,14 @@
 
         <!-- 必须的（1 required） -->
         <!-- map xml 生成器 -->
-        <sqlMapGenerator targetPackage="com.vvicey.workflow.dao"
+        <sqlMapGenerator targetPackage="com.vvicey.testPaper.dao"
                          targetProject="/home/nana/IdeaProjects/examinationSystem/src/main/java">
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
 
         <!-- 可选的（0 or 1） -->
         <!-- mapper 或者就是dao接口生成器 -->
-        <javaClientGenerator targetPackage="com.vvicey.workflow.dao"
+        <javaClientGenerator targetPackage="com.vvicey.testPaper.dao"
                              targetProject="/home/nana/IdeaProjects/examinationSystem/src/main/java"
                              type="XMLMAPPER">
             <property name="enableSubPackages" value="true"/>
@@ -65,7 +65,7 @@
         <!-- pojo 实体生成器 -->
         <!-- tableName:用于自动生成代码的数据库表；domainObjectName:对应于数据库表的javaBean类名 -->
         <!-- schema即为数据库名 可不写 -->
-        <table tableName="activity_approval_request" domainObjectName="ActivityApprovalRequest"
+        <table tableName="checking_question" domainObjectName="CheckingQuestion"
                enableInsert="true" enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false">

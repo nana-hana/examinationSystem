@@ -17,6 +17,7 @@ public interface ExaminationInternalMapper {
 
     ExaminationInternal selectByEiid(int eiid);
 
-    int updateByEiidSelective(ExaminationInternal examinationInternal);
+    void updateByEiidSelective(ExaminationInternal examinationInternal);
 
+    ExaminationInternal selectByStudentClass(int studentClass);
 }
