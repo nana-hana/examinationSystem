@@ -15,6 +15,15 @@ public class Student {
     private Integer institute;//学生学院
     private Integer phone;//学生手机号码
     private Integer uid;//学生的登陆id
+    private String instituteName;//学院名字
+
+    public String getInstituteName() {
+        return instituteName;
+    }
+
+    public void setInstituteName(String instituteName) {
+        this.instituteName = instituteName;
+    }
 
     public Integer getSid() {
         return sid;

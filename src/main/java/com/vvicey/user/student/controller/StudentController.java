@@ -1,6 +1,7 @@
 package com.vvicey.user.student.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.vvicey.common.information.Status;
 import com.vvicey.common.utils.MD5Utils;
 import com.vvicey.examination.entity.ExaminationInternal;
@@ -28,10 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -103,6 +101,7 @@ public class StudentController {
         if (checkingAnswers != null) {
             model.addAttribute("checkingAnswers", checkingAnswers);
         }
+        request.getSession().setAttribute("examinationInternal", examinationInternal);
         model.addAttribute("singleChoiceList", singleChoiceList);
         model.addAttribute("multipleChoiceList", multipleChoiceList);
         model.addAttribute("checkingQuestionList", checkingQuestionList);
@@ -126,6 +125,95 @@ public class StudentController {
         request.getSession().setAttribute("singleAnswers", singleAnswers);
         request.getSession().setAttribute("multipleAnswers", multipleAnswers);
         request.getSession().setAttribute("checkingAnswers", checkingAnswers);
+    }
+
+    /**
+     * 返回考试结果
+     *
+     * @param request 获取session
+     */
+    @RequestMapping(value = "examinationResult", method = RequestMethod.GET)
+    public String examinationResult(HttpServletRequest request, Model model) {
+        ExaminationInternal examinationInternal = (ExaminationInternal) request.getSession().getAttribute("examinationInternal");
+        int singleScore = examinationInternal.getSingleScore();
+        int multipleScore = examinationInternal.getMultipleScore();
+        int checkingScore = examinationInternal.getCheckingScore();
+        int singleNum = examinationInternal.getSingleNumber();
+        int multipleNum = examinationInternal.getMultipleNumber();
+        int checkingNum = examinationInternal.getCheckingNumber();
+
+        List<SingleChoice> singleChoiceList = (List<SingleChoice>) request.getSession().getAttribute("singleChoiceList");
+        List<MultipleChoice> multipleChoiceList = (List<MultipleChoice>) request.getSession().getAttribute("multipleChoiceList");
+        List<CheckingQuestion> checkingQuestionList = (List<CheckingQuestion>) request.getSession().getAttribute("checkingQuestionList");
+
+        String singleAnswers = (String) request.getSession().getAttribute("singleAnswers");
+        String multipleAnswers = (String) request.getSession().getAttribute("multipleAnswers");
+        String checkingAnswers = (String) request.getSession().getAttribute("checkingAnswers");
+        singleAnswers = singleAnswers.replace("[", "");
+        singleAnswers = singleAnswers.replace(",", "");
+        singleAnswers = singleAnswers.replace("]", "");
+        checkingAnswers = checkingAnswers.replace("[", "");
+        checkingAnswers = checkingAnswers.replace(",", "");
+        checkingAnswers = checkingAnswers.replace("]", "");
+
+        //单选题得分情况
+        StringBuilder trueSingleAnswers = new StringBuilder();
+        for (SingleChoice singleChoice : singleChoiceList) {
+            trueSingleAnswers.append(singleChoice.getTrueAnswer());
+        }
+        int singleDifferent = 0;
+        char[] trueSingleAnswerList = trueSingleAnswers.toString().toCharArray();
+        char[] singAnswersList = singleAnswers.toCharArray();
+        for (int i = 0; i < trueSingleAnswerList.length; i++) {
+            if (trueSingleAnswerList[i] != singAnswersList[i]) {
+                singleDifferent++;
+            }
+        }
+        float singleResult = singleScore - singleScore / singleNum * singleDifferent;
+
+        //多选题得分情况
+        JSONArray multipleAnswersList = JSON.parseArray(multipleAnswers);
+        String[] multipleAnswer = new String[multipleNum];
+        for (int i = 0; i < multipleAnswersList.size(); i++) {
+            JSONArray arr = (JSONArray) multipleAnswersList.get(i);
+            for (int j = 0; j < arr.size(); j++) {
+                if (j == 0) {
+                    multipleAnswer[i] = arr.get(j).toString();
+                } else {
+                    multipleAnswer[i] += arr.get(j).toString();
+                }
+            }
+        }
+        int multipleDifferent = 0;
+        for (int i = 0; i < multipleChoiceList.size(); i++) {
+            if (!multipleAnswer[i].equals(multipleChoiceList.get(i).getTrueAnswer())) {
+                multipleDifferent++;
+            }
+        }
+        float multipleResult = multipleScore - multipleScore / multipleNum * multipleDifferent;
+
+        //判断题得分情况
+        StringBuilder trueCheckingAnswers = new StringBuilder();
+        for (CheckingQuestion checkingQuestion : checkingQuestionList) {
+            trueCheckingAnswers.append(checkingQuestion.getTrueAnswer());
+        }
+        int checkingDifferent = 0;
+        char[] trueCheckingAnswersList = trueCheckingAnswers.toString().toCharArray();
+        char[] checkingAnswersList = checkingAnswers.toCharArray();
+        for (int i = 0; i < trueCheckingAnswersList.length; i++) {
+            if (trueCheckingAnswersList[i] != checkingAnswersList[i]) {
+                checkingDifferent++;
+            }
+        }
+        float checkingResult = checkingScore - checkingScore / checkingNum * checkingDifferent;
+
+        model.addAttribute("singleScore", singleScore);
+        model.addAttribute("multipleScore", multipleScore);
+        model.addAttribute("checkingScore", checkingScore);
+        model.addAttribute("singleResult", singleResult);
+        model.addAttribute("multipleResult", multipleResult);
+        model.addAttribute("checkingResult", checkingResult);
+        return "/student/examinationResult";
     }
 
     /**

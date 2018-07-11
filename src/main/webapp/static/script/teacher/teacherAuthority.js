@@ -16,7 +16,63 @@ $(function () {
     addExamination();
     updateExamination();
     deleteExamination();
+
+    initialize();
 });
+
+//表格数据id对应名字修改
+function initialize() {
+    var _institute = $('#editable_institute');
+    var _major = $('#editable_major');
+    var _class = $('.editable_studentClass');
+    var _instituteClass = $('.editable_institute');
+    var _majorClass = $('.editable_major');
+    var _examinationStudentClass = $('.editable_examinationStudentClass');
+    var _editable_paperKind = $('.editable_paperKind');
+    var _editable_subjectId = $('.editable_subjectId');
+    var _editable_paperLevel = $('.editable_paperLevel');
+    $.ajax({
+        type: "GET",
+        url: "/static/schoolInfo/schoolInfo.xml",
+        async: false,
+        cache: false,
+        success: function (data) {
+            _institute.text(parseInt(_institute.text())
+                + $(data).find("institute").find("name").eq(parseInt(_institute.text())).text());
+            _major.text(parseInt(_major.text())
+                + $(data).find("major").find("name").eq(parseInt(_major.text())).text());
+            var i;
+            for (i = 0; i < _class.length; i++) {
+                _class.eq(i).text(parseInt(_class.eq(i).text())
+                    + $(data).find("class").find("name").eq(parseInt(_class.eq(i).text())).text());
+            }
+            for (i = 0; i < _instituteClass.length; i++) {
+                _instituteClass.eq(i).text(parseInt(_instituteClass.eq(i).text())
+                    + $(data).find("institute").find("name").eq(parseInt(_instituteClass.eq(i).text())).text());
+            }
+            for (i = 0; i < _majorClass.length; i++) {
+                _majorClass.eq(i).text(parseInt(_majorClass.eq(i).text())
+                    + $(data).find("major").find("name").eq(parseInt(_majorClass.eq(i).text())).text());
+            }
+            for (i = 0; i < _examinationStudentClass.length; i++) {
+                _examinationStudentClass.eq(i).text(parseInt(_examinationStudentClass.eq(i).text())
+                    + $(data).find("class").find("name").eq(parseInt(_examinationStudentClass.eq(i).text())).text());
+            }
+            for (i = 0; i < _editable_paperKind.length; i++) {
+                _editable_paperKind.eq(i).text(parseInt(_editable_paperKind.eq(i).text())
+                    + $(data).find("kind").find("name").eq(parseInt(_editable_paperKind.eq(i).text())).text());
+            }
+            for (i = 0; i < _editable_subjectId.length; i++) {
+                _editable_subjectId.eq(i).text(parseInt(_editable_subjectId.eq(i).text())
+                    + $(data).find("subject").find("name").eq(parseInt(_editable_subjectId.eq(i).text())).text());
+            }
+            for (i = 0; i < _editable_paperLevel.length; i++) {
+                _editable_paperLevel.eq(i).text(parseInt(_editable_paperLevel.eq(i).text())
+                    + $(data).find("level").find("name").eq(parseInt(_editable_paperLevel.eq(i).text())).text());
+            }
+        }
+    });
+}
 
 //删除考试申请
 function deleteExamination() {
@@ -62,10 +118,10 @@ function updateExamination() {
         var multipleScore = allTd.eq(4).text();
         var checkingNumber = allTd.eq(5).text();
         var checkingScore = allTd.eq(6).text();
-        var paperLevel = allTd.eq(7).text();
-        var paperKind = allTd.eq(8).text();
-        var subjectId = allTd.eq(9).text();
-        var examinationStudentClass = allTd.eq(10).text().replace("\n", "").trim();//不知道为什么出现回车
+        var paperLevel = parseInt(allTd.eq(7).text());
+        var paperKind = parseInt(allTd.eq(8).text());
+        var subjectId = parseInt(allTd.eq(9).text());
+        var examinationStudentClass = parseInt(allTd.eq(10).text().replace("\n", "").trim());//不知道为什么出现回车
         var examinationTime = allTd.eq(11).text().replace("\n", "").trim();
         var status = allTd.eq(12).children("span").eq(0).text();
 
@@ -162,10 +218,10 @@ function addExamination() {
         var multipleScore = _multipleScore.text();
         var checkingNumber = _checkingNumber.text();
         var checkingScore = _checkingScore.text();
-        var paperLevel = _paperLevel.text();
-        var paperKind = _paperKind.text();
-        var subjectId = _subjectId.text();
-        var examinationStudentClass = _examinationStudentClass.text();
+        var paperLevel = parseInt(_paperLevel.text());
+        var paperKind = parseInt(_paperKind.text());
+        var subjectId = parseInt(_subjectId.text());
+        var examinationStudentClass = parseInt(_examinationStudentClass.text());
         var examinationTime = _examinationTime.text();
         var comments = _comments.text();
 
@@ -241,29 +297,45 @@ function addExamination() {
                 }),
                 success: function (data) {
                     data = JSON.parse(data);
-                    var trHTML = "<tr>"
-                        + "<td>" + foreach_count + "</td>"
-                        + "<td><a href='javascript:void(0)' class='editable_singleNumber'>" + data.singleNumber + "</a></td>"
-                        + "<td><a href='javascript:void(0)' class='editable_singleScore'>" + data.singleScore + "</a></td>"
-                        + "<td><a href='javascript:void(0)' class='editable_multipleNumber'>" + data.multipleNumber + "</a></td>"
-                        + "<td><a href='javascript:void(0)' class='editable_multipleScore'>" + data.multipleScore + "</a></td>"
-                        + "<td><a href='javascript:void(0)' class='editable_checkingNumber'>" + data.checkingNumber + "</a></td>"
-                        + "<td><a href='javascript:void(0)' class='editable_checkingScore'>" + data.checkingScore + "</a></td>"
-                        + "<td><a href='javascript:void(0)' class='editable_paperLevel'>" + data.paperLevel + "</a></td>"
-                        + "<td><a href='javascript:void(0)' class='editable_paperKind'>" + data.paperKind + "</a></td>"
-                        + "<td><a href='javascript:void(0)' class='editable_subjectId'>" + data.subjectId + "</a></td>"
-                        + "<td><a href='javascript:void(0)' class='editable_examinationStudentClass'>" + data.studentClass + "</a></td>"
-                        + "<td><a href='javascript:void(0)' class='editable_examinationTime'>" + data.examinationTime + "</a></td>"
-                        + "<td class='editable_status'><span class='label label-warning'>审核中</span></td>"
-                        + "<input type='hidden' value=" + data.taskId + ">"
-                        + "<td>"
-                        + "<button type='button' class='btn btn-warning update_examination'>更新</button>"
-                        + " <button type='button' class='btn btn-danger delete_examination'>删除</button>"
-                        + "</td>"
-                        + "</tr>";
-                    _moral.modal("hide");
-                    _table.append(trHTML);
-                    toastr.success("创建成功");
+                    $.ajax({
+                        type: "GET",
+                        url: "/static/schoolInfo/schoolInfo.xml",
+                        async: false,
+                        cache: false,
+                        success: function (data1) {
+                            var trHTML = "<tr>"
+                                + "<td>" + foreach_count + "</td>"
+                                + "<td><a href='javascript:void(0)' class='editable_singleNumber'>" + data.singleNumber + "</a></td>"
+                                + "<td><a href='javascript:void(0)' class='editable_singleScore'>" + data.singleScore + "</a></td>"
+                                + "<td><a href='javascript:void(0)' class='editable_multipleNumber'>" + data.multipleNumber + "</a></td>"
+                                + "<td><a href='javascript:void(0)' class='editable_multipleScore'>" + data.multipleScore + "</a></td>"
+                                + "<td><a href='javascript:void(0)' class='editable_checkingNumber'>" + data.checkingNumber + "</a></td>"
+                                + "<td><a href='javascript:void(0)' class='editable_checkingScore'>" + data.checkingScore + "</a></td>"
+                                + "<td><a href='javascript:void(0)' class='editable_paperLevel'>"
+                                + parseInt(data.paperLevel) + $(data1).find("level").find("name").eq(parseInt(data.paperLevel)).text()
+                                + "</a></td>"
+                                + "<td><a href='javascript:void(0)' class='editable_paperKind'>"
+                                + parseInt(data.paperKind) + $(data1).find("kind").find("name").eq(parseInt(data.paperKind)).text()
+                                + "</a></td>"
+                                + "<td><a href='javascript:void(0)' class='editable_subjectId'>"
+                                + parseInt(data.subjectId) + $(data1).find("subject").find("name").eq(parseInt(data.subjectId)).text()
+                                + "</a></td>"
+                                + "<td><a href='javascript:void(0)' class='editable_examinationStudentClass'>"
+                                + parseInt(data.studentClass) + $(data1).find("class").find("name").eq(parseInt(data.studentClass)).text()
+                                + "</a></td>"
+                                + "<td><a href='javascript:void(0)' class='editable_examinationTime'>" + data.examinationTime + "</a></td>"
+                                + "<td class='editable_status'><span class='label label-warning'>审核中</span></td>"
+                                + "<input type='hidden' value=" + data.taskId + ">"
+                                + "<td>"
+                                + "<button type='button' class='btn btn-warning update_examination'>更新</button>"
+                                + " <button type='button' class='btn btn-danger delete_examination'>删除</button>"
+                                + "</td>"
+                                + "</tr>";
+                            _moral.modal("hide");
+                            _table.append(trHTML);
+                            toastr.success("创建成功");
+                        }
+                    });
                 },
                 error: function () {
                     toastr.error("创建失败");
@@ -287,9 +359,9 @@ function updateStudent() {
         var username = allTd.eq(1).text();
         var name = allTd.eq(2).text();
         var studentNumber = allTd.eq(3).text();
-        var studentClass = allTd.eq(4).text();
-        var major = allTd.eq(5).text();
-        var institute = allTd.eq(6).text();
+        var studentClass = parseInt(allTd.eq(4).text());
+        var major = parseInt(allTd.eq(5).text());
+        var institute = parseInt(allTd.eq(6).text());
         var phone = allTd.eq(7).text();
 
         Ewin.confirm({message: "确认要更新选择的数据吗？"}).on(function (e) {
@@ -383,14 +455,14 @@ function addStudent() {
         var majorParent = _major.parent();
         var instituteParent = _institute.parent();
 
-        var username = _username.val();
-        var password = _password.val();
-        var name = _name.val();
-        var studentNumber = _studentNumber.val();
-        var studentClass = _studentClass.val();
-        var major = _major.val();
-        var institute = _institute.val();
-        var phone = $("#phone").val();
+        var username = _username.text();
+        var password = _password.text();
+        var name = _name.text();
+        var studentNumber = _studentNumber.text();
+        var studentClass = parseInt(_studentClass.text());
+        var major = parseInt(_major.text());
+        var institute = parseInt(_institute.text());
+        var phone = $("#phone").text();
 
         if (username.length === 0) {
             usernameParent.addClass("has-error");
@@ -441,24 +513,38 @@ function addStudent() {
                 }),
                 success: function (data) {
                     data = JSON.parse(data);
-                    var trHTML = "<tr>"
-                        + "<td" + foreach_count + "</td>"
-                        + "<td class='editable_username'>>" + data.username + "</td>"
-                        + "<td class='editable_name'>>" + data.name + "</td>"
-                        + "<td class='editable_studentNumber'>>" + data.studentNumber + "</td>"
-                        + "<td class='editable_studentClass'>>" + data.studentClass + "</td>"
-                        + "<td class='editable_major'>>" + data.major + "</td>"
-                        + "<td class='editable_institute'>>" + data.institute + "</td>"
-                        + "<td class='editable_phone'>>" + data.phone + "</td>"
-                        + "<input type='hidden' value=" + data.uid + ">"
-                        + "<td>"
-                        + "<button type='button' class='btn btn-warning update_button'>更新</button>"
-                        + " <button type='button' class='btn btn-danger delete_button'>删除</button>"
-                        + "</td>"
-                        + "</tr>";
-                    _moral.modal("hide");
-                    _table.append(trHTML);
-                    toastr.success("创建成功");
+                    $.ajax({
+                        type: "GET",
+                        url: "/static/schoolInfo/schoolInfo.xml",
+                        async: false,
+                        cache: false,
+                        success: function (data1) {
+                            var trHTML = "<tr>"
+                                + "<td>" + foreach_count + "</td>"
+                                + "<td class='editable_username'>" + data.username + "</td>"
+                                + "<td class='editable_name'>" + data.name + "</td>"
+                                + "<td class='editable_studentNumber'>" + data.studentNumber + "</td>"
+                                + "<td class='editable_studentClass'>"
+                                + parseInt(data.studentClass) + $(data1).find("class").find("name").eq(parseInt(data.studentClass)).text()
+                                + "</td>"
+                                + "<td class='editable_major'>"
+                                + parseInt(data.major) + $(data1).find("major").find("name").eq(parseInt(data.major)).text()
+                                + "</td>"
+                                + "<td class='editable_institute'>"
+                                + parseInt(data.institute) + $(data1).find("institute").find("name").eq(parseInt(data.institute)).text()
+                                + "</td>"
+                                + "<td class='editable_phone'>" + data.phone + "</td>"
+                                + "<input type='hidden' value=" + data.uid + ">"
+                                + "<td>"
+                                + "<button type='button' class='btn btn-warning update_button'>更新</button>"
+                                + " <button type='button' class='btn btn-danger delete_button'>删除</button>"
+                                + "</td>"
+                                + "</tr>";
+                            _moral.modal("hide");
+                            _table.append(trHTML);
+                            toastr.success("创建成功");
+                        }
+                    });
                 },
                 error: function () {
                     toastr.error("创建失败");
@@ -484,8 +570,8 @@ function updateTeacherInfo() {
 
         var name = _name.text();
         var teacherNumber = _teacherNumber.text();
-        var major = _major.text();
-        var institute = _institute.text();
+        var major = parseInt(_major.text());
+        var institute = parseInt(_institute.text());
         var phone = _phone.text();
 
         Ewin.confirm({message: "确认要更新选择的数据吗？"}).on(function (e) {
@@ -590,6 +676,22 @@ function lineEditable() {
     });
     $('.editable_studentClass').editable({
         mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("class").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -601,6 +703,22 @@ function lineEditable() {
     });
     $('.editable_major').editable({
         mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("major").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -612,6 +730,22 @@ function lineEditable() {
     });
     $('.editable_institute').editable({
         mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("institute").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -669,6 +803,22 @@ function lineEditable() {
     });
     $('#editable_major').editable({
         mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("major").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -680,6 +830,22 @@ function lineEditable() {
     });
     $('#editable_institute').editable({
         mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("institute").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -760,6 +926,22 @@ function lineEditable() {
         }
     });
     $('.editable_paperLevel').editable({
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("level").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -770,6 +952,22 @@ function lineEditable() {
         }
     });
     $('.editable_paperKind').editable({
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("kind").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -780,6 +978,22 @@ function lineEditable() {
         }
     });
     $('.editable_subjectId').editable({
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("subject").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -790,6 +1004,22 @@ function lineEditable() {
         }
     });
     $('.editable_examinationStudentClass').editable({
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("class").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -879,6 +1109,22 @@ function lineEditable() {
     });
     $('#editable_paperLevel').editable({
         mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("level").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -890,6 +1136,22 @@ function lineEditable() {
     });
     $('#editable_paperKind').editable({
         mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("kind").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -901,6 +1163,22 @@ function lineEditable() {
     });
     $('#editable_subjectId').editable({
         mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("subject").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -912,6 +1190,22 @@ function lineEditable() {
     });
     $('#editable_examinationStudentClass').editable({
         mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("class").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -933,6 +1227,124 @@ function lineEditable() {
         }
     });
     $('#editable_comments').editable({
+        type: "textarea",
         mode: "inline"
+    });
+
+    //学生创建表格
+    $('#username').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#password').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#name').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#studentNumber').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+            if (isNaN(value)) {
+                return '必须是数字';
+            }
+        }
+    });
+    $('#studentClass').editable({
+        mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("class").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#major').editable({
+        mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("major").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#institute').editable({
+        mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("institute").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#phone').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (isNaN(value)) {
+                return '必须是数字';
+            }
+        }
     });
 }

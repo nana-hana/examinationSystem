@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<school>
+    <institute>
+        <name>计算机信息学院</name>
+        <name>美术学院</name>
+    </institute>
+    <class>
+        <name>软件1615班</name>
+        <name>软件1616班</name>
+        <name>美术1班</name>
+        <name>美术2班</name>
+    </class>
+    <major>
+        <name>软件技术</name>
+        <name>网络通信</name>
+        <name>素描</name>
+    </major>
+    <subject>
+        <name>计算机网络</name>
+        <name>数学</name>
+        <name>英语</name>
+    </subject>
+    <level>
+        <name>简单</name>
+        <name>中等</name>
+        <name>困难</name>
+    </level>
+    <kind>
+        <name>随机</name>
+        <name>AB卷</name>
+    </kind>
+</school>

@@ -122,57 +122,38 @@
                             </h4>
                         </div>
                         <div class="modal-body">
-                            <form class="form-horizontal" role="form">
-                                <div class="form-group">
-                                    <label for="username" class="col-sm-2 control-label">教师账号*</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="username"
-                                               placeholder="请输入教师账号">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="password" class="col-sm-2 control-label">教师密码*</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="password"
-                                               placeholder="请输入教师密码">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="name" class="col-sm-2 control-label">教师姓名*</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="name"
-                                               placeholder="请输入教师姓名">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="teacherNumber" class="col-sm-2 control-label">教师编号*</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="teacherNumber"
-                                               placeholder="请输入教师编号">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="major" class="col-sm-2 control-label">教师专业*</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="major"
-                                               placeholder="请输入教师专业">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="institute" class="col-sm-2 control-label">教师学院*</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="institute"
-                                               placeholder="请输入教师学院">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="phone" class="col-sm-2 control-label">教师号码&nbsp&nbsp</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="phone"
-                                               placeholder="请输入教师手机号码">
-                                    </div>
-                                </div>
-                            </form>
+                            <div class="box">
+                                <table class="table table-bordered table-striped">
+                                    <tr>
+                                        <th class="col-sm-3">教师账号*</th>
+                                        <td id="username" class="col-sm-9"></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">教师密码*</th>
+                                        <td id="password" class="col-sm-9"></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">教师姓名*</th>
+                                        <td id="name" class="col-sm-9"></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">教师编号*</th>
+                                        <td id="teacherNumber" class="col-sm-9"></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">教师专业*</th>
+                                        <td id="major" class="col-sm-9"></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">教师学院*</th>
+                                        <td id="institute" class="col-sm-9"></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-sm-3">手机号码&nbsp&nbsp</th>
+                                        <td id="phone" class="col-sm-9"></td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">关闭

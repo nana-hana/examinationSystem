@@ -231,13 +231,17 @@
             });
 
             window.setInterval(storeAnswer, 12000);
-            // var examinationTime = parseInt($("#time").text()) * 6000;
-            // window.setTimeout(clearTimer(timer), examinationTime);
-        });
 
-        // function clearTimer(timer) {
-        //     window.clearInterval(timer);
-        // }
+            $("#submitAnswer").on("click", function () {
+                storeAnswer();
+                Ewin.confirm({message: "确认要提交试卷吗？"}).on(function (e) {
+                    if (!e) {
+                        return;
+                    }
+                    window.location.href = '/student/examinationResult';
+                });
+            });
+        });
 
         function storeAnswer() {
             var _sTopic = $(".singleTopic");
@@ -366,6 +370,8 @@
                                 <li><a href="javascript:void(0)" class="jumpCheckingTopic">$foreach.count</a></li>
                             #end
                         </ul>
+                    </li>
+                    <li><a href="javascript:void(0)" id="submitAnswer"><i class="fa fa-link"></i> <span>提交试卷</span></a>
                     </li>
                 </ul>
             </section>

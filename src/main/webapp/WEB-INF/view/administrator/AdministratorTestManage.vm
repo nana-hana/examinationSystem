@@ -34,6 +34,7 @@
     <script src="/static/plugins/fastclick/fastclick.js"></script>
     <script src="/static/plugins/bootstrap3-editable/js/bootstrap-editable.js"></script>
     <script src="/static/script/bootstrapDialogPackage.js"></script>
+    <script src="/static/plugins/moment/moment.js"></script>
     <script>
         $(function () {
             $('#requestTable').DataTable({
@@ -126,19 +127,21 @@
                                 <table class="table table-bordered table-striped">
                                     <tr>
                                         <th class="col-sm-3">考试时间*</th>
-                                        <td id="editable_examTime" class="col-sm-9">0</td>
+                                        <td id="editable_examTime" class="col-sm-9" data-type="combodate"
+                                            data-template="YYYY-MM-DD HH:mm" data-format="YYYY-MM-DD HH:mm"
+                                            data-viewformat="YYYY-MM-DD HH:mm" data-pk="1"></td>
                                     </tr>
                                     <tr>
                                         <th class="col-sm-3">考试地点*</th>
-                                        <td id="editable_examPlace" class="col-sm-9">0</td>
+                                        <td id="editable_examPlace" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
                                         <th class="col-sm-3">监考老师编号*</th>
-                                        <td id="editable_examinationTeacherNumber" class="col-sm-9">0</td>
+                                        <td id="editable_examinationTeacherNumber" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
                                         <th class="col-sm-3">考试所属学院*</th>
-                                        <td id="editable_examinationInstitute" class="col-sm-9">0</td>
+                                        <td id="editable_examinationInstitute" class="col-sm-9"></td>
                                     </tr>
                                 </table>
                             </div>

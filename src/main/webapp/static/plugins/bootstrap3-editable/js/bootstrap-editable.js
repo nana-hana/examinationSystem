@@ -6546,7 +6546,7 @@ $(function(){
             this.options.datetimepicker.language = this.options.datetimepicker.language || 'en'; 
 
             //store DPglobal
-            this.dpg = $.fn.datetimepicker.DPGlobal; 
+            this.dpg = $.fn.datetimepicker.DPGlobal;
 
             //store parsed formats
             this.parsedFormat = this.dpg.parseFormat(this.options.format, this.options.formatType);

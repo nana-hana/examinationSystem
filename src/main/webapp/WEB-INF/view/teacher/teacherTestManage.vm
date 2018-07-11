@@ -85,7 +85,7 @@
                                     <th>试卷生成类型</th>
                                     <th>考试科目</th>
                                     <th>参考班级</th>
-                                    <th>考试持续事件</th>
+                                    <th>考试持续时间</th>
                                     <th>审核状态</th>
                                     <th>操作</th>
                                 </tr>
@@ -161,51 +161,51 @@
                                 <table class="table table-bordered table-striped">
                                     <tr>
                                         <th class="col-sm-3">单选题数量*</th>
-                                        <td id="editable_singleNumber" class="col-sm-9">0</td>
+                                        <td id="editable_singleNumber" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
                                         <th class="col-sm-3">单选题分值*</th>
-                                        <td id="editable_singleScore" class="col-sm-9">0</td>
+                                        <td id="editable_singleScore" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
                                         <th class="col-sm-3">多选题数量*</th>
-                                        <td id="editable_multipleNumber" class="col-sm-9">0</td>
+                                        <td id="editable_multipleNumber" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
                                         <th class="col-sm-3">多选题分值*</th>
-                                        <td id="editable_multipleScore" class="col-sm-9">0</td>
+                                        <td id="editable_multipleScore" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
                                         <th class="col-sm-3">判断题数量*</th>
-                                        <td id="editable_checkingNumber" class="col-sm-9">0</td>
+                                        <td id="editable_checkingNumber" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
                                         <th class="col-sm-3">判断题分值*</th>
-                                        <td id="editable_checkingScore" class="col-sm-9">0</td>
+                                        <td id="editable_checkingScore" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
                                         <th class="col-sm-3">试卷难度系数*</th>
-                                        <td id="editable_paperLevel" class="col-sm-9">0</td>
+                                        <td id="editable_paperLevel" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
                                         <th class="col-sm-3">试卷生成类型*</th>
-                                        <td id="editable_paperKind" class="col-sm-9">0</td>
+                                        <td id="editable_paperKind" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
                                         <th class="col-sm-3">考试科目*</th>
-                                        <td id="editable_subjectId" class="col-sm-9">0</td>
+                                        <td id="editable_subjectId" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
                                         <th class="col-sm-3">参考班级*</th>
-                                        <td id="editable_examinationStudentClass" class="col-sm-9">0</td>
+                                        <td id="editable_examinationStudentClass" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
                                         <th class="col-sm-3">考试持续事件*</th>
-                                        <td id="editable_examinationTime" class="col-sm-9">0</td>
+                                        <td id="editable_examinationTime" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
                                         <th class="col-sm-3">申请信息</th>
-                                        <td id="editable_comments" class="col-sm-9">0</td>
+                                        <td id="editable_comments" class="col-sm-9"></td>
                                     </tr>
                                 </table>
                             </div>

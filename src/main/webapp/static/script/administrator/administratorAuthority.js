@@ -15,7 +15,39 @@ $(function () {
     passRequest();
     refuseRequest();
 
+    initialize();
 });
+
+//表格数据id对应名字修改
+function initialize() {
+    var _institute = $('#editable_institute');
+    var _instituteClass = $('.editable_institute');
+    var _majorClass = $('.editable_major');
+    var _examinationStudentClass = $('.editable_examinationStudentClass');
+    $.ajax({
+        type: "GET",
+        url: "/static/schoolInfo/schoolInfo.xml",
+        async: false,
+        cache: false,
+        success: function (data) {
+            _institute.text(parseInt(_institute.text())
+                + $(data).find("institute").find("name").eq(parseInt(_institute.text())).text());
+            var i;
+            for (i = 0; i < _instituteClass.length; i++) {
+                _instituteClass.eq(i).text(parseInt(_instituteClass.eq(i).text())
+                    + $(data).find("institute").find("name").eq(parseInt(_instituteClass.eq(i).text())).text());
+            }
+            for (i = 0; i < _majorClass.length; i++) {
+                _majorClass.eq(i).text(parseInt(_majorClass.eq(i).text())
+                    + $(data).find("major").find("name").eq(parseInt(_majorClass.eq(i).text())).text());
+            }
+            for (i = 0; i < _examinationStudentClass.length; i++) {
+                _examinationStudentClass.eq(i).text(parseInt(_examinationStudentClass.eq(i).text())
+                    + $(data).find("class").find("name").eq(parseInt(_examinationStudentClass.eq(i).text())).text());
+            }
+        }
+    });
+}
 
 //审批请求通过
 function passRequest() {
@@ -26,10 +58,10 @@ function passRequest() {
         var _modal = $("#addOtherModal");
         _modal.modal();
         $("#submitApprovalExamination").on("click", function () {
-            var examTime = $('#editable_examTime').text();
+            var examTime = $('#editable_examTime').text() + ":00";
             var examPlace = $('#editable_examPlace').text();
             var teacherNumber = $('#editable_examinationTeacherNumber').text();
-            var institute = $('#editable_examinationInstitute').text();
+            var institute = parseInt($('#editable_examinationInstitute').text());
             Ewin.confirm({message: "确认要进行该操作吗？"}).on(function (e) {
                 if (!e) {
                     return;
@@ -199,13 +231,13 @@ function addTeacher() {
         var majorParent = _major.parent();
         var instituteParent = _institute.parent();
 
-        var username = _username.val();
-        var password = _password.val();
-        var name = _name.val();
-        var teacherNumber = _teacherNumber.val();
-        var major = _major.val();
-        var institute = _institute.val();
-        var phone = $("#phone").val();
+        var username = _username.text();
+        var password = _password.text();
+        var name = _name.text();
+        var teacherNumber = _teacherNumber.text();
+        var major = parseInt(_major.text());
+        var institute = parseInt(_institute.text());
+        var phone = $("#phone").text();
 
         if (username.length === 0) {
             usernameParent.addClass("has-error");
@@ -251,23 +283,35 @@ function addTeacher() {
                 }),
                 success: function (data) {
                     data = JSON.parse(data);
-                    var trHTML = "<tr>"
-                        + "<td>" + foreach_count + "</td>"
-                        + "<td>" + data.username + "</td>"
-                        + "<td>" + data.name + "</td>"
-                        + "<td>" + data.teacherNumber + "</td>"
-                        + "<td>" + data.major + "</td>"
-                        + "<td>" + data.institute + "</td>"
-                        + "<td>" + data.phone + "</td>"
-                        + "<input type='hidden' value=" + data.uid + ">"
-                        + "<td>"
-                        + "<button type='button' class='btn btn-warning update_button'>更新</button>"
-                        + " <button type='button' class='btn btn-danger delete_button'>删除</button>"
-                        + "</td>"
-                        + "</tr>";
-                    _moral.modal("hide");
-                    _table.append(trHTML);
-                    toastr.success("创建成功");
+                    $.ajax({
+                        type: "GET",
+                        url: "/static/schoolInfo/schoolInfo.xml",
+                        async: false,
+                        cache: false,
+                        success: function (data1) {
+                            var trHTML = "<tr>"
+                                + "<td>" + foreach_count + "</td>"
+                                + "<td>" + data.username + "</td>"
+                                + "<td>" + data.name + "</td>"
+                                + "<td>" + data.teacherNumber + "</td>"
+                                + "<td>"
+                                + parseInt(data.major) + $(data1).find("major").find("name").eq(parseInt(data.major)).text()
+                                + "</td>"
+                                + "<td>"
+                                + parseInt(data.institute) + $(data1).find("major").find("name").eq(parseInt(data.institute)).text()
+                                + "</td>"
+                                + "<td>" + data.phone + "</td>"
+                                + "<input type='hidden' value=" + data.uid + ">"
+                                + "<td>"
+                                + "<button type='button' class='btn btn-warning update_button'>更新</button>"
+                                + " <button type='button' class='btn btn-danger delete_button'>删除</button>"
+                                + "</td>"
+                                + "</tr>";
+                            _moral.modal("hide");
+                            _table.append(trHTML);
+                            toastr.success("创建成功");
+                        }
+                    });
                 },
                 error: function () {
                     toastr.error("创建失败");
@@ -393,6 +437,22 @@ function lineEditable() {
     });
     $('.editable_major').editable({
         mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("major").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -404,6 +464,22 @@ function lineEditable() {
     });
     $('.editable_institute').editable({
         mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("institute").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -471,6 +547,22 @@ function lineEditable() {
     });
     $('#editable_institute').editable({
         mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("institute").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -492,6 +584,11 @@ function lineEditable() {
     //考试外在信息表格
     $('#editable_examTime').editable({
         mode: "inline",
+        combodate: {
+            firstItem: 'name',
+            minYear: 2018,
+            maxYear: 2020
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
@@ -519,10 +616,119 @@ function lineEditable() {
     });
     $('#editable_examinationInstitute').editable({
         mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("institute").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
         validate: function (value) {
             if (!$.trim(value)) {
                 return '不能为空';
             }
+            if (isNaN(value)) {
+                return '必须是数字';
+            }
+        }
+    });
+
+    //教师创建表格
+    $('#username').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#password').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#name').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#teacherNumber').editable({
+        mode: "inline",
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+            if (isNaN(value)) {
+                return '必须是数字';
+            }
+        }
+    });
+    $('#major').editable({
+        mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("major").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#institute').editable({
+        mode: "inline",
+        type: "select",
+        source: function () {
+            var result = [];
+            $.ajax({
+                type: "GET",
+                url: "/static/schoolInfo/schoolInfo.xml",
+                async: false,
+                cache: false,
+                success: function (data) {
+                    $(data).find("institute").find("name").each(function (index) {
+                        result.push({value: index, text: index + $(this).text()})
+                    });
+                }
+            });
+            return result;
+        },
+        validate: function (value) {
+            if (!$.trim(value)) {
+                return '不能为空';
+            }
+        }
+    });
+    $('#phone').editable({
+        mode: "inline",
+        validate: function (value) {
             if (isNaN(value)) {
                 return '必须是数字';
             }
