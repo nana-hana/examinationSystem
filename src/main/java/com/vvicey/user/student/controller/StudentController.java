@@ -2,9 +2,12 @@ package com.vvicey.user.student.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.sun.tracing.dtrace.Attributes;
 import com.vvicey.common.information.Status;
 import com.vvicey.common.utils.MD5Utils;
+import com.vvicey.examination.entity.ExaminationExternal;
 import com.vvicey.examination.entity.ExaminationInternal;
+import com.vvicey.examination.service.ExaminationExternalService;
 import com.vvicey.examination.service.ExaminationInternalService;
 import com.vvicey.testPaper.entity.CheckingQuestion;
 import com.vvicey.testPaper.entity.MultipleChoice;
@@ -30,6 +33,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +54,8 @@ public class StudentController {
     private LoginService loginService;
     @Autowired
     private ExaminationInternalService examinationInternalService;
+    @Autowired
+    private ExaminationExternalService examinationExternalService;
     @Autowired
     private SingleChoiceService singleChoiceService;
     @Autowired
@@ -100,6 +107,16 @@ public class StudentController {
         }
         if (checkingAnswers != null) {
             model.addAttribute("checkingAnswers", checkingAnswers);
+        }
+        ExaminationExternal examinationExternal = examinationExternalService.queryExaminationExternalByEiid(examinationInternal.getEiid());
+        String examinationTime = String.valueOf(examinationExternal.getExamTime());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String nowTime = df.format(new Date());
+        if (examinationTime.compareTo(nowTime) >= 0) {
+            model.addAttribute("isTimeToExamination", 0);//1代表可以开始考试了，0代表还不能开始考试
+            model.addAttribute("whenExamination", examinationTime);
+        } else {
+            model.addAttribute("isTimeToExamination", 1);
         }
         request.getSession().setAttribute("examinationInternal", examinationInternal);
         model.addAttribute("singleChoiceList", singleChoiceList);

@@ -241,7 +241,33 @@
                     window.location.href = '/student/examinationResult';
                 });
             });
+
+            var isTimeToExamination = '$isTimeToExamination';
+            if (isTimeToExamination === "0") {
+                $("aside").remove();
+                $(".content").remove();
+                $(".content-wrapper").append("<br><br><section class='content text-center'><b>考试时间为$whenExamination</b></section>");
+            }
+
+            var intDiff = parseInt('$examinationTime');//倒计时总分钟
+            timer(intDiff);
         });
+
+        function timer(intDiff) {
+            window.setInterval(function () {
+                var minute = 0;//时间默认值
+                if (intDiff > 0) {
+                    minute = intDiff;
+                }
+                if (minute <= 9) minute = '0' + minute;
+                $('#time').text(minute);
+                intDiff--;
+                if (intDiff === 0) {
+                    storeAnswer();
+                    window.location.href = '/student/examinationResult';
+                }
+            }, 60000);
+        }
 
         function storeAnswer() {
             var _sTopic = $(".singleTopic");
