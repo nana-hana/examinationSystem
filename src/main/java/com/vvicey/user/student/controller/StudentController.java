@@ -2,7 +2,6 @@ package com.vvicey.user.student.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.sun.tracing.dtrace.Attributes;
 import com.vvicey.common.information.Status;
 import com.vvicey.common.utils.MD5Utils;
 import com.vvicey.examination.entity.ExaminationExternal;
