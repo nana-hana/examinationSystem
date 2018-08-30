@@ -87,6 +87,9 @@
                                         <input type="hidden" value=$approval.taskId>
                                         #if($approval.status==0)
                                             <td>
+	                                            <span id="span_query_test" 
+	                                            		onclick="queryTestClick($approval.eiid)"
+	                                            			style="margin-bottom:5px;cursor:pointer;display:inline-block; width: 54px; height: 34px; background-color: darkorchid; color: white;font-size: 12px;text-align: center;line-height: 34px;border-radius: 2px;">查看题目</span>
                                                 <button type="button" class="btn btn-warning pass_button">
                                                     批准
                                                 </button>
@@ -161,4 +164,6 @@
     <footer></footer>
 </div>
 </body>
+	<script src="/static/plugins/layer/layer.js"></script>
+	<script src="/static/script/administrator/adminTest.js"></script>
 </html>

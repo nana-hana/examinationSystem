@@ -10,5 +10,19 @@ import java.util.List;
  * @Description 判断题抽象类
  */
 public interface CheckingQuestionService {
-    List<CheckingQuestion> queryCheckingQuestionBySubjectId(Integer subjectId, Integer checkingNumber);
+	/**
+     * 根据考试信息Eiid查询当前考试题目 
+     * @param Eiid
+     * @return
+     */
+	List<CheckingQuestion> queryCheckingQuestionByEiid(Integer Eiid);
+    
+    /**
+     * 插入一道单选题
+     * @param CheckingQuestion
+     * @return 成功返回true,失败返回false
+     */
+    boolean insertCheckingQuestion(CheckingQuestion CheckingQuestion);
+    
+    List<CheckingQuestion> queryCheckingQuestionAll(Integer subjectId);
 }

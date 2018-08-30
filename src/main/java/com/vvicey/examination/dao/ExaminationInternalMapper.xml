@@ -14,6 +14,8 @@
         <result column="subject_id" property="subjectId" jdbcType="INTEGER"/>
         <result column="student_class" property="studentClass" jdbcType="INTEGER"/>
         <result column="examination_time" property="examinationTime" jdbcType="INTEGER"/>
+        <result column="exam_time" property="examTime" jdbcType="TIMESTAMP"/>
+        
     </resultMap>
     <sql id="Base_Column_List">
     eiid, single_number, single_score, multiple_number, multiple_score, checking_number, 
@@ -26,10 +28,10 @@
         where eiid = #{eiid,jdbcType=INTEGER}
     </select>
     <select id="selectByStudentClass" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-        select
-        <include refid="Base_Column_List"/>
-        from examination_internal
-        where student_class = #{studentClass,jdbcType=INTEGER}
+        select *
+        from examination_internal,examination_external
+        where examination_internal.eiid=examination_external.eiid
+        and student_class = #{studentClass,jdbcType=INTEGER}
     </select>
     <delete id="deleteByEiid" parameterType="java.lang.Integer">
     delete from examination_internal

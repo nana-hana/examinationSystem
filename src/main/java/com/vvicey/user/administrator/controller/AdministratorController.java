@@ -5,6 +5,12 @@ import com.vvicey.common.information.Status;
 import com.vvicey.common.utils.MD5Utils;
 import com.vvicey.examination.entity.ExaminationExternal;
 import com.vvicey.examination.service.ExaminationExternalService;
+import com.vvicey.testPaper.entity.CheckingQuestion;
+import com.vvicey.testPaper.entity.MultipleChoice;
+import com.vvicey.testPaper.entity.SingleChoice;
+import com.vvicey.testPaper.service.CheckingQuestionService;
+import com.vvicey.testPaper.service.MultipleChoiceService;
+import com.vvicey.testPaper.service.SingleChoiceService;
 import com.vvicey.user.administrator.entity.Administrator;
 import com.vvicey.user.administrator.service.AdministratorService;
 import com.vvicey.user.login.entity.Loginer;
@@ -25,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +55,12 @@ public class AdministratorController {
     private ActivityApprovalRequestService activityApprovalRequestService;
     @Autowired
     private ExaminationExternalService examinationExternalService;
+    @Autowired
+    private MultipleChoiceService multipleChoiceService;
+    @Autowired
+    private CheckingQuestionService checkingQuestionService;
+    @Autowired
+    private SingleChoiceService singleChoiceService;
 
     /**
      * 跳转管理员界面,获取教师数据
@@ -55,8 +68,10 @@ public class AdministratorController {
      * @return 管理员界面文件名
      */
     @RequestMapping(value = "administratorTeacherManage", method = RequestMethod.GET)
-    public String administratorTeacherManage(Model model) {
-        List<TeacherLoginer> teacherLoginers = teacherService.queryAllTeacher();
+    public String administratorTeacherManage(Model model, HttpServletRequest request) {
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        AdministratorLoginer administratorLoginer = administratorService.queryAdministratorSelf(loginer.getUid());
+        List<TeacherLoginer> teacherLoginers = teacherService.queryByInstitute(administratorLoginer.getInstitute());
         model.addAttribute("teacherLoginers", teacherLoginers);
         return "/administrator/administratorTeacherManage";
     }
@@ -80,8 +95,27 @@ public class AdministratorController {
      * @return 待审批信息
      */
     @RequestMapping(value = "administratorTestManage", method = RequestMethod.GET)
-    public String administratorTestManage(Model model) {
+    public String administratorTestManage(Model model, HttpServletRequest request) {
+        Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
+        AdministratorLoginer administratorLoginer = administratorService.queryAdministratorSelf(loginer.getUid());
+        List<TeacherLoginer> teacherLoginers = teacherService.queryByInstitute(administratorLoginer.getInstitute());
+        int index = 0;
         List<ActivityInternal> approvalList = activityApprovalRequestService.approvalQueryList();
+        for (int i = approvalList.size() - 1; i >= 0; i--) {
+            ActivityInternal activityInternal = approvalList.get(i);
+            int teacherNumber = activityInternal.getSubmitTeacherNumber();
+            for (TeacherLoginer teacherLoginer : teacherLoginers) {
+                if (teacherNumber == teacherLoginer.getTeacherNumber()) {
+                    index = 1;
+                }
+            }
+            if (index != 1) {
+                approvalList.remove(activityInternal);
+            }
+            index = 0;
+        }
+
+
         model.addAttribute("approvalList", approvalList);
         return "/administrator/AdministratorTestManage";
     }
@@ -213,4 +247,41 @@ public class AdministratorController {
         return Status.SUCCESS.getSign();
     }
 
+    /**
+     * 根据前台eiid查询当前考试题目
+     *
+     * @param request 获取信息
+     * @return 返回查询的试题
+     */
+    @RequestMapping("/queryTest.do")
+    @ResponseBody
+    public Map<String, Object> queryTest(HttpServletRequest request) {
+        Map<String, Object> modelMap = new HashMap<String, Object>();
+        //获取eiid转为int类型
+        String eiidStr = request.getParameter("eiid");
+        int examEiid = Integer.parseInt(eiidStr);
+        //查询单选题
+        List<SingleChoice> singleChoiceList = singleChoiceService.querySingleChoiceByEiid(examEiid);
+        //查询多选题
+        List<MultipleChoice> multipleChoiceList = multipleChoiceService.queryMultipleChoiceByEiid(examEiid);
+        //查询判断题
+        List<CheckingQuestion> checkingQuestionList = checkingQuestionService.queryCheckingQuestionByEiid(examEiid);
+        //将题目信息添加进modelMap
+        if (singleChoiceList == null || singleChoiceList.isEmpty()) {
+            modelMap.put("single", "empty");
+        } else {
+            modelMap.put("single", singleChoiceList);
+        }
+        if (multipleChoiceList == null || multipleChoiceList.isEmpty()) {
+            modelMap.put("multuple", "empty");
+        } else {
+            modelMap.put("multuple", multipleChoiceList);
+        }
+        if (checkingQuestionList == null || checkingQuestionList.isEmpty()) {
+            modelMap.put("check", "empty");
+        } else {
+            modelMap.put("check", checkingQuestionList);
+        }
+        return modelMap;
+    }
 }

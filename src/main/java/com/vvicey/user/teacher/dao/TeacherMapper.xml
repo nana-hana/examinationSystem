@@ -33,6 +33,14 @@
     from teacher t
     left join login l on t.uid = l.uid
   </select>
+  <select id="selectByInstitute" resultMap="TeacherLoginerResultMap">
+    select
+    <include refid="Base_Column_List"/>,
+    <include refid="Loginer_Column_List"/>
+    from teacher t
+    left join login l on t.uid = l.uid
+    where t.institute = #{institute}
+  </select>
   <select id="selectTeacherSelf" resultMap="TeacherLoginerResultMap">
     select
     <include refid="Base_Column_List"/>,

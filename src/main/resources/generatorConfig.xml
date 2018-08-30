@@ -23,7 +23,7 @@
         <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
                         connectionURL="jdbc:mysql://localhost:3306/examination_system"
-                        userId="root" password="qwe123">
+                        userId="root" password="root">
         </jdbcConnection>
 
         <!-- 可选的（0 or 1） -->

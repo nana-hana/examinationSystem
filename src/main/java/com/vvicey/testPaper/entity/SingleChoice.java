@@ -8,7 +8,7 @@ package com.vvicey.testPaper.entity;
 public class SingleChoice {
 
     private int id;//id
-    private Integer subjectId;//科目
+    private Integer examEiid;//科目
     private String question;//问题
     private String answerA;//答案A
     private String answerB;//答案B
@@ -33,16 +33,16 @@ public class SingleChoice {
     public void setId(int id) {
         this.id = id;
     }
+    
+    public Integer getExamEiid() {
+		return examEiid;
+	}
 
-    public Integer getSubjectId() {
-        return subjectId;
-    }
+	public void setExamEiid(Integer examEiid) {
+		this.examEiid = examEiid;
+	}
 
-    public void setSubjectId(Integer subjectId) {
-        this.subjectId = subjectId;
-    }
-
-    public String getQuestion() {
+	public String getQuestion() {
         return question;
     }
 

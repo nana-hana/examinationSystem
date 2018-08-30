@@ -20,12 +20,26 @@ public class CheckingQuestionServiceImpl implements CheckingQuestionService {
     /**
      * 根据学科查询指定数量的判断题
      *
-     * @param subjectId      判断题的科目
-     * @param checkingNumber 指定数量的判断题
+     * @param examEiid 考试内在因素id号
      * @return 返回判断题集
      */
     @Override
-    public List<CheckingQuestion> queryCheckingQuestionBySubjectId(Integer subjectId, Integer checkingNumber) {
-        return checkingQuestionMapper.selectBySubjectId(subjectId, checkingNumber);
+    public List<CheckingQuestion> queryCheckingQuestionByEiid(Integer examEiid) {
+        return checkingQuestionMapper.selectByExamEiid(examEiid);
+    }
+
+    @Override
+    public boolean insertCheckingQuestion(CheckingQuestion CheckingQuestion) {
+        int insertSelective = checkingQuestionMapper.insertSelective(CheckingQuestion);
+        if (insertSelective <= 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public List<CheckingQuestion> queryCheckingQuestionAll(Integer subjectId) {
+        return checkingQuestionMapper.selectAll(subjectId);
     }
 }

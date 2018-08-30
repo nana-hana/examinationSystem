@@ -10,5 +10,7 @@ import java.util.List;
  * @Description 多选题抽象类
  */
 public interface MultipleChoiceService {
-    List<MultipleChoice> queryMultipleChoiceBySubjectId(Integer subjectId, Integer singleNumber);
+    List<MultipleChoice> queryMultipleChoiceByEiid(Integer eiid);
+
+    List<MultipleChoice> queryMultipleChoiceAll(Integer subjectId);
 }

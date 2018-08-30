@@ -1,0 +1,110 @@
+*,
+html,
+body {
+	padding: 0;
+	margin: 0;
+	font-size: 12px;
+	outline: none;
+	font-family: "微软雅黑", arial;
+}
+
+.wrap-box {
+	width: 1100px;
+	min-width: 1100px;
+	margin: 6% auto;
+}
+
+h1 {
+	line-height: 2;
+	font-size: 30px;
+	text-align: center;
+	margin-bottom: 40px;
+}
+
+table.data-table {
+	width: 100%;
+}
+
+table.data-table tr:odd {
+	background: #dcebff;
+}
+
+table.data-table td {
+	line-height: 24px;
+	padding: 3px;
+	vertical-align: top;
+}
+
+table.data-table th {
+	height: 50px;
+	line-height: 50px;
+	padding: 3px;
+	font-size: 20px;
+	text-align: left;
+}
+
+table.data-table .colspan-a {
+	width: 35%;
+}
+
+table.data-table .colspan-b {
+	width: 25%;
+}
+
+table.data-table .colspan-c {
+	width: 40%;
+}
+
+table.data-table td pre {
+	display: block;
+	padding: 5px;
+	border: 1px solid #00caff;
+	background: #f8fcff;
+	text-align: left;
+}
+
+.testBtn-a {
+	display: inline-block;
+	height: 30px;
+	line-height: 30px;
+	padding: 0 10px;
+	border: 0;
+	border-radius: 5px;
+	color: #fff;
+	background: rgb(65, 133, 244);
+	cursor: pointer;
+}
+
+.testBtn-a.on {
+	background: #c9c9c9;
+	color: #666;
+	cursor: default;
+}
+
+.data-show-box {
+	line-height: 30px;
+}
+
+.date-tiem-span,
+.date-s-span {
+	display: inline-block;
+	font-size: 18px;
+	width: 36px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	color: #fff;
+	border-radius: 5px;
+}
+
+.date-tiem-span {
+	background: #333;
+}
+
+.date-s-span {
+	background: #f00;
+}
+
+.date-select-a {
+	margin-right: 5px;
+}

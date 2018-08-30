@@ -21,12 +21,16 @@ public class SingleChoiceServiceImpl implements SingleChoiceService {
     /**
      * 根据学科查询指定数量的单选题
      *
-     * @param subjectId    单选题的科目
-     * @param singleNumber 指定数量的单选题
+     * @param examEiid 考试内在因素id号
      * @return 返回单选题集
      */
     @Override
-    public List<SingleChoice> querySingleChoiceBySubjectId(Integer subjectId, Integer singleNumber) {
-        return singleChoiceMapper.selectBySubjectId(subjectId, singleNumber);
+    public List<SingleChoice> querySingleChoiceByEiid(Integer examEiid) {
+        return singleChoiceMapper.selectByExamEiid(examEiid);
+    }
+
+    @Override
+    public List<SingleChoice> querySingleChoiceAll(Integer subjectId) {
+        return singleChoiceMapper.selectAll(subjectId);
     }
 }

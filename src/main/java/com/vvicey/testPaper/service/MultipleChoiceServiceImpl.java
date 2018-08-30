@@ -21,12 +21,16 @@ public class MultipleChoiceServiceImpl implements MultipleChoiceService {
     /**
      * 根据学科查询指定数量的多选题
      *
-     * @param subjectId      多选题科目
-     * @param multipleNumber 多选题数量
+     * @param examEiid 考试内在因素id号
      * @return 多选题集
      */
     @Override
-    public List<MultipleChoice> queryMultipleChoiceBySubjectId(Integer subjectId, Integer multipleNumber) {
-        return multipleChoiceMapper.selectBySubjectId(subjectId, multipleNumber);
+    public List<MultipleChoice> queryMultipleChoiceByEiid(Integer examEiid) {
+        return multipleChoiceMapper.selectByExamEiid(examEiid);
+    }
+
+    @Override
+    public List<MultipleChoice> queryMultipleChoiceAll(Integer subjectId) {
+        return multipleChoiceMapper.selectAll(subjectId);
     }
 }

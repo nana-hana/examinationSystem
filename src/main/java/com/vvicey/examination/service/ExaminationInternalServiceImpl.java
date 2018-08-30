@@ -2,6 +2,9 @@ package com.vvicey.examination.service;
 
 import com.vvicey.examination.dao.ExaminationInternalMapper;
 import com.vvicey.examination.entity.ExaminationInternal;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,7 +67,7 @@ public class ExaminationInternalServiceImpl implements ExaminationInternalServic
     }
 
     @Override
-    public ExaminationInternal queryExaminationInternalByStudentClass(int studentClass) {
+    public List<ExaminationInternal> queryExaminationInternalByStudentClass(int studentClass) {
         return examinationInternalMapper.selectByStudentClass(studentClass);
     }
 }

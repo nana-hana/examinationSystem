@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/static/dist/css/skins/_all-skins.min.css">
     <link rel="stylesheet" href="/static/plugins/toastr/toastr.css"/>
     <link rel="stylesheet" href="/static/plugins/iCheck/all.css">
+    <link rel="stylesheet" href="/static/css/daojishi.css">
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
@@ -27,6 +28,8 @@
     <script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
     <script src="/static/plugins/fastclick/fastclick.js"></script>
     <script src="/static/script/bootstrapDialogPackage.js"></script>
+    <script src="/static/script/student/leftTime.min.js"></script>
+    <script src="/static/plugins/layer/layer.js"></script>
     <script>
         $(function () {
             $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
@@ -243,14 +246,26 @@
             });
 
             var isTimeToExamination = '$isTimeToExamination';
-            if (isTimeToExamination === "0") {
-                $("aside").remove();
-                $(".content").remove();
-                $(".content-wrapper").append("<br><br><section class='content text-center'><b>考试时间为$whenExamination</b></section>");
-            }
+            var isExamOver = '$examOver';
 
-            var intDiff = parseInt('$examinationTime');//倒计时总分钟
-            timer(intDiff);
+            if (isTimeToExamination === "0") {
+            	if(isExamOver === "1"){
+            		$("#subjectName_a").remove();
+            		$("aside").remove();
+            		$(".content").remove();
+            		$("#examTime").remove();
+            		$(".content-wrapper").append("<br><br><section class='content text-center'><b>考试已经结束</b></section>");
+            	}
+            	$("#examTime").attr("hidden","hidden");
+                $("aside").attr("hidden","hidden");
+                $(".content").attr("hidden","hidden");
+                $("#countdown").removeAttr("hidden");
+                //$(".content-wrapper").append("<br><br><section class='content text-center'><b>考试时间为$whenExamination</b></section>");
+            }else{
+            	$("#countdown").remove();
+            }
+			var intDiff = parseInt('$examinationTime');//倒计时总分钟
+    	    timer(intDiff);
         });
 
         function timer(intDiff) {
@@ -333,12 +348,54 @@
     </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
+<div id="countdown" class="wrap-box" hidden="hidden" style="position: fixed;left: 700px;z-index: 100;top: 150px;">
+	<table cellpadding="0" cellspacing="0" class="data-table">
+		<tr>
+			<th colspan="3">距$whenExamination考试倒计时</th>
+		</tr>
+		<tr>
+			<td class="colspan-a">
+				<div class="data-show-box" id="dateShow1">
+					<span class="date-tiem-span d">00</span>天
+					<span class="date-tiem-span h">00</span>时
+					<span class="date-tiem-span m">00</span>分
+					<span class="date-s-span s">00</span>秒
+				</div>
+			</td>
+
+		</tr>
+		<script type="text/javascript">
+			$(function() {
+				var aimTime = "$whenExamination";
+				var aimTimeReplace = aimTime.replace(/-/g, '/');
+				//日期倒计时
+				$.leftTime(aimTimeReplace, function(d) {
+					if(d.status) {
+						var dateShow1 = $("#dateShow1");
+						dateShow1.find(".d").html(d.d);
+						dateShow1.find(".h").html(d.h);
+						dateShow1.find(".m").html(d.m);
+						dateShow1.find(".s").html(d.s);
+					}else{
+						$("aside").removeAttr("hidden");
+	                	$(".content").removeAttr("hidden");
+	                	$("#examTime").removeAttr("hidden");
+	                	$("#countdown").remove();
+					}
+				});
+			});
+		</script>
+
+	</table>
+</div>
+
+
 <div class="wrapper">
     <header>
         <div class="main-header">
-            <a href="javascript:void(0)" class="logo">
+            <a href="javascript:void(0)" class="logo" id="subjectName_a">
                 <span class="logo-mini"><b>TEST</b></span>
-                <span class="logo-lg"><b>$examinationSubjectId 考试</b></span>
+                <span class="logo-lg"><b>$subjectName考试</b></span>
             </a>
             <nav class="navbar navbar-static-top" role="navigation">
                 <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button"></a>
@@ -346,7 +403,7 @@
                     <ul class="nav navbar-nav">
                         <li class="dropdown user user-menu">
                             <a href="javascript:void(0)">
-                                <span class="hidden-xs user_name">考试时间剩余: <b id="time">$examinationTime</b></span>
+                                <span id="examTime" class="hidden-xs user_name">考试时间剩余: <b id="time">$examinationTime</b></span>
                             </a>
                         </li>
                     </ul>
@@ -419,14 +476,14 @@
                                     #foreach($singleChoice in $singleChoiceList)
                                     <tr class="singleTopic form-group" id=$foreach.count>
                                         <td>
-                                            $foreach.count. $singleChoice.question<br><br>
-                                            <input type="radio" name=single$foreach.count class="minimal">
-                                            A. $singleChoice.answerA<br><br>
-                                            <input type="radio" name=single$foreach.count class="minimal">
-                                            B. $singleChoice.answerB<br><br>
-                                            <input type="radio" name=single$foreach.count class="minimal">
-                                            C. $singleChoice.answerC<br><br>
-                                            <input type="radio" name=single$foreach.count class="minimal">
+                                            $foreach.count. $singleChoice.question</br></br>
+                                            <input type="radio" name=single$foreach.count  />
+                                            A. $singleChoice.answerA</br></br>
+                                            <input type="radio" name=single$foreach.count />
+                                            B. $singleChoice.answerB</br></br>
+                                            <input type="radio" name=single$foreach.count />
+                                            C. $singleChoice.answerC</br></br>
+                                            <input type="radio" name=single$foreach.count />
                                             D. $singleChoice.answerD
                                         </td>
                                     </tr>
@@ -455,13 +512,13 @@
                                     <tr class="multipleTopic form-group" id=$foreach.count>
                                         <td>
                                             $foreach.count. $multipleChoice.question<br><br>
-                                            <input type="checkbox" name=multiple$foreach.count class="minimal">
+                                            <input type="checkbox" name=multiple$foreach.count >
                                             A. $multipleChoice.answerA<br><br>
-                                            <input type="checkbox" name=multiple$foreach.count class="minimal">
+                                            <input type="checkbox" name=multiple$foreach.count >
                                             B. $multipleChoice.answerB<br><br>
-                                            <input type="checkbox" name=multiple$foreach.count class="minimal">
+                                            <input type="checkbox" name=multiple$foreach.count >
                                             C. $multipleChoice.answerC<br><br>
-                                            <input type="checkbox" name=multiple$foreach.count class="minimal">
+                                            <input type="checkbox" name=multiple$foreach.count >
                                             D. $multipleChoice.answerD
                                         </td>
                                     </tr>
@@ -490,9 +547,9 @@
                                     <tr class="checkingTopic form-group" id=$foreach.count>
                                         <td>
                                             $foreach.count. $checkingQuestion.question<br><br>
-                                            <input type="radio" name=checking$foreach.count class="minimal">
+                                            <input type="radio" name=checking$foreach.count  >
                                             A. $checkingQuestion.answerA<br><br>
-                                            <input type="radio" name=checking$foreach.count class="minimal">
+                                            <input type="radio" name=checking$foreach.count >
                                             B. $checkingQuestion.answerB<br><br>
                                         </td>
                                     </tr>

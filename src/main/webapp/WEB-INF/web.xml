@@ -15,6 +15,12 @@
         <param-value>classpath:spring-config.xml</param-value>
     </context-param>
 
+	<servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/static/*</url-pattern>
+        <url-pattern>*.css</url-pattern>
+    </servlet-mapping>
+    
     <!--spring mvc启动配置-->
     <servlet>
         <servlet-name>spring-mvc</servlet-name>
@@ -55,10 +61,11 @@
     </session-config>
 
     <!--防止静态资源被拦截器拦截，拦截路径由哪一个拦截器去拦截（此处静态资源被放行）-->
-    <servlet-mapping>
+    <!-- <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/static/*</url-pattern>
-    </servlet-mapping>
+        <url-pattern>*.css</url-pattern>
+    </servlet-mapping> -->
 
     <!-- 用于支持PUT和DELETE方法 -->
     <filter>

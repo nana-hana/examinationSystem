@@ -1,8 +1,10 @@
 package com.vvicey.user.teacher.service;
 
+import com.vvicey.examination.entity.ExaminationInternal;
 import com.vvicey.user.teacher.entity.Teacher;
 import com.vvicey.user.tempEntity.TeacherLoginer;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -24,4 +26,7 @@ public interface TeacherService {
 
     void updateTeacherInfoByUid(Teacher teacher);
 
+    List<String> eaxmInput(String filePath, ExaminationInternal exam);
+
+    List<TeacherLoginer> queryByInstitute(Integer institute);
 }

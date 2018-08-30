@@ -8,7 +8,7 @@ package com.vvicey.testPaper.entity;
 public class MultipleChoice {
 
     private int id;//id
-    private Integer subjectId;//科目
+    private Integer examEiid;//科目
     private String question;//问题
     private String answerA;//答案A
     private String answerB;//答案B
@@ -34,15 +34,15 @@ public class MultipleChoice {
         this.id = id;
     }
 
-    public Integer getSubjectId() {
-        return subjectId;
-    }
+    public Integer getExamEiid() {
+		return examEiid;
+	}
 
-    public void setSubjectId(Integer subjectId) {
-        this.subjectId = subjectId;
-    }
+	public void setExamEiid(Integer examEiid) {
+		this.examEiid = examEiid;
+	}
 
-    public String getQuestion() {
+	public String getQuestion() {
         return question;
     }
 

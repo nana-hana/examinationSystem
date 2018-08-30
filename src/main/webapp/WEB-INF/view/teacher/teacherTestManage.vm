@@ -127,8 +127,14 @@
                                             #end
                                         </td>
                                         <input type="hidden" value=$activityInternal.taskId>
-                                        <td>
+                                        <td style="text-align: center;display:inline-block; width: 120px;">
                                             #if($activityInternal.status==0)
+                                            	<span id="a_input_test" 
+                                            		onclick="inputTestClick($activityInternal.eiid)" 
+                                            			style="margin-bottom:5px;cursor:pointer;display:inline-block; width: 54px; height: 34px; background-color: darkorchid; color: white;font-size: 12px;text-align: center;line-height: 34px;border-radius: 2px;">导入题目</span>
+                                                <span id="span_query_test" 
+                                            		onclick="queryTestClick($activityInternal.eiid)" 
+                                            			style="margin-bottom:5px;cursor:pointer;display:inline-block; width: 54px; height: 34px; background-color: darkorchid; color: white;font-size: 12px;text-align: center;line-height: 34px;border-radius: 2px;">查看题目</span>
                                                 <button type="button" class="btn btn-warning update_examination">
                                                     更新
                                                 </button>
@@ -208,6 +214,7 @@
                                         <td id="editable_comments" class="col-sm-9"></td>
                                     </tr>
                                 </table>
+                                <input type="file" onchange="uploadFile(this)" id="fileUp" hidden="hidden" style="position:absolute;top: -500px;"/>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -225,4 +232,6 @@
     <footer></footer>
 </div>
 </body>
+	<script src="/static/plugins/layer/layer.js"></script>
+	<script src="/static/script/teacher/inputTest.js"></script>
 </html>

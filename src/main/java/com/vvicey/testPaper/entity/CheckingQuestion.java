@@ -8,7 +8,7 @@ package com.vvicey.testPaper.entity;
 public class CheckingQuestion {
 
     private int id;//id
-    private Integer subjectId;//科目
+    private Integer examEiid;//对应创建考试
     private String question;//问题
     private String answerA;//答案A
     private String answerB;//答案B
@@ -16,7 +16,16 @@ public class CheckingQuestion {
     private Integer level;//该题难度
     private String studentAnswer;//学生选择的答案
 
-    public String getStudentAnswer() {
+    
+    public Integer getExamEiid() {
+		return examEiid;
+	}
+
+	public void setExamEiid(Integer examEiid) {
+		this.examEiid = examEiid;
+	}
+
+	public String getStudentAnswer() {
         return studentAnswer;
     }
 
@@ -29,14 +38,6 @@ public class CheckingQuestion {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Integer getSubjectId() {
-        return subjectId;
-    }
-
-    public void setSubjectId(Integer subjectId) {
-        this.subjectId = subjectId;
     }
 
     public String getQuestion() {

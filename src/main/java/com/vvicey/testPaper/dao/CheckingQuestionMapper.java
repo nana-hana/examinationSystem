@@ -10,11 +10,13 @@ import java.util.List;
  * @Description 判断题mapper
  */
 public interface CheckingQuestionMapper {
-    int deleteByPrimaryKey(Integer subjectId);
+    int deleteByEiid(Integer examEiid);
 
     int insertSelective(CheckingQuestion record);
 
-    List<CheckingQuestion> selectBySubjectId(Integer subjectId, int checkingNumber);
+    List<CheckingQuestion> selectByExamEiid(Integer examEiid);
 
     int updateByPrimaryKeySelective(CheckingQuestion record);
+    
+    List<CheckingQuestion> selectAll(Integer subjectId);
 }

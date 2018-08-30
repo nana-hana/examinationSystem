@@ -2,8 +2,16 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+       xmlns:mvc="http://www.springframework.org/schema/mvc" 
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd 
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context.xsd 
+       http://www.springframework.org/schema/mvc 
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd 
+       http://www.springframework.org/schema/aop 
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <!-- 开启切面编程自动代理 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
@@ -29,12 +37,14 @@
     </mvc:annotation-driven>
 
     <!--包扫描（排除掉扫描到的Service,tx事物机制分工合作一边Service一边Controller），注解扫描（扫描控制器的方法），-->
+    <!-- <mvc:annotation-driven/> -->
     <context:component-scan base-package="com.vvicey">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
     </context:component-scan>
     <mvc:annotation-driven/>
     <!--如果上面扫描找不到，就执行这个默认扫描处理器（处理静态资源js etc.）-->
     <mvc:default-servlet-handler/>
+	
 
     <!--配置拦截器（会全部拦截，拦截静态资源，所以在web.xml中进行配置）-->
     <mvc:interceptors>
@@ -43,7 +53,7 @@
 
     <!--声明velocity的配置项，view的位置，其他配置（输入输出编码，文件资源缓存，修改检查的时间间隔，自动加载）-->
     <bean id="velocityConfigurer" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
-        <property name="resourceLoaderPath" value="/WEB-INF/view"/>
+        <property name="resourceLoaderPath" value="/WEB-INF/view/"/>
         <property name="velocityProperties">
             <props>
                 <prop key="input.encoding">UTF-8</prop>
@@ -68,6 +78,15 @@
                 <prop key="org.apache.shiro.authz.UnauthorizedException">/WEB-INF/error/403</prop>
             </props>
         </property>
+    </bean>
+    
+    <!-- 定义文件上传解析器 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 设定默认编码 -->
+        <property name="defaultEncoding" value="UTF-8" />
+        <!-- 设定文件上传的最大值5MB，5*1024*1024 -->
+        <property name="maxUploadSize" value="5242880" />
+        <property name="maxInMemorySize" value="4096" />
     </bean>
 
 </beans>

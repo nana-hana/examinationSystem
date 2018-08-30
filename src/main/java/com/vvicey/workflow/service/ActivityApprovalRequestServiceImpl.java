@@ -1,14 +1,10 @@
 package com.vvicey.workflow.service;
 
-import com.alibaba.fastjson.JSON;
-import com.vvicey.examination.entity.ExaminationExternal;
-import com.vvicey.examination.entity.ExaminationInternal;
-import com.vvicey.examination.service.ExaminationExternalService;
-import com.vvicey.examination.service.ExaminationInternalService;
-import com.vvicey.user.teacher.service.TeacherService;
-import com.vvicey.user.tempEntity.ActivityInternal;
-import com.vvicey.workflow.dao.ActivityApprovalRequestMapper;
-import com.vvicey.workflow.entity.ActivityApprovalRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -18,10 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.alibaba.fastjson.JSON;
+import com.vvicey.examination.entity.ExaminationExternal;
+import com.vvicey.examination.entity.ExaminationInternal;
+import com.vvicey.examination.service.ExaminationExternalService;
+import com.vvicey.examination.service.ExaminationInternalService;
+import com.vvicey.testPaper.dao.CheckingQuestionMapper;
+import com.vvicey.testPaper.dao.MultipleChoiceMapper;
+import com.vvicey.testPaper.dao.SingleChoiceMapper;
+import com.vvicey.user.teacher.service.TeacherService;
+import com.vvicey.user.tempEntity.ActivityInternal;
+import com.vvicey.workflow.dao.ActivityApprovalRequestMapper;
+import com.vvicey.workflow.entity.ActivityApprovalRequest;
 
 /**
  * @Author nana
@@ -51,7 +55,12 @@ public class ActivityApprovalRequestServiceImpl implements ActivityApprovalReque
     private ExaminationInternalService examinationInternalService;
     @Autowired
     private ExaminationExternalService examinationExternalService;
-
+    @Autowired
+    private CheckingQuestionMapper checkingQuestionMapper;
+    @Autowired
+    private MultipleChoiceMapper multipleChoiceMapper;
+    @Autowired
+    private SingleChoiceMapper singleChoiceMapper;
 
     /**
      * 工作流申请创建考试事件
@@ -136,6 +145,9 @@ public class ActivityApprovalRequestServiceImpl implements ActivityApprovalReque
         Map<String, Object> variable = taskService.getVariables(taskId);
         ActivityApprovalRequest activityApprovalRequest = (ActivityApprovalRequest) variable.get("activity");
         int eiid = activityApprovalRequest.getEiid();
+        singleChoiceMapper.deleteByEiid(eiid);
+        checkingQuestionMapper.deleteByEiid(eiid);
+        multipleChoiceMapper.deleteByEiid(eiid);
         activityApprovalRequestMapper.deleteByEiid(eiid);
         examinationInternalService.deleteExamination(eiid);
         taskService.complete(taskId);

@@ -10,5 +10,8 @@ import java.util.List;
  * @Description 单选题增删改查抽象类
  */
 public interface SingleChoiceService {
-    List<SingleChoice> querySingleChoiceBySubjectId(Integer subjectId, Integer singleNumber);
+    List<SingleChoice> querySingleChoiceByEiid(Integer examEiid);
+    
+    List<SingleChoice> querySingleChoiceAll(Integer subjectId);
+    
 }

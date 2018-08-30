@@ -20,6 +20,8 @@ public interface TeacherMapper {
 
     List<TeacherLoginer> selectAllTeacher();
 
+    List<TeacherLoginer> selectByInstitute(Integer institute);
+
     TeacherLoginer selectTeacherSelf(int uid);
 
     int updateByTeacherNumberSelective(Teacher teacher);

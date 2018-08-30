@@ -10,11 +10,13 @@ import java.util.List;
  * @Description 单选题mapper
  */
 public interface SingleChoiceMapper {
-    int deleteByPrimaryKey(Integer subjectId);
+    int deleteByEiid(Integer examEiid);
 
     int insertSelective(SingleChoice record);
 
-    List<SingleChoice> selectBySubjectId(Integer subjectId, int SingleNumber);
+    List<SingleChoice> selectByExamEiid(Integer examEiid);
 
     int updateByPrimaryKeySelective(SingleChoice record);
+
+    List<SingleChoice> selectAll(Integer subjectId);
 }

@@ -10,11 +10,13 @@ import java.util.List;
  * @Description 多选题mapper
  */
 public interface MultipleChoiceMapper {
-    int deleteByPrimaryKey(Integer subjectId);
+    int deleteByEiid(Integer examEiid);
 
     int insertSelective(MultipleChoice record);
 
-    List<MultipleChoice> selectBySubjectId(Integer subjectId, int MultipleNumber);
+    List<MultipleChoice> selectByExamEiid(Integer examEiid);
 
     int updateByPrimaryKeySelective(MultipleChoice record);
+    
+    List<MultipleChoice> selectAll(Integer subjectId);
 }

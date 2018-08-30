@@ -3,7 +3,7 @@
 <mapper namespace="com.vvicey.testPaper.dao.MultipleChoiceMapper" >
   <resultMap id="BaseResultMap" type="com.vvicey.testPaper.entity.MultipleChoice" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="subject_id" property="subjectId" jdbcType="INTEGER" />
+    <result column="exam_eiid" property="examEiid" jdbcType="INTEGER" />
     <result column="question" property="question" jdbcType="VARCHAR" />
     <result column="answer_a" property="answerA" jdbcType="VARCHAR" />
     <result column="answer_b" property="answerB" jdbcType="VARCHAR" />
@@ -13,24 +13,31 @@
     <result column="level" property="level" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id,subject_id, question, answer_a, answer_b, answer_c, answer_d, true_answer, level
+    id,exam_eiid, question, answer_a, answer_b, answer_c, answer_d, true_answer, level
   </sql>
-  <select id="selectBySubjectId" resultMap="BaseResultMap">
+  <select id="selectByExamEiid" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from multiple_choice
-    where subject_id = #{0,jdbcType=INTEGER}
+    where exam_eiid = #{examEiid,jdbcType=INTEGER}
     order by RAND() LIMIT #{1,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+   <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from multiple_choice,examination_internal
+    where exam_eiid = eiid
+    and subject_id = #{subjectId}
+  </select>
+  <delete id="deleteByEiid" parameterType="java.lang.Integer" >
     delete from multiple_choice
-    where subject_id = #{subjectId,jdbcType=INTEGER}
+    where exam_eiid = #{examEiid,jdbcType=INTEGER}
   </delete>
   <insert id="insertSelective" parameterType="com.vvicey.testPaper.entity.MultipleChoice" >
     insert into multiple_choice
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="subjectId != null" >
-        subject_id,
+      <if test="examEiid != null" >
+        exam_eiid,
       </if>
       <if test="question != null" >
         question,
@@ -55,8 +62,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="subjectId != null" >
-        #{subjectId,jdbcType=INTEGER},
+      <if test="examEiid != null" >
+        #{examEiid,jdbcType=INTEGER},
       </if>
       <if test="question != null" >
         #{question,jdbcType=VARCHAR},
@@ -106,6 +113,6 @@
         level = #{level,jdbcType=INTEGER},
       </if>
     </set>
-    where subject_id = #{subjectId,jdbcType=INTEGER}
+    where exam_eiid = #{examEiid,jdbcType=INTEGER}
   </update>
 </mapper>

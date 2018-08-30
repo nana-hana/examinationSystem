@@ -6,6 +6,12 @@ import com.vvicey.common.utils.MD5Utils;
 import com.vvicey.examination.entity.ExaminationInternal;
 import com.vvicey.examination.service.ExaminationExternalService;
 import com.vvicey.examination.service.ExaminationInternalService;
+import com.vvicey.testPaper.entity.CheckingQuestion;
+import com.vvicey.testPaper.entity.MultipleChoice;
+import com.vvicey.testPaper.entity.SingleChoice;
+import com.vvicey.testPaper.service.CheckingQuestionService;
+import com.vvicey.testPaper.service.MultipleChoiceService;
+import com.vvicey.testPaper.service.SingleChoiceService;
 import com.vvicey.user.login.entity.Loginer;
 import com.vvicey.user.login.service.LoginService;
 import com.vvicey.user.student.entity.Student;
@@ -17,16 +23,27 @@ import com.vvicey.user.tempEntity.StudentLoginer;
 import com.vvicey.user.tempEntity.TeacherLoginer;
 import com.vvicey.workflow.entity.ActivityApprovalRequest;
 import com.vvicey.workflow.service.ActivityApprovalRequestService;
+
+import net.sf.json.JSONObject;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +65,14 @@ public class TeacherController {
     private TeacherService teacherService;
     @Autowired
     private ActivityApprovalRequestService activityApprovalRequestService;
+    @Autowired
+    private ExaminationInternalService examinationInternalService;
+    @Autowired
+    private MultipleChoiceService multipleChoiceService;
+    @Autowired
+    private CheckingQuestionService checkingQuestionService;
+    @Autowired
+    private SingleChoiceService singleChoiceService;
 
     /**
      * 跳转教师界面,获取学生数据
@@ -247,4 +272,98 @@ public class TeacherController {
         return activityApprovalRequestService.updateRequest(taskId, examinationInternal);
     }
 
+    /**
+     * 题目导入控制器
+     *
+     * @param file    上传的文本文件
+     * @param request 获取信息
+     * @return modelMap转为json格式返回，status为1，无错误返回，status为0，有错误信息，错误信息存在error_info
+     */
+    @SuppressWarnings("finally")
+    @RequestMapping("/inputExamination.do")
+    @ResponseBody
+    public Map<String, String> inputExamination(@RequestParam("doc") MultipartFile file, HttpServletRequest request) {
+        Map<String, String> modelMap = new HashMap<>();
+        //将前台json字符串转为ExaminationInternal对象
+        String eiidStr = request.getParameter("eiid");
+        int eiid = Integer.parseInt(eiidStr);
+        List<SingleChoice> singleTestList = singleChoiceService.querySingleChoiceByEiid(eiid);
+        List<MultipleChoice> multipleChoiceList = multipleChoiceService.queryMultipleChoiceByEiid(eiid);
+        List<CheckingQuestion> checkList = checkingQuestionService.queryCheckingQuestionByEiid(eiid);
+        if (!singleTestList.isEmpty() || !multipleChoiceList.isEmpty() || !checkList.isEmpty()) {
+            modelMap.put("status", "0");
+            modelMap.put("error_info", "导入失败，该考试题目已经导入过");
+            return modelMap;
+        }
+        //通过前台传来的eiid获得当前考试信息
+        ExaminationInternal exam = examinationInternalService.queryExaminationInternalByEiid(eiid);
+        // 原始名称
+        String originalFileName = file.getOriginalFilename();
+        //将文件存到e盘下，临时文件，存哪里都可以
+        File newFile = new File("/home/nana/" + originalFileName);
+        try {
+            // 将内存中的数据写入磁盘
+            file.transferTo(newFile);
+            //题目写入数据库
+            List<String> list = teacherService.eaxmInput(newFile.toString(), exam);
+            if (list == null || list.isEmpty()) {
+                modelMap.put("status", "1");
+            } else {
+                modelMap.put("status", "0");
+                String errorInfo = "";//存放错误信息
+                for (String string : list) {
+                    errorInfo += string;
+                    errorInfo += "\n";
+                }
+                modelMap.put("error_info", errorInfo);
+            }
+        } catch (Exception e) {
+            modelMap.put("status", "0");
+            modelMap.put("error_info", "题目写入失败");
+            e.printStackTrace();
+        } finally {
+            if (newFile != null && newFile.exists()) {
+                newFile.delete();
+            }
+            return modelMap;
+        }
+    }
+
+    /**
+     * 根据前台eiid查询当前考试题目
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping("/queryTest.do")
+    @ResponseBody
+    public Map<String, Object> queryTest(HttpServletRequest request) {
+        Map<String, Object> modelMap = new HashMap<>();
+        //获取eiid转为int类型
+        String eiidStr = request.getParameter("eiid");
+        int examEiid = Integer.parseInt(eiidStr);
+        //查询单选题
+        List<SingleChoice> singleChoiceList = singleChoiceService.querySingleChoiceByEiid(examEiid);
+        //查询多选题
+        List<MultipleChoice> multipleChoiceList = multipleChoiceService.queryMultipleChoiceByEiid(examEiid);
+        //查询判断题
+        List<CheckingQuestion> checkingQuestionList = checkingQuestionService.queryCheckingQuestionByEiid(examEiid);
+        //将题目信息添加进modelMap
+        if (singleChoiceList == null || singleChoiceList.isEmpty()) {
+            modelMap.put("single", "empty");
+        } else {
+            modelMap.put("single", singleChoiceList);
+        }
+        if (multipleChoiceList == null || multipleChoiceList.isEmpty()) {
+            modelMap.put("multuple", "empty");
+        } else {
+            modelMap.put("multuple", multipleChoiceList);
+        }
+        if (checkingQuestionList == null || checkingQuestionList.isEmpty()) {
+            modelMap.put("check", "empty");
+        } else {
+            modelMap.put("check", checkingQuestionList);
+        }
+        return modelMap;
+    }
 }

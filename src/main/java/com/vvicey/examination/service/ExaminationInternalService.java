@@ -19,5 +19,5 @@ public interface ExaminationInternalService {
 
     void updateExaminationByEiid(ExaminationInternal examinationInternal);
 
-    ExaminationInternal queryExaminationInternalByStudentClass(int studentClass);
+    List<ExaminationInternal> queryExaminationInternalByStudentClass(int studentClass);
 }
