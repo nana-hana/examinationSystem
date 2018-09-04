@@ -5,12 +5,12 @@ import com.vvicey.common.information.Status;
 import com.vvicey.common.utils.MD5Utils;
 import com.vvicey.examination.entity.ExaminationExternal;
 import com.vvicey.examination.service.ExaminationExternalService;
-import com.vvicey.testPaper.entity.CheckingQuestion;
-import com.vvicey.testPaper.entity.MultipleChoice;
-import com.vvicey.testPaper.entity.SingleChoice;
-import com.vvicey.testPaper.service.CheckingQuestionService;
-import com.vvicey.testPaper.service.MultipleChoiceService;
-import com.vvicey.testPaper.service.SingleChoiceService;
+import com.vvicey.itemBank.entity.CheckingQuestion;
+import com.vvicey.itemBank.entity.MultipleChoice;
+import com.vvicey.itemBank.entity.SingleChoice;
+import com.vvicey.itemBank.service.CheckingQuestionService;
+import com.vvicey.itemBank.service.MultipleChoiceService;
+import com.vvicey.itemBank.service.SingleChoiceService;
 import com.vvicey.user.administrator.entity.Administrator;
 import com.vvicey.user.administrator.service.AdministratorService;
 import com.vvicey.user.login.entity.Loginer;
@@ -87,6 +87,22 @@ public class AdministratorController {
         AdministratorLoginer administratorLoginer = administratorService.queryAdministratorSelf(loginer.getUid());
         model.addAttribute("administratorLoginer", administratorLoginer);
         return "/administrator/administratorSelfInfo";
+    }
+
+    /**
+     * 跳转管理员试题库管理界面，获取试题库信息
+     *
+     * @return 试题库信息
+     */
+    @RequestMapping(value = "itemBankManage", method = RequestMethod.GET)
+    public String itemBankManage(Model model) {
+        List<SingleChoice> allSingleChoice = singleChoiceService.querySingleChoiceAll();
+        List<MultipleChoice> allMultipleChoice = multipleChoiceService.queryMultipleChoiceAll();
+        List<CheckingQuestion> allCheckingQuestion = checkingQuestionService.queryCheckingQuestionAll();
+        model.addAttribute("allSingleChoice", allSingleChoice);
+        model.addAttribute("allMultipleChoice", allMultipleChoice);
+        model.addAttribute("allCheckingQuestion", allCheckingQuestion);
+        return "/administrator/itemBankManage";
     }
 
     /**
@@ -168,6 +184,42 @@ public class AdministratorController {
     @Transactional
     public void deleteTeacher(@PathVariable int uid) {
         teacherService.deleteTeacher(uid);
+    }
+
+    /**
+     * 删除所选单选题试题
+     *
+     * @param id 根据id删除试题
+     */
+    @RequestMapping(value = "deleteSingleChoice/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    @Transactional
+    public void deleteSingleChoice(@PathVariable int id) {
+        singleChoiceService.deleteSingleChoiceById(id);
+    }
+
+    /**
+     * 删除所选单选题试题
+     *
+     * @param id 根据id删除试题
+     */
+    @RequestMapping(value = "deleteMultipleChoice/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    @Transactional
+    public void deleteMultipleChoice(@PathVariable int id) {
+        multipleChoiceService.deleteMultipleChoiceById(id);
+    }
+
+    /**
+     * 删除所选单选题试题
+     *
+     * @param id 根据id删除试题
+     */
+    @RequestMapping(value = "deleteCheckingQuestion/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    @Transactional
+    public void deleteCheckingQuestion(@PathVariable int id) {
+        checkingQuestionService.deleteCheckingQuestionById(id);
     }
 
     /**

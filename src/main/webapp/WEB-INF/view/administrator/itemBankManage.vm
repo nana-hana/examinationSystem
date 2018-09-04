@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>在线考试系统</title>
+
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/static/plugins/datatables.net-bs/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="/static/dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/static/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="/static/plugins/toastr/toastr.css"/>
+    <link rel="stylesheet" href="/static/plugins/bootstrap3-editable/css/bootstrap-editable.css"/>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+    <script src="/static/plugins/jquery/jquery-3.3.1.min.js"></script>
+    <script src="/static/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/plugins/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="/static/plugins/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="/static/dist/js/adminlte.min.js"></script>
+    <script src="/static/dist/js/demo.js"></script>
+    <script src="/static/dist/js/app.js"></script>
+    <script src="/static/plugins/toastr/toastr.min.js"></script>
+    <script src="/static/script/load_header.js"></script>
+    <script src="/static/script/load_footer.js"></script>
+    <script src="/static/script/administrator/load_administrator_menu.js"></script>
+    <script src="/static/script/administrator/administratorAuthority.js"></script>
+    <script src="/static/script/toastrSet.js"></script>
+    <script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <script src="/static/plugins/fastclick/fastclick.js"></script>
+    <script src="/static/plugins/bootstrap3-editable/js/bootstrap-editable.js"></script>
+    <script src="/static/script/bootstrapDialogPackage.js"></script>
+    <script>
+        $(function () {
+            $('#singleChoices').DataTable({
+                "aoColumnDefs": [{"bSortable": false, "aTargets": [0, 8]}],//禁用排序的列0开始
+                "aaSorting": [[0, "asc"]]//默认排序0开开始
+            })
+            $('#multipleChoices').DataTable({
+                "aoColumnDefs": [{"bSortable": false, "aTargets": [0, 8]}],//禁用排序的列0开始
+                "aaSorting": [[0, "asc"]]//默认排序0开开始
+            })
+            $('#checkingQuestions').DataTable({
+                "aoColumnDefs": [{"bSortable": false, "aTargets": [0, 6]}],//禁用排序的列0开始
+                "aaSorting": [[0, "asc"]]//默认排序0开开始
+            })
+        })
+        window.onload = function () {
+            $('#fourthLi').addClass("active");
+        }
+    </script>
+    <style>
+        .content-wrapper {
+            background-color: white;
+        }
+    </style>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <header></header>
+    <aside></aside>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>
+                试题库管理
+            </h1>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#single" data-toggle="tab">单选题</a></li>
+                            <li><a href="#multiple" data-toggle="tab">多选题</a></li>
+                            <li><a href="#checking" data-toggle="tab">判断题</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="active tab-pane" id="single">
+                                <div class="box">
+                                    <div class="box-body">
+                                        <table id="singleChoices" class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>序号</th>
+                                                <th>问题</th>
+                                                <th>选项A</th>
+                                                <th>选项B</th>
+                                                <th>选项C</th>
+                                                <th>选项D</th>
+                                                <th>正确答案</th>
+                                                <th>难度</th>
+                                                <th>操作</th>
+                                            </tr>
+                                            </thead>
+                                            #foreach($singleChoice in $allSingleChoice)
+                                                <tr>
+                                                    <td>$foreach.count</td>
+                                                    <td>$singleChoice.question</td>
+                                                    <td>$singleChoice.answerA</td>
+                                                    <td>$singleChoice.answerB</td>
+                                                    <td>$singleChoice.answerC</td>
+                                                    <td>$singleChoice.answerD</td>
+                                                    <td>$singleChoice.trueAnswer</td>
+                                                    <td>$singleChoice.level</td>
+                                                    <input type="hidden" value="$singleChoice.id">
+                                                    <td>
+                                                        <button type="button"
+                                                                class="btn btn-danger single_delete_button">
+                                                            删除
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            #end
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="multiple">
+                                <div class="box">
+                                    <div class="box-body">
+                                        <table id="multipleChoices" class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>序号</th>
+                                                <th>问题</th>
+                                                <th>选项A</th>
+                                                <th>选项B</th>
+                                                <th>选项C</th>
+                                                <th>选项D</th>
+                                                <th>正确答案</th>
+                                                <th>难度</th>
+                                                <th>操作</th>
+                                            </tr>
+                                            </thead>
+                                            #foreach($multipleChoice in $allMultipleChoice)
+                                                <tr>
+                                                    <td>$foreach.count</td>
+                                                    <td>$multipleChoice.question</td>
+                                                    <td>$multipleChoice.answerA</td>
+                                                    <td>$multipleChoice.answerB</td>
+                                                    <td>$multipleChoice.answerC</td>
+                                                    <td>$multipleChoice.answerD</td>
+                                                    <td>$multipleChoice.trueAnswer</td>
+                                                    <td>$multipleChoice.level</td>
+                                                    <input type="hidden" value="$multipleChoice.id">
+                                                    <td>
+                                                        <button type="button"
+                                                                class="btn btn-danger multiple_delete_button">
+                                                            删除
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            #end
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="checking">
+                                <div class="box">
+                                    <div class="box-body">
+                                        <table id="checkingQuestions" class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>序号</th>
+                                                <th>问题</th>
+                                                <th>选项A</th>
+                                                <th>选项B</th>
+                                                <th>正确答案</th>
+                                                <th>难度</th>
+                                                <th>操作</th>
+                                            </tr>
+                                            </thead>
+                                            #foreach($checkingQuestion in $allCheckingQuestion)
+                                                <tr>
+                                                    <td>$foreach.count</td>
+                                                    <td>$checkingQuestion.question</td>
+                                                    <td>$checkingQuestion.answerA</td>
+                                                    <td>$checkingQuestion.answerB</td>
+                                                    <td>$checkingQuestion.trueAnswer</td>
+                                                    <td>$checkingQuestion.level</td>
+                                                    <input type="hidden" value="$checkingQuestion.id">
+                                                    <td>
+                                                        <button type="button"
+                                                                class="btn btn-danger checking_delete_button">
+                                                            删除
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            #end
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer></footer>
+</div>
+</body>
+</html>

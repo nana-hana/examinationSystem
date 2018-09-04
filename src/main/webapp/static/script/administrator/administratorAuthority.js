@@ -11,12 +11,77 @@ $(function () {
     updateTeacher();
     updateAdministratorInfo();
     updateAdministratorPassword();
+    deleteItemBank();
 
     passRequest();
     refuseRequest();
 
     initialize();
 });
+
+//删除所选试题
+function deleteItemBank() {
+    $(".single_delete_button").on("click", function () {
+        var tr = $(this).parent().parent();
+        var id = $(this).parent().siblings("input").val();
+        Ewin.confirm({message: "确认要删除选择的数据吗？"}).on(function (e) {
+            if (!e) {
+                return;
+            }
+            $.ajax({
+                type: "DELETE",
+                url: "/administrator/deleteSingleChoice/" + id,
+                success: function () {
+                    toastr.success("删除成功");
+                    tr.remove();
+                },
+                error: function () {
+                    toastr.error("删除失败");
+                }
+            });
+        });
+    });
+    $(".multiple_delete_button").on("click", function () {
+        var tr = $(this).parent().parent();
+        var id = $(this).parent().siblings("input").val();
+        Ewin.confirm({message: "确认要删除选择的数据吗？"}).on(function (e) {
+            if (!e) {
+                return;
+            }
+            $.ajax({
+                type: "DELETE",
+                url: "/administrator/deleteMultipleChoice/" + id,
+                success: function () {
+                    toastr.success("删除成功");
+                    tr.remove();
+                },
+                error: function () {
+                    toastr.error("删除失败");
+                }
+            });
+        });
+    });
+    $(".checking_delete_button").on("click", function () {
+        var tr = $(this).parent().parent();
+        var id = $(this).parent().siblings("input").val();
+        Ewin.confirm({message: "确认要删除选择的数据吗？"}).on(function (e) {
+            if (!e) {
+                return;
+            }
+            $.ajax({
+                type: "DELETE",
+                url: "/administrator/deleteCheckingQuestion/" + id,
+                success: function () {
+                    toastr.success("删除成功");
+                    tr.remove();
+                },
+                error: function () {
+                    toastr.error("删除失败");
+                }
+            });
+        });
+    });
+}
 
 //表格数据id对应名字修改
 function initialize() {

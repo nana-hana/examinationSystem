@@ -1,6 +1,6 @@
-package com.vvicey.testPaper.dao;
+package com.vvicey.itemBank.dao;
 
-import com.vvicey.testPaper.entity.MultipleChoice;
+import com.vvicey.itemBank.entity.MultipleChoice;
 
 import java.util.List;
 
@@ -18,5 +18,9 @@ public interface MultipleChoiceMapper {
 
     int updateByPrimaryKeySelective(MultipleChoice record);
     
-    List<MultipleChoice> selectAll(Integer subjectId);
+    List<MultipleChoice> selectAllBySubjectId(Integer subjectId);
+
+    List<MultipleChoice> selectAll();
+
+    void deleteMultipleChoiceById(int id);
 }

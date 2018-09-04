@@ -4,14 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.vvicey.common.information.Status;
 import com.vvicey.common.utils.MD5Utils;
 import com.vvicey.examination.entity.ExaminationInternal;
-import com.vvicey.examination.service.ExaminationExternalService;
 import com.vvicey.examination.service.ExaminationInternalService;
-import com.vvicey.testPaper.entity.CheckingQuestion;
-import com.vvicey.testPaper.entity.MultipleChoice;
-import com.vvicey.testPaper.entity.SingleChoice;
-import com.vvicey.testPaper.service.CheckingQuestionService;
-import com.vvicey.testPaper.service.MultipleChoiceService;
-import com.vvicey.testPaper.service.SingleChoiceService;
+import com.vvicey.itemBank.entity.CheckingQuestion;
+import com.vvicey.itemBank.entity.MultipleChoice;
+import com.vvicey.itemBank.entity.SingleChoice;
+import com.vvicey.itemBank.service.CheckingQuestionService;
+import com.vvicey.itemBank.service.MultipleChoiceService;
+import com.vvicey.itemBank.service.SingleChoiceService;
 import com.vvicey.user.login.entity.Loginer;
 import com.vvicey.user.login.service.LoginService;
 import com.vvicey.user.student.entity.Student;
@@ -24,8 +23,6 @@ import com.vvicey.user.tempEntity.TeacherLoginer;
 import com.vvicey.workflow.entity.ActivityApprovalRequest;
 import com.vvicey.workflow.service.ActivityApprovalRequestService;
 
-import net.sf.json.JSONObject;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,11 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;

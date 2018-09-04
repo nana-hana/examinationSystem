@@ -1,11 +1,11 @@
-package com.vvicey.testPaper.entity;
+package com.vvicey.itemBank.entity;
 
 /**
  * @Author nana
  * @Date 18-7-9 上午11:20
- * @Description 多选题实体类
+ * @Description 单选题实体类
  */
-public class MultipleChoice {
+public class SingleChoice {
 
     private int id;//id
     private Integer examEiid;//科目
@@ -33,7 +33,7 @@ public class MultipleChoice {
     public void setId(int id) {
         this.id = id;
     }
-
+    
     public Integer getExamEiid() {
 		return examEiid;
 	}

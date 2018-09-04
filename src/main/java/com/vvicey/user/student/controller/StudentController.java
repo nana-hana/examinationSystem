@@ -9,12 +9,12 @@ import com.vvicey.examination.entity.ExaminationExternal;
 import com.vvicey.examination.entity.ExaminationInternal;
 import com.vvicey.examination.service.ExaminationExternalService;
 import com.vvicey.examination.service.ExaminationInternalService;
-import com.vvicey.testPaper.entity.CheckingQuestion;
-import com.vvicey.testPaper.entity.MultipleChoice;
-import com.vvicey.testPaper.entity.SingleChoice;
-import com.vvicey.testPaper.service.CheckingQuestionService;
-import com.vvicey.testPaper.service.MultipleChoiceService;
-import com.vvicey.testPaper.service.SingleChoiceService;
+import com.vvicey.itemBank.entity.CheckingQuestion;
+import com.vvicey.itemBank.entity.MultipleChoice;
+import com.vvicey.itemBank.entity.SingleChoice;
+import com.vvicey.itemBank.service.CheckingQuestionService;
+import com.vvicey.itemBank.service.MultipleChoiceService;
+import com.vvicey.itemBank.service.SingleChoiceService;
 import com.vvicey.user.login.entity.Loginer;
 import com.vvicey.user.login.service.LoginService;
 import com.vvicey.user.student.entity.Student;
@@ -34,7 +34,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -130,9 +129,9 @@ public class StudentController {
             int singleNumber = examinationInternal.getSingleNumber();//单选题数量
             int multipleNumber = examinationInternal.getMultipleNumber();//多选题数量
             int checkingNumber = examinationInternal.getCheckingNumber();//判断题数量
-            List<SingleChoice> querySingleChoiceAll = singleChoiceService.querySingleChoiceAll(examinationInternal.getSubjectId());
-            List<MultipleChoice> queryMultipleChoiceAll = multipleChoiceService.queryMultipleChoiceAll(examinationInternal.getSubjectId());
-            List<CheckingQuestion> queryCheckingQuestionAll = checkingQuestionService.queryCheckingQuestionAll(examinationInternal.getSubjectId());
+            List<SingleChoice> querySingleChoiceAll = singleChoiceService.querySingleChoiceAllBySubjectId(examinationInternal.getSubjectId());
+            List<MultipleChoice> queryMultipleChoiceAll = multipleChoiceService.queryMultipleChoiceAllBySubjectId(examinationInternal.getSubjectId());
+            List<CheckingQuestion> queryCheckingQuestionAll = checkingQuestionService.queryCheckingQuestionAllBySubjectId(examinationInternal.getSubjectId());
             checkingQuestionList = ExamFileInputUtil.getRandomList(queryCheckingQuestionAll, checkingNumber);
             multipleChoiceList = ExamFileInputUtil.getRandomList(queryMultipleChoiceAll, multipleNumber);
             singleChoiceList = ExamFileInputUtil.getRandomList(querySingleChoiceAll, singleNumber);

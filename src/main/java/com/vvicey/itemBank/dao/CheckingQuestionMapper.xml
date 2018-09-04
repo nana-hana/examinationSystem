@@ -1,40 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.vvicey.testPaper.dao.SingleChoiceMapper" >
-  <resultMap id="BaseResultMap" type="com.vvicey.testPaper.entity.SingleChoice" >
+<mapper namespace="com.vvicey.itemBank.dao.CheckingQuestionMapper" >
+  <resultMap id="BaseResultMap" type="com.vvicey.itemBank.entity.CheckingQuestion" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="exam_eiid" property="examEiid" jdbcType="INTEGER" />
     <result column="question" property="question" jdbcType="VARCHAR" />
     <result column="answer_a" property="answerA" jdbcType="VARCHAR" />
     <result column="answer_b" property="answerB" jdbcType="VARCHAR" />
-    <result column="answer_c" property="answerC" jdbcType="VARCHAR" />
-    <result column="answer_d" property="answerD" jdbcType="VARCHAR" />
     <result column="true_answer" property="trueAnswer" jdbcType="CHAR" />
     <result column="level" property="level" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id,exam_eiid, question, answer_a, answer_b, answer_c, answer_d, true_answer, level
+    id,exam_eiid, question, answer_a, answer_b, true_answer, level
   </sql>
   <select id="selectByExamEiid" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from single_choice
+    from checking_question
     where exam_eiid = #{examEiid,jdbcType=INTEGER}
     order by RAND() LIMIT #{1,jdbcType=INTEGER}
   </select>
-  <select id="selectAll" resultMap="BaseResultMap">
+  <select id="selectAllBySubjectId" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from single_choice,examination_internal
+    from checking_question,examination_internal
     where exam_eiid = eiid
     and subject_id = #{subjectId}
   </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from checking_question
+  </select>
+  
   <delete id="deleteByEiid" parameterType="java.lang.Integer" >
-    delete from single_choice
+    delete from checking_question
     where exam_eiid = #{examEiid,jdbcType=INTEGER}
   </delete>
-  <insert id="insertSelective" parameterType="com.vvicey.testPaper.entity.SingleChoice" >
-    insert into single_choice
+    <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from checking_question
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.vvicey.itemBank.entity.CheckingQuestion" >
+    insert into checking_question
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="examEiid != null" >
         exam_eiid,
@@ -47,12 +56,6 @@
       </if>
       <if test="answerB != null" >
         answer_b,
-      </if>
-      <if test="answerC != null" >
-        answer_c,
-      </if>
-      <if test="answerD != null" >
-        answer_d,
       </if>
       <if test="trueAnswer != null" >
         true_answer,
@@ -74,12 +77,6 @@
       <if test="answerB != null" >
         #{answerB,jdbcType=VARCHAR},
       </if>
-      <if test="answerC != null" >
-        #{answerC,jdbcType=VARCHAR},
-      </if>
-      <if test="answerD != null" >
-        #{answerD,jdbcType=VARCHAR},
-      </if>
       <if test="trueAnswer != null" >
         #{trueAnswer,jdbcType=CHAR},
       </if>
@@ -88,8 +85,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.vvicey.testPaper.entity.SingleChoice" >
-    update single_choice
+  <update id="updateByPrimaryKeySelective" parameterType="com.vvicey.itemBank.entity.CheckingQuestion" >
+    update checking_question
     <set >
       <if test="question != null" >
         question = #{question,jdbcType=VARCHAR},
@@ -99,12 +96,6 @@
       </if>
       <if test="answerB != null" >
         answer_b = #{answerB,jdbcType=VARCHAR},
-      </if>
-      <if test="answerC != null" >
-        answer_c = #{answerC,jdbcType=VARCHAR},
-      </if>
-      <if test="answerD != null" >
-        answer_d = #{answerD,jdbcType=VARCHAR},
       </if>
       <if test="trueAnswer != null" >
         true_answer = #{trueAnswer,jdbcType=CHAR},

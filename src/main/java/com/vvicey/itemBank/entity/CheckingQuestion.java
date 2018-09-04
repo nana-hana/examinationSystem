@@ -1,4 +1,4 @@
-package com.vvicey.testPaper.entity;
+package com.vvicey.itemBank.entity;
 
 /**
  * @Author nana

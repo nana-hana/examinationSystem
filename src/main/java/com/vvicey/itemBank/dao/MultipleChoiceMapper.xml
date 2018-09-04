@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.vvicey.testPaper.dao.MultipleChoiceMapper" >
-  <resultMap id="BaseResultMap" type="com.vvicey.testPaper.entity.MultipleChoice" >
+<mapper namespace="com.vvicey.itemBank.dao.MultipleChoiceMapper" >
+  <resultMap id="BaseResultMap" type="com.vvicey.itemBank.entity.MultipleChoice" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="exam_eiid" property="examEiid" jdbcType="INTEGER" />
     <result column="question" property="question" jdbcType="VARCHAR" />
@@ -22,18 +22,28 @@
     where exam_eiid = #{examEiid,jdbcType=INTEGER}
     order by RAND() LIMIT #{1,jdbcType=INTEGER}
   </select>
-   <select id="selectAll" resultMap="BaseResultMap">
+   <select id="selectAllBySubjectId" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from multiple_choice,examination_internal
     where exam_eiid = eiid
     and subject_id = #{subjectId}
   </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from multiple_choice
+  </select>
+
   <delete id="deleteByEiid" parameterType="java.lang.Integer" >
     delete from multiple_choice
     where exam_eiid = #{examEiid,jdbcType=INTEGER}
   </delete>
-  <insert id="insertSelective" parameterType="com.vvicey.testPaper.entity.MultipleChoice" >
+    <delete id="deleteMultipleChoiceById" parameterType="java.lang.Integer" >
+    delete from multiple_choice
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.vvicey.itemBank.entity.MultipleChoice" >
     insert into multiple_choice
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="examEiid != null" >
@@ -88,7 +98,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.vvicey.testPaper.entity.MultipleChoice" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.vvicey.itemBank.entity.MultipleChoice" >
     update multiple_choice
     <set >
       <if test="question != null" >

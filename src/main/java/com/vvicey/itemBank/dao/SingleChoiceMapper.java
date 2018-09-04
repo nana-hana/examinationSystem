@@ -1,6 +1,6 @@
-package com.vvicey.testPaper.dao;
+package com.vvicey.itemBank.dao;
 
-import com.vvicey.testPaper.entity.SingleChoice;
+import com.vvicey.itemBank.entity.SingleChoice;
 
 import java.util.List;
 
@@ -18,5 +18,9 @@ public interface SingleChoiceMapper {
 
     int updateByPrimaryKeySelective(SingleChoice record);
 
-    List<SingleChoice> selectAll(Integer subjectId);
+    List<SingleChoice> selectAllBySubjectId(Integer subjectId);
+
+    List<SingleChoice> selectAll();
+
+    void deleteSingleChoiceById(int id);
 }

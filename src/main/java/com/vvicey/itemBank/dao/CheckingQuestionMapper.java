@@ -1,6 +1,6 @@
-package com.vvicey.testPaper.dao;
+package com.vvicey.itemBank.dao;
 
-import com.vvicey.testPaper.entity.CheckingQuestion;
+import com.vvicey.itemBank.entity.CheckingQuestion;
 
 import java.util.List;
 
@@ -18,5 +18,9 @@ public interface CheckingQuestionMapper {
 
     int updateByPrimaryKeySelective(CheckingQuestion record);
     
-    List<CheckingQuestion> selectAll(Integer subjectId);
+    List<CheckingQuestion> selectAllBySubjectId(Integer subjectId);
+
+    List<CheckingQuestion> selectAll();
+
+    void deleteById(Integer id);
 }

@@ -2,7 +2,6 @@ package com.vvicey.user.teacher.service;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,12 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.vvicey.common.utils.ExamFileInputUtil;
 import com.vvicey.examination.entity.ExaminationInternal;
-import com.vvicey.testPaper.dao.CheckingQuestionMapper;
-import com.vvicey.testPaper.dao.MultipleChoiceMapper;
-import com.vvicey.testPaper.dao.SingleChoiceMapper;
-import com.vvicey.testPaper.entity.CheckingQuestion;
-import com.vvicey.testPaper.entity.MultipleChoice;
-import com.vvicey.testPaper.entity.SingleChoice;
+import com.vvicey.itemBank.dao.CheckingQuestionMapper;
+import com.vvicey.itemBank.dao.MultipleChoiceMapper;
+import com.vvicey.itemBank.dao.SingleChoiceMapper;
+import com.vvicey.itemBank.entity.CheckingQuestion;
+import com.vvicey.itemBank.entity.MultipleChoice;
+import com.vvicey.itemBank.entity.SingleChoice;
 import com.vvicey.user.teacher.dao.TeacherMapper;
 import com.vvicey.user.teacher.entity.Teacher;
 import com.vvicey.user.tempEntity.TeacherLoginer;
