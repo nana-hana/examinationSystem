@@ -1,5 +1,5 @@
 /**
- * 加载教师菜单
+ * 加载管理员菜单
  */
 function loadAdministratorMenu() {
     $("aside").load("/static/template/administrator_menu.html");

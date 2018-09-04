@@ -40,6 +40,7 @@
             var _sTopic = $(".singleTopic");
             var _mTopic = $(".multipleTopic");
             var _cTopic = $(".checkingTopic");
+            var haveExam = "$haveExam";
 
             //恢复数据
             var singleAnsers = '$singleAnswers';
@@ -249,23 +250,31 @@
             var isExamOver = '$examOver';
 
             if (isTimeToExamination === "0") {
-            	if(isExamOver === "1"){
-            		$("#subjectName_a").remove();
-            		$("aside").remove();
-            		$(".content").remove();
-            		$("#examTime").remove();
-            		$(".content-wrapper").append("<br><br><section class='content text-center'><b>考试已经结束</b></section>");
-            	}
-            	$("#examTime").attr("hidden","hidden");
-                $("aside").attr("hidden","hidden");
-                $(".content").attr("hidden","hidden");
+                if (isExamOver === "1") {
+                    $("#subjectName_a").remove();
+                    $("aside").remove();
+                    $(".content").remove();
+                    $("#examTime").remove();
+                    $(".content-wrapper").append("<br><br><section class='content text-center'><b>考试已经结束</b></section>");
+                }
+                $("#examTime").attr("hidden", "hidden");
+                $("aside").attr("hidden", "hidden");
+                $(".content").attr("hidden", "hidden");
                 $("#countdown").removeAttr("hidden");
-                //$(".content-wrapper").append("<br><br><section class='content text-center'><b>考试时间为$whenExamination</b></section>");
-            }else{
-            	$("#countdown").remove();
+            } else {
+                $("#countdown").remove();
             }
-			var intDiff = parseInt('$examinationTime');//倒计时总分钟
-    	    timer(intDiff);
+
+            if (haveExam === "0") {
+                $("#examTime").remove();
+                $("aside").remove();
+                $(".content").remove();
+                $(".logo-lg").remove();
+                $("#nullExam").removeAttr("hidden");
+            }
+
+            var intDiff = parseInt('$examinationTime');//倒计时总分钟
+            timer(intDiff);
         });
 
         function timer(intDiff) {
@@ -349,46 +358,50 @@
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div id="countdown" class="wrap-box" hidden="hidden" style="position: fixed;left: 700px;z-index: 100;top: 150px;">
-	<table cellpadding="0" cellspacing="0" class="data-table">
-		<tr>
-			<th colspan="3">距$whenExamination考试倒计时</th>
-		</tr>
-		<tr>
-			<td class="colspan-a">
-				<div class="data-show-box" id="dateShow1">
-					<span class="date-tiem-span d">00</span>天
-					<span class="date-tiem-span h">00</span>时
-					<span class="date-tiem-span m">00</span>分
-					<span class="date-s-span s">00</span>秒
-				</div>
-			</td>
-
-		</tr>
-		<script type="text/javascript">
-			$(function() {
-				var aimTime = "$whenExamination";
-				var aimTimeReplace = aimTime.replace(/-/g, '/');
-				//日期倒计时
-				$.leftTime(aimTimeReplace, function(d) {
-					if(d.status) {
-						var dateShow1 = $("#dateShow1");
-						dateShow1.find(".d").html(d.d);
-						dateShow1.find(".h").html(d.h);
-						dateShow1.find(".m").html(d.m);
-						dateShow1.find(".s").html(d.s);
-					}else{
-						$("aside").removeAttr("hidden");
-	                	$(".content").removeAttr("hidden");
-	                	$("#examTime").removeAttr("hidden");
-	                	$("#countdown").remove();
-					}
-				});
-			});
-		</script>
-
-	</table>
+    <table cellpadding="0" cellspacing="0" class="data-table">
+        <tr>
+            <th colspan="3">距$whenExamination考试倒计时</th>
+        </tr>
+        <tr>
+            <td class="colspan-a">
+                <div class="data-show-box" id="dateShow1">
+                    <span class="date-tiem-span d">00</span>天
+                    <span class="date-tiem-span h">00</span>时
+                    <span class="date-tiem-span m">00</span>分
+                    <span class="date-s-span s">00</span>秒
+                </div>
+            </td>
+        </tr>
+        <script type="text/javascript">
+            $(function () {
+                var aimTime = "$whenExamination";
+                var aimTimeReplace = aimTime.replace(/-/g, '/');
+                //日期倒计时
+                $.leftTime(aimTimeReplace, function (d) {
+                    if (d.status) {
+                        var dateShow1 = $("#dateShow1");
+                        dateShow1.find(".d").html(d.d);
+                        dateShow1.find(".h").html(d.h);
+                        dateShow1.find(".m").html(d.m);
+                        dateShow1.find(".s").html(d.s);
+                    } else {
+                        $("aside").removeAttr("hidden");
+                        $(".content").removeAttr("hidden");
+                        $("#examTime").removeAttr("hidden");
+                        $("#countdown").remove();
+                    }
+                });
+            });
+        </script>
+    </table>
 </div>
-
+<div id="nullExam" class="wrap-box" hidden="hidden" style="position: fixed;left: 700px;z-index: 100;top: 150px;">
+    <table cellpadding="0" cellspacing="0" class="data-table">
+        <tr>
+            <th colspan="3">暂无考试事件</th>
+        </tr>
+    </table>
+</div>
 
 <div class="wrapper">
     <header>
@@ -403,7 +416,8 @@
                     <ul class="nav navbar-nav">
                         <li class="dropdown user user-menu">
                             <a href="javascript:void(0)">
-                                <span id="examTime" class="hidden-xs user_name">考试时间剩余: <b id="time">$examinationTime</b></span>
+                                <span id="examTime" class="hidden-xs user_name">考试时间剩余: <b
+                                        id="time">$examinationTime</b></span>
                             </a>
                         </li>
                     </ul>
@@ -477,7 +491,7 @@
                                     <tr class="singleTopic form-group" id=$foreach.count>
                                         <td>
                                             $foreach.count. $singleChoice.question</br></br>
-                                            <input type="radio" name=single$foreach.count  />
+                                            <input type="radio" name=single$foreach.count />
                                             A. $singleChoice.answerA</br></br>
                                             <input type="radio" name=single$foreach.count />
                                             B. $singleChoice.answerB</br></br>
@@ -547,7 +561,7 @@
                                     <tr class="checkingTopic form-group" id=$foreach.count>
                                         <td>
                                             $foreach.count. $checkingQuestion.question<br><br>
-                                            <input type="radio" name=checking$foreach.count  >
+                                            <input type="radio" name=checking$foreach.count >
                                             A. $checkingQuestion.answerA<br><br>
                                             <input type="radio" name=checking$foreach.count >
                                             B. $checkingQuestion.answerB<br><br>

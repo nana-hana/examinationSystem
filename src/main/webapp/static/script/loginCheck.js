@@ -39,6 +39,9 @@ $(function () {
                             case 2:
                                 setTimeout("window.location.href = '/student/studentSelfInfo'", 2000);
                                 break;
+                            case 3:
+                                setTimeout("window.location.href = '/superAdministrator/administratorManage'", 2000);
+                                break;
                         }
                     } else {
                         toastr.error("账号密码错误");

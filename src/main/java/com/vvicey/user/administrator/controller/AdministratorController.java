@@ -117,7 +117,7 @@ public class AdministratorController {
 
 
         model.addAttribute("approvalList", approvalList);
-        return "/administrator/AdministratorTestManage";
+        return "administrator/administratorTestManage";
     }
 
     /**

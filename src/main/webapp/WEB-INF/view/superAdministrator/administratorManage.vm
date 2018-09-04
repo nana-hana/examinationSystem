@@ -27,8 +27,8 @@
     <script src="/static/plugins/toastr/toastr.min.js"></script>
     <script src="/static/script/load_header.js"></script>
     <script src="/static/script/load_footer.js"></script>
-    <script src="/static/script/administrator/load_administrator_menu.js"></script>
-    <script src="/static/script/administrator/administratorAuthority.js"></script>
+    <script src="/static/script/superAdministrator/load_superAdministrator_menu.js"></script>
+    <script src="/static/script/superAdministrator/superAdministratorAuthority.js"></script>
     <script src="/static/script/toastrSet.js"></script>
     <script src="/static/plugins/slimScroll/jquery.slimscroll.min.js"></script>
     <script src="/static/plugins/fastclick/fastclick.js"></script>
@@ -36,7 +36,7 @@
     <script src="/static/script/bootstrapDialogPackage.js"></script>
     <script>
         $(function () {
-            $('#teacherTable').DataTable({
+            $('#administratorTable').DataTable({
                 "aoColumnDefs": [{"bSortable": false, "aTargets": [0, 8]}],//禁用排序的列0开始
                 "aaSorting": [[0, "asc"]]//默认排序0开开始
             })
@@ -57,43 +57,39 @@
     <aside></aside>
     <div class="content-wrapper">
         <section class="content-header text-center">
-            <h1>教师信息管理</h1>
+            <h1>管理员信息管理</h1>
         </section>
         <section class="content">
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box">
                         <div class="box-header">
-                            <h3 class="box-title">教师数据信息</h3>
+                            <h3 class="box-title">管理员数据信息</h3>
                             <button type="button" class="btn btn-info pull-right" data-toggle="modal"
-                                    data-target="#addTeacherModal">
+                                    data-target="#addAdministratorModal">
                                 创建
                             </button>
                         </div>
                         <div class="box-body">
-                            <table id="teacherTable" class="table table-bordered table-striped">
+                            <table id="administratorTable" class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
                                     <th>序号</th>
                                     <th>账号</th>
                                     <th>姓名</th>
-                                    <th>编号</th>
-                                    <th>专业</th>
                                     <th>学院</th>
                                     <th>电话</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
-                                #foreach($teacherLoinger in $teacherLoginers)
+                                #foreach($administratorLoinger in $administratorLoginers)
                                     <tr>
                                         <td>$foreach.count</td>
-                                        <td class="editable_username">$teacherLoinger.username</td>
-                                        <td class="editable_name">$teacherLoinger.name</td>
-                                        <td class="editable_teacherNumber">$teacherLoinger.teacherNumber</td>
-                                        <td class="editable_major">$teacherLoinger.major</td>
-                                        <td class="editable_institute">$teacherLoinger.institute</td>
-                                        <td class="editable_phone">$teacherLoinger.phone</td>
-                                        <input type="hidden" value="$teacherLoinger.uid">
+                                        <td class="editable_username">$administratorLoinger.username</td>
+                                        <td class="editable_name">$administratorLoinger.name</td>
+                                        <td class="editable_institute">$administratorLoinger.institute</td>
+                                        <td class="editable_phone">$administratorLoinger.phone</td>
+                                        <input type="hidden" value="$administratorLoinger.uid">
                                         <td>
                                             <button type="button" class="btn btn-warning update_button">
                                                 更新
@@ -109,7 +105,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="addTeacherModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            <div class="modal fade" id="addAdministratorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -118,34 +114,26 @@
                                 &times;
                             </button>
                             <h4 class="modal-title" id="myModalLabel">
-                                创建教师信息
+                                创建管理员信息
                             </h4>
                         </div>
                         <div class="modal-body">
                             <div class="box">
                                 <table class="table table-bordered table-striped">
                                     <tr>
-                                        <th class="col-sm-3">教师账号*</th>
+                                        <th class="col-sm-3">管理员账号*</th>
                                         <td id="username" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
-                                        <th class="col-sm-3">教师密码*</th>
+                                        <th class="col-sm-3">管理员密码*</th>
                                         <td id="password" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
-                                        <th class="col-sm-3">教师姓名*</th>
+                                        <th class="col-sm-3">管理员姓名*</th>
                                         <td id="name" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
-                                        <th class="col-sm-3">教师编号*</th>
-                                        <td id="teacherNumber" class="col-sm-9"></td>
-                                    </tr>
-                                    <tr>
-                                        <th class="col-sm-3">教师专业*</th>
-                                        <td id="major" class="col-sm-9"></td>
-                                    </tr>
-                                    <tr>
-                                        <th class="col-sm-3">教师学院*</th>
+                                        <th class="col-sm-3">管理员学院*</th>
                                         <td id="institute" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
@@ -170,4 +158,5 @@
     <footer></footer>
 </div>
 </body>
+
 </html>

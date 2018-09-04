@@ -118,7 +118,7 @@ public class StudentController {
             }
         }
         if (examinationInternal == null) {
-            model.addAttribute("haveExamination", 0);
+            model.addAttribute("haveExam", 0);
             return "/student/studentBeginExamination";
         }
         int paperKind = examinationInternal.getPaperKind();//获取试卷类型
