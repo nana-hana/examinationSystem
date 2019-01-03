@@ -19,11 +19,11 @@ import com.vvicey.examination.entity.ExaminationExternal;
 import com.vvicey.examination.entity.ExaminationInternal;
 import com.vvicey.examination.service.ExaminationExternalService;
 import com.vvicey.examination.service.ExaminationInternalService;
-import com.vvicey.itemBank.dao.CheckingQuestionMapper;
-import com.vvicey.itemBank.dao.MultipleChoiceMapper;
-import com.vvicey.itemBank.dao.SingleChoiceMapper;
+import com.vvicey.itembank.dao.CheckingQuestionMapper;
+import com.vvicey.itembank.dao.MultipleChoiceMapper;
+import com.vvicey.itembank.dao.SingleChoiceMapper;
 import com.vvicey.user.teacher.service.TeacherService;
-import com.vvicey.user.tempEntity.ActivityInternal;
+import com.vvicey.user.tempentity.ActivityInternal;
 import com.vvicey.workflow.dao.ActivityApprovalRequestMapper;
 import com.vvicey.workflow.entity.ActivityApprovalRequest;
 
@@ -35,46 +35,49 @@ import com.vvicey.workflow.entity.ActivityApprovalRequest;
 @Service("ActivityApprovalRequestServiceImpl")
 public class ActivityApprovalRequestServiceImpl implements ActivityApprovalRequestService {
 
-    private static final java.lang.String APPROVAL_REQUEST_FLOW_ID = "approval_request";//bpmn表id
-
     /**
-     * 申请状态
+     * bpmn表id
      */
-    private static final int APPROVAL_REQUEST_STATUS_PSSS = 1;//通过
-    private static final int APPROVAL_REQUEST_STATUS_REFUSE = 2;//拒绝
-
-    @Autowired
-    private RuntimeService runtimeService;
-    @Autowired
-    private TaskService taskService;
-    @Autowired
-    private TeacherService teacherService;
-    @Autowired
-    private ActivityApprovalRequestMapper activityApprovalRequestMapper;
-    @Autowired
-    private ExaminationInternalService examinationInternalService;
-    @Autowired
-    private ExaminationExternalService examinationExternalService;
-    @Autowired
-    private CheckingQuestionMapper checkingQuestionMapper;
-    @Autowired
-    private MultipleChoiceMapper multipleChoiceMapper;
-    @Autowired
-    private SingleChoiceMapper singleChoiceMapper;
-
+    private static final java.lang.String APPROVAL_REQUEST_FLOW_ID = "approval_request";
     /**
-     * 工作流申请创建考试事件
-     *
-     * @param activityApprovalRequest 申请状态信息
-     * @param examinationInternal     考试事件具体信息
+     * 通过
      */
+    private static final int APPROVAL_REQUEST_STATUS_PSSS = 1;
+    /**
+     * 拒绝
+     */
+    private static final int APPROVAL_REQUEST_STATUS_REFUSE = 2;
+
+    private final RuntimeService runtimeService;
+    private final TaskService taskService;
+    private final TeacherService teacherService;
+    private final ActivityApprovalRequestMapper activityApprovalRequestMapper;
+    private final ExaminationInternalService examinationInternalService;
+    private final ExaminationExternalService examinationExternalService;
+    private final CheckingQuestionMapper checkingQuestionMapper;
+    private final MultipleChoiceMapper multipleChoiceMapper;
+    private final SingleChoiceMapper singleChoiceMapper;
+
+    @Autowired
+    public ActivityApprovalRequestServiceImpl(RuntimeService runtimeService, TaskService taskService, TeacherService teacherService, ActivityApprovalRequestMapper activityApprovalRequestMapper, ExaminationInternalService examinationInternalService, ExaminationExternalService examinationExternalService, CheckingQuestionMapper checkingQuestionMapper, MultipleChoiceMapper multipleChoiceMapper, SingleChoiceMapper singleChoiceMapper) {
+        this.runtimeService = runtimeService;
+        this.taskService = taskService;
+        this.teacherService = teacherService;
+        this.activityApprovalRequestMapper = activityApprovalRequestMapper;
+        this.examinationInternalService = examinationInternalService;
+        this.examinationExternalService = examinationExternalService;
+        this.checkingQuestionMapper = checkingQuestionMapper;
+        this.multipleChoiceMapper = multipleChoiceMapper;
+        this.singleChoiceMapper = singleChoiceMapper;
+    }
+
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ActivityInternal createRequest(ExaminationInternal examinationInternal, ActivityApprovalRequest activityApprovalRequest, int uid) {
         examinationInternalService.createExamination(examinationInternal);
         activityApprovalRequest.setEiid(examinationInternal.getEiid());
         activityApprovalRequestMapper.insertSelective(activityApprovalRequest);
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(2048);
         map.put("activity", activityApprovalRequest);
         map.put("teacherUid", uid);
         //给map增加条目指定受理请求的人，受理人通过processVariableValueEquals名字对申请进行审批
@@ -84,14 +87,8 @@ public class ActivityApprovalRequestServiceImpl implements ActivityApprovalReque
         return activityApprovalRequestMapper.selectByEiidAI(examinationInternal.getEiid());
     }
 
-    /**
-     * 工作流申请修改考试事件(根据考试事件id查找)
-     *
-     * @param taskId              需要修改的任务的taskId
-     * @param examinationInternal 考试事件修改的具体信息
-     */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ActivityInternal updateRequest(String taskId, ExaminationInternal examinationInternal) {
         Map<String, Object> map = taskService.getVariables(taskId);
         ActivityApprovalRequest activityApprovalRequest = (ActivityApprovalRequest) map.get("activity");
@@ -106,12 +103,6 @@ public class ActivityApprovalRequestServiceImpl implements ActivityApprovalReque
         return activityApprovalRequestMapper.selectByEiidAI(activityApprovalRequest.getEiid());
     }
 
-    /**
-     * 根据老师uid查询申请的任务
-     *
-     * @param uid 登陆者老师uid
-     * @return 返回申请的任务
-     */
     @Override
     public List<ActivityInternal> queryListRequest(int uid) {
         List<ActivityInternal> requestList = new ArrayList<>();
@@ -135,11 +126,6 @@ public class ActivityApprovalRequestServiceImpl implements ActivityApprovalReque
         return requestList;
     }
 
-    /**
-     * 根据taskId删除考试申请
-     *
-     * @param taskId 任务id
-     */
     @Override
     public void deleteRequest(String taskId) {
         Map<String, Object> variable = taskService.getVariables(taskId);
@@ -154,13 +140,8 @@ public class ActivityApprovalRequestServiceImpl implements ActivityApprovalReque
         taskService.deleteTask(taskId, true);
     }
 
-    /**
-     * 进行审批创建
-     *
-     * @param statusAndExaminationExternal 接受考试外在因素信息,接受审批信息类
-     */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void approve(Map<String, Object> statusAndExaminationExternal) {
         int status = JSON.parseObject(JSON.toJSONString(statusAndExaminationExternal.get("status")),
                 Integer.class);
@@ -191,11 +172,6 @@ public class ActivityApprovalRequestServiceImpl implements ActivityApprovalReque
         taskService.complete(taskId);
     }
 
-    /**
-     * 审批者查询需要审批的申请(获取所有申请)
-     *
-     * @return 返回需要审批的申请list
-     */
     @Override
     public List<ActivityInternal> approvalQueryList() {
         List<ActivityInternal> approvalList = new ArrayList<>();

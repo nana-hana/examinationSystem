@@ -7,13 +7,34 @@ package com.vvicey.user.teacher.entity;
  */
 public class Teacher {
 
-    private Integer tid;//教师id
-    private String name;//教师姓名
-    private Integer teacherNumber;//教师编号
-    private Integer major;//教师专业
-    private Integer institute;//教师学院
-    private Integer phone;//教师手机号码
-    private Integer uid;//教师的登陆id
+    /**
+     * 教师id
+     */
+    private Integer tid;
+    /**
+     * 教师姓名
+     */
+    private String name;
+    /**
+     * 教师编号
+     */
+    private Integer teacherNumber;
+    /**
+     * 教师专业
+     */
+    private Integer major;
+    /**
+     * 教师学院
+     */
+    private Integer institute;
+    /**
+     * 教师手机号码
+     */
+    private Integer phone;
+    /**
+     * 教师的登陆id
+     */
+    private Integer uid;
 
     public Integer getTid() {
         return tid;

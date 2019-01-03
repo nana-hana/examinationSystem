@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vvicey.itembank.dao.SingleChoiceMapper" >
+  <resultMap id="BaseResultMap" type="com.vvicey.itembank.entity.SingleChoice" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="exam_eiid" property="examEiid" jdbcType="INTEGER" />
+    <result column="question" property="question" jdbcType="VARCHAR" />
+    <result column="answer_a" property="answerA" jdbcType="VARCHAR" />
+    <result column="answer_b" property="answerB" jdbcType="VARCHAR" />
+    <result column="answer_c" property="answerC" jdbcType="VARCHAR" />
+    <result column="answer_d" property="answerD" jdbcType="VARCHAR" />
+    <result column="true_answer" property="trueAnswer" jdbcType="CHAR" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id,exam_eiid, question, answer_a, answer_b, answer_c, answer_d, true_answer, level
+  </sql>
+  <select id="selectByExamEiid" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from single_choice
+    where exam_eiid = #{examEiid,jdbcType=INTEGER}
+    order by RAND() LIMIT #{1,jdbcType=INTEGER}
+  </select>
+  <select id="selectAllBySubjectId" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from single_choice,examination_internal
+    where exam_eiid = eiid
+    and subject_id = #{subjectId}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from single_choice
+  </select>
+
+  <delete id="deleteByEiid" parameterType="java.lang.Integer" >
+    delete from single_choice
+    where exam_eiid = #{examEiid,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteSingleChoiceById" parameterType="java.lang.Integer" >
+    delete from single_choice
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.vvicey.itembank.entity.SingleChoice" >
+    insert into single_choice
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="examEiid != null" >
+        exam_eiid,
+      </if>
+      <if test="question != null" >
+        question,
+      </if>
+      <if test="answerA != null" >
+        answer_a,
+      </if>
+      <if test="answerB != null" >
+        answer_b,
+      </if>
+      <if test="answerC != null" >
+        answer_c,
+      </if>
+      <if test="answerD != null" >
+        answer_d,
+      </if>
+      <if test="trueAnswer != null" >
+        true_answer,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="examEiid != null" >
+        #{examEiid,jdbcType=INTEGER},
+      </if>
+      <if test="question != null" >
+        #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="answerA != null" >
+        #{answerA,jdbcType=VARCHAR},
+      </if>
+      <if test="answerB != null" >
+        #{answerB,jdbcType=VARCHAR},
+      </if>
+      <if test="answerC != null" >
+        #{answerC,jdbcType=VARCHAR},
+      </if>
+      <if test="answerD != null" >
+        #{answerD,jdbcType=VARCHAR},
+      </if>
+      <if test="trueAnswer != null" >
+        #{trueAnswer,jdbcType=CHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.vvicey.itembank.entity.SingleChoice" >
+    update single_choice
+    <set >
+      <if test="question != null" >
+        question = #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="answerA != null" >
+        answer_a = #{answerA,jdbcType=VARCHAR},
+      </if>
+      <if test="answerB != null" >
+        answer_b = #{answerB,jdbcType=VARCHAR},
+      </if>
+      <if test="answerC != null" >
+        answer_c = #{answerC,jdbcType=VARCHAR},
+      </if>
+      <if test="answerD != null" >
+        answer_d = #{answerD,jdbcType=VARCHAR},
+      </if>
+      <if test="trueAnswer != null" >
+        true_answer = #{trueAnswer,jdbcType=CHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+    </set>
+    where exam_eiid = #{examEiid,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -4,22 +4,22 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.vvicey.common.information.Status;
 import com.vvicey.common.utils.ExamFileInputUtil;
-import com.vvicey.common.utils.MD5Utils;
+import com.vvicey.common.utils.Md5Utils;
 import com.vvicey.examination.entity.ExaminationExternal;
 import com.vvicey.examination.entity.ExaminationInternal;
 import com.vvicey.examination.service.ExaminationExternalService;
 import com.vvicey.examination.service.ExaminationInternalService;
-import com.vvicey.itemBank.entity.CheckingQuestion;
-import com.vvicey.itemBank.entity.MultipleChoice;
-import com.vvicey.itemBank.entity.SingleChoice;
-import com.vvicey.itemBank.service.CheckingQuestionService;
-import com.vvicey.itemBank.service.MultipleChoiceService;
-import com.vvicey.itemBank.service.SingleChoiceService;
+import com.vvicey.itembank.entity.CheckingQuestion;
+import com.vvicey.itembank.entity.MultipleChoice;
+import com.vvicey.itembank.entity.SingleChoice;
+import com.vvicey.itembank.service.CheckingQuestionService;
+import com.vvicey.itembank.service.MultipleChoiceService;
+import com.vvicey.itembank.service.SingleChoiceService;
 import com.vvicey.user.login.entity.Loginer;
 import com.vvicey.user.login.service.LoginService;
 import com.vvicey.user.student.entity.Student;
 import com.vvicey.user.student.service.StudentService;
-import com.vvicey.user.tempEntity.StudentLoginer;
+import com.vvicey.user.tempentity.StudentLoginer;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,20 +48,28 @@ import java.util.Map;
 @RequestMapping("student")
 public class StudentController {
 
+    private final StudentService studentService;
+    private final LoginService loginService;
+    private final ExaminationInternalService examinationInternalService;
+    private final ExaminationExternalService examinationExternalService;
+    private final SingleChoiceService singleChoiceService;
+    private final MultipleChoiceService multipleChoiceService;
+    private final CheckingQuestionService checkingQuestionService;
+
     @Autowired
-    private StudentService studentService;
-    @Autowired
-    private LoginService loginService;
-    @Autowired
-    private ExaminationInternalService examinationInternalService;
-    @Autowired
-    private ExaminationExternalService examinationExternalService;
-    @Autowired
-    private SingleChoiceService singleChoiceService;
-    @Autowired
-    private MultipleChoiceService multipleChoiceService;
-    @Autowired
-    private CheckingQuestionService checkingQuestionService;
+    public StudentController(StudentService studentService, LoginService loginService, ExaminationInternalService examinationInternalService, ExaminationExternalService examinationExternalService, SingleChoiceService singleChoiceService, MultipleChoiceService multipleChoiceService, CheckingQuestionService checkingQuestionService) {
+        this.studentService = studentService;
+        this.loginService = loginService;
+        this.examinationInternalService = examinationInternalService;
+        this.examinationExternalService = examinationExternalService;
+        this.singleChoiceService = singleChoiceService;
+        this.multipleChoiceService = multipleChoiceService;
+        this.checkingQuestionService = checkingQuestionService;
+    }
+
+    private static final int COMPUTER = 0;
+    private static final int MATH = 1;
+    private static final int ENGLISH = 2;
 
     /**
      * 跳转学生界面
@@ -86,26 +94,21 @@ public class StudentController {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         StudentLoginer studentLoginer = studentService.queryStudentSelf(loginer.getUid());
         int studentClass = studentLoginer.getStudentClass();
-        List<ExaminationInternal> ExaminationInternalList = examinationInternalService
-                .queryExaminationInternalByStudentClass(studentClass);
+        List<ExaminationInternal> examinationInternalList = examinationInternalService.queryExaminationInternalByStudentClass(studentClass);
         ExaminationInternal examinationInternal = null;
         long minTime = 99999;
-        for (ExaminationInternal examInternal : ExaminationInternalList) {
+        for (ExaminationInternal examInternal : examinationInternalList) {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String examinationTime = df.format(examInternal.getExamTime());//考试开始时间
-            String nowTime = df.format(new Date());//当前时间
-
+            String examinationTime = df.format(examInternal.getExamTime());
+            String nowTime = df.format(new Date());
             Date examinationTimeDate;
             Date nowTimeDate;
             long diffMinutes;
             try {
                 examinationTimeDate = df.parse(examinationTime);
                 nowTimeDate = df.parse(nowTime);
-                //毫秒ms
                 long diff = examinationTimeDate.getTime() - nowTimeDate.getTime();
-
                 diffMinutes = diff / (60 * 1000);
-
                 if (diffMinutes > -examInternal.getExaminationTime()) {
                     if (diffMinutes < minTime) {
                         minTime = diffMinutes;
@@ -120,22 +123,21 @@ public class StudentController {
             model.addAttribute("haveExam", 0);
             return "/student/studentBeginExamination";
         }
-        int paperKind = examinationInternal.getPaperKind();//获取试卷类型
+        int paperKind = examinationInternal.getPaperKind();
         List checkingQuestionList;
         List multipleChoiceList;
         List singleChoiceList;
-        //全随机试卷类型
         if (paperKind == 0) {
-            int singleNumber = examinationInternal.getSingleNumber();//单选题数量
-            int multipleNumber = examinationInternal.getMultipleNumber();//多选题数量
-            int checkingNumber = examinationInternal.getCheckingNumber();//判断题数量
+            int singleNumber = examinationInternal.getSingleNumber();
+            int multipleNumber = examinationInternal.getMultipleNumber();
+            int checkingNumber = examinationInternal.getCheckingNumber();
             List<SingleChoice> querySingleChoiceAll = singleChoiceService.querySingleChoiceAllBySubjectId(examinationInternal.getSubjectId());
             List<MultipleChoice> queryMultipleChoiceAll = multipleChoiceService.queryMultipleChoiceAllBySubjectId(examinationInternal.getSubjectId());
             List<CheckingQuestion> queryCheckingQuestionAll = checkingQuestionService.queryCheckingQuestionAllBySubjectId(examinationInternal.getSubjectId());
             checkingQuestionList = ExamFileInputUtil.getRandomList(queryCheckingQuestionAll, checkingNumber);
             multipleChoiceList = ExamFileInputUtil.getRandomList(queryMultipleChoiceAll, multipleNumber);
             singleChoiceList = ExamFileInputUtil.getRandomList(querySingleChoiceAll, singleNumber);
-        } else {//AB卷类型
+        } else {
             singleChoiceList = singleChoiceService
                     .querySingleChoiceByEiid(examinationInternal.getEiid());
             multipleChoiceList = multipleChoiceService
@@ -143,7 +145,6 @@ public class StudentController {
             checkingQuestionList = checkingQuestionService
                     .queryCheckingQuestionByEiid(examinationInternal.getEiid());
         }
-
         request.getSession().setAttribute("singleChoiceList", singleChoiceList);
         request.getSession().setAttribute("multipleChoiceList", multipleChoiceList);
         request.getSession().setAttribute("checkingQuestionList", checkingQuestionList);
@@ -163,7 +164,8 @@ public class StudentController {
                 .queryExaminationExternalByEiid(examinationInternal.getEiid());
         if (examinationExternal == null) {
             model.addAttribute("examOver", 1);
-            model.addAttribute("isTimeToExamination", 0);// 1代表可以开始考试了，0代表还不能开始考试
+            // 1代表可以开始考试了，0代表还不能开始考试
+            model.addAttribute("isTimeToExamination", 0);
             request.getSession().setAttribute("examinationInternal", examinationInternal);
             model.addAttribute("singleChoiceList", singleChoiceList);
             model.addAttribute("multipleChoiceList", multipleChoiceList);
@@ -171,17 +173,14 @@ public class StudentController {
             return "/student/studentBeginExamination";
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String examinationTime = df.format(examinationExternal.getExamTime());//考试开始时间
-        String nowTime = df.format(new Date());//当前时间
-
+        String examinationTime = df.format(examinationExternal.getExamTime());
+        String nowTime = df.format(new Date());
         Date examinationTimeDate;
         Date nowTimeDate;
         long diffMinutes = 0;
         try {
             examinationTimeDate = df.parse(examinationTime);
             nowTimeDate = df.parse(nowTime);
-
-            //毫秒ms
             long diff = examinationTimeDate.getTime() - nowTimeDate.getTime();
             diffMinutes = diff / (60 * 1000);
             System.out.print("两个时间相差：");
@@ -189,9 +188,9 @@ public class StudentController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         if (examinationTime.compareTo(nowTime) >= 0) {
-            model.addAttribute("isTimeToExamination", 0);// 1代表可以开始考试了，0代表还不能开始考试
+            // 1代表可以开始考试了，0代表还不能开始考试
+            model.addAttribute("isTimeToExamination", 0);
             model.addAttribute("whenExamination", examinationTime);
         } else {
             model.addAttribute("isTimeToExamination", 1);
@@ -202,11 +201,11 @@ public class StudentController {
         model.addAttribute("checkingQuestionList", checkingQuestionList);
         model.addAttribute("examinationTime", examinationInternal.getExaminationTime() + diffMinutes);
         String subjectName;
-        if (examinationInternal.getSubjectId() == 0) {
+        if (examinationInternal.getSubjectId() == COMPUTER) {
             subjectName = "计算机网络";
-        } else if (examinationInternal.getSubjectId() == 1) {
+        } else if (examinationInternal.getSubjectId() == MATH) {
             subjectName = "数学";
-        } else if (examinationInternal.getSubjectId() == 2) {
+        } else if (examinationInternal.getSubjectId() == ENGLISH) {
             subjectName = "英语";
         } else {
             subjectName = "未知课程";
@@ -215,7 +214,7 @@ public class StudentController {
         model.addAttribute("subjectName", subjectName);
         if (diffMinutes < -examinationInternal.getExaminationTime()) {
             model.addAttribute("isTimeToExamination", 0);
-            model.addAttribute("examOver", 1);//考试结束
+            model.addAttribute("examOver", 1);
         } else {
             model.addAttribute("examOver", 0);
         }
@@ -254,14 +253,12 @@ public class StudentController {
         int singleNum = examinationInternal.getSingleNumber();
         int multipleNum = examinationInternal.getMultipleNumber();
         int checkingNum = examinationInternal.getCheckingNumber();
-
         List<SingleChoice> singleChoiceList = (List<SingleChoice>) request.getSession()
                 .getAttribute("singleChoiceList");
         List<MultipleChoice> multipleChoiceList = (List<MultipleChoice>) request.getSession()
                 .getAttribute("multipleChoiceList");
         List<CheckingQuestion> checkingQuestionList = (List<CheckingQuestion>) request.getSession()
                 .getAttribute("checkingQuestionList");
-
         String singleAnswers = (String) request.getSession().getAttribute("singleAnswers");
         String multipleAnswers = (String) request.getSession().getAttribute("multipleAnswers");
         String checkingAnswers = (String) request.getSession().getAttribute("checkingAnswers");
@@ -271,7 +268,6 @@ public class StudentController {
         checkingAnswers = checkingAnswers.replace("[", "");
         checkingAnswers = checkingAnswers.replace(",", "");
         checkingAnswers = checkingAnswers.replace("]", "");
-
         // 单选题得分情况
         StringBuilder trueSingleAnswers = new StringBuilder();
         for (SingleChoice singleChoice : singleChoiceList) {
@@ -286,7 +282,6 @@ public class StudentController {
             }
         }
         float singleResult = singleScore * singleNum - singleScore * singleDifferent;
-
         // 多选题得分情况
         JSONArray multipleAnswersList = JSON.parseArray(multipleAnswers);
         String[] multipleAnswer = new String[multipleNum];
@@ -307,7 +302,6 @@ public class StudentController {
             }
         }
         float multipleResult = multipleScore * multipleNum - multipleScore * multipleDifferent;
-
         // 判断题得分情况
         StringBuilder trueCheckingAnswers = new StringBuilder();
         for (CheckingQuestion checkingQuestion : checkingQuestionList) {
@@ -322,7 +316,6 @@ public class StudentController {
             }
         }
         float checkingResult = checkingScore * checkingNum - checkingScore * checkingDifferent;
-
         model.addAttribute("singleScore", singleScore * singleNum);
         model.addAttribute("multipleScore", multipleScore * multipleNum);
         model.addAttribute("checkingScore", checkingScore * checkingNum);
@@ -343,12 +336,12 @@ public class StudentController {
      */
     @RequestMapping(value = "updateStudentLoginer", method = RequestMethod.PUT)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateStudentLoginer(HttpServletRequest request, @RequestBody Loginer local)
             throws UnsupportedEncodingException, NoSuchAlgorithmException {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         // 前端在username中封装了oldPassword
-        String localOldPassword = MD5Utils.encryptPassword(local.getUsername());
+        String localOldPassword = Md5Utils.encryptPassword(local.getUsername());
         if (!localOldPassword.equals(loginService.queryUser(loginer.getUsername()).getPassword())) {
             return Status.FAIL.getSign();
         }
@@ -365,7 +358,7 @@ public class StudentController {
      */
     @RequestMapping(value = "updateStudentInfo", method = RequestMethod.PUT)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updateStudentInfo(HttpServletRequest request, @RequestBody Student student) {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         student.setUid(loginer.getUid());

@@ -10,6 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * @author nana
+ * Date 19-1-3 上午11:31
+ * @Description
+ */
 public class ExamFileInputUtil {
 
     /**
@@ -24,21 +29,25 @@ public class ExamFileInputUtil {
      */
     @SuppressWarnings("finally")
     public static boolean checkTest(String filePath, int singleNum, int multipleNum, int checkNum, int level) {
-        int fileSingleNum = 0;// 文件中单选题数量
-        int fileMultipleNum = 0;// 文件中多选题数量
-        int fileCheckNum = 0;// 文件中判断题数量
-        int fileLevel = 0;// 文件中题目难度
+        // 文件中单选题数量
+        int fileSingleNum = 0;
+        // 文件中多选题数量
+        int fileMultipleNum = 0;
+        // 文件中判断题数量
+        int fileCheckNum = 0;
+        // 文件中题目难度
+        int fileLevel = 0;
 
         File file = new File(filePath);
         BufferedReader br = null;
-        int catchStatus = 0;
+//        int catchStatus = 0;
         try {
             br = new BufferedReader(new FileReader(file));
             String content;
-            // 遍历文件，统计各种类题目数量
-            while ((content = br.readLine()) != null) {// 使用readLine方法，一次读一行
-//				System.out.println(content);
-                JSONObject obj = new JSONObject().fromObject(content);// 将json字符串转换为json对象
+            /* 遍历文件，统计各种类题目数量 */
+            while ((content = br.readLine()) != null) {
+                // 将json字符串转换为json对象
+                JSONObject obj = JSONObject.fromObject(content);
                 String kind = obj.getString("kind");
                 fileLevel += obj.getInt("level");
                 // 通过题目种类判断该插入哪种题目
@@ -57,22 +66,18 @@ public class ExamFileInputUtil {
             }
             fileLevel = fileLevel / sum;
             //判断是否符合要求
-            if (fileSingleNum == singleNum && fileMultipleNum == multipleNum && fileCheckNum == checkNum
-                    && fileLevel == level) {
-                return true;
-            } else {
-                return false;
-            }
+            return fileSingleNum == singleNum && fileMultipleNum == multipleNum && fileCheckNum == checkNum
+                    && fileLevel == level;
         } catch (Exception e) {
-            catchStatus = 1;
+//            catchStatus = 1;
             e.printStackTrace();
         } finally {
             if (br != null) {
                 try {
                     br.close();
-                    if (catchStatus == 1) {
-                        return false;
-                    }
+//                    if (catchStatus == 1) {
+//                        return false;
+//                    }
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -83,10 +88,9 @@ public class ExamFileInputUtil {
     }
 
     /**
-     * @param paramList:被抽取list
-     * @param count:抽取元素的个数
-     * @function:从list中随机抽取若干不重复元素
-     * @return:由抽取元素组成的新list
+     * @param paramList 被抽取list
+     * @param count     抽取元素的个数
+     * @return 由抽取元素组成的新list
      */
     public static List getRandomList(List paramList, int count) {
         if (paramList.size() < count) {
@@ -95,9 +99,10 @@ public class ExamFileInputUtil {
         Random random = new Random();
         List<Integer> tempList = new ArrayList<>();
         List<Object> newList = new ArrayList<>();
-        int temp = 0;
+        int temp;
         for (int i = 0; i < count; i++) {
-            temp = random.nextInt(paramList.size());//将产生的随机数作为被抽list的索引
+            //将产生的随机数作为被抽list的索引
+            temp = random.nextInt(paramList.size());
             if (!tempList.contains(temp)) {
                 tempList.add(temp);
                 newList.add(paramList.get(temp));

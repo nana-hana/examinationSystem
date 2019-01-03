@@ -9,10 +9,22 @@ import java.util.List;
  */
 public class Role {
 
-    private Integer rid;//role id
-    private String role;//角色英文名
-    private String description;//角色注释
-    private List<Permission> permissionList;//权限集合
+    /**
+     * role id
+     */
+    private Integer rid;
+    /**
+     * 角色英文名
+     */
+    private String role;
+    /**
+     * 角色注释
+     */
+    private String description;
+    /**
+     * 权限集合
+     */
+    private List<Permission> permissionList;
 
     public List<Permission> getPermissionList() {
         return permissionList;

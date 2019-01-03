@@ -8,7 +8,7 @@
     <result column="phone" property="phone" jdbcType="INTEGER" />
     <result column="uid" property="uid" jdbcType="INTEGER" />
   </resultMap>
-  <resultMap id="AdministratorLoginerResultMap" type="com.vvicey.user.tempEntity.AdministratorLoginer" >
+  <resultMap id="AdministratorLoginerResultMap" type="com.vvicey.user.tempentity.AdministratorLoginer" >
     <id column="aid" property="aid" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="institute" property="institute" jdbcType="INTEGER" />

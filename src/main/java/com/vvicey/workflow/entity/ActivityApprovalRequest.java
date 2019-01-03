@@ -11,12 +11,30 @@ public class ActivityApprovalRequest implements Serializable {
 
     private static final long serialVersionUID = -3173729191432597839L;
 
-    private Integer id;//id
-    private Integer status;//审批状态
-    private Integer submitTeacherNumber;//申请老师编号
-    private String comments;//申请信息
-    private Integer eiid;//相关考试事件编号
-    private String taskId;//试卷任务id
+    /**
+     * id
+     */
+    private Integer id;
+    /**
+     * 审批状态
+     */
+    private Integer status;
+    /**
+     * 申请老师编号
+     */
+    private Integer submitTeacherNumber;
+    /**
+     * 申请信息
+     */
+    private String comments;
+    /**
+     * 相关考试事件编号
+     */
+    private Integer eiid;
+    /**
+     * 试卷任务id
+     */
+    private String taskId;
 
     public Integer getId() {
         return id;

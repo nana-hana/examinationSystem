@@ -1,6 +1,6 @@
 package com.vvicey.common.security;
 
-import com.vvicey.common.utils.MD5Utils;
+import com.vvicey.common.utils.Md5Utils;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -28,8 +28,9 @@ public class CustomCredentialsMatcher extends SimpleCredentialsMatcher {
         try {
             UsernamePasswordToken userToken = (UsernamePasswordToken) token;
             String password = String.valueOf(userToken.getPassword());
-            Object tokenCredentials = MD5Utils.encryptPassword(password);
-            Object accountCredentials = getCredentials(info);//服务器查询得出的身份信息
+            Object tokenCredentials = Md5Utils.encryptPassword(password);
+            //服务器查询得出的身份信息
+            Object accountCredentials = getCredentials(info);
             return equals(tokenCredentials, accountCredentials);
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             e.printStackTrace();

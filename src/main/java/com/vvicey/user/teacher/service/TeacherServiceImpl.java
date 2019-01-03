@@ -13,15 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.vvicey.common.utils.ExamFileInputUtil;
 import com.vvicey.examination.entity.ExaminationInternal;
-import com.vvicey.itemBank.dao.CheckingQuestionMapper;
-import com.vvicey.itemBank.dao.MultipleChoiceMapper;
-import com.vvicey.itemBank.dao.SingleChoiceMapper;
-import com.vvicey.itemBank.entity.CheckingQuestion;
-import com.vvicey.itemBank.entity.MultipleChoice;
-import com.vvicey.itemBank.entity.SingleChoice;
+import com.vvicey.itembank.dao.CheckingQuestionMapper;
+import com.vvicey.itembank.dao.MultipleChoiceMapper;
+import com.vvicey.itembank.dao.SingleChoiceMapper;
+import com.vvicey.itembank.entity.CheckingQuestion;
+import com.vvicey.itembank.entity.MultipleChoice;
+import com.vvicey.itembank.entity.SingleChoice;
 import com.vvicey.user.teacher.dao.TeacherMapper;
 import com.vvicey.user.teacher.entity.Teacher;
-import com.vvicey.user.tempEntity.TeacherLoginer;
+import com.vvicey.user.tempentity.TeacherLoginer;
 
 import net.sf.json.JSONObject;
 
@@ -33,173 +33,124 @@ import net.sf.json.JSONObject;
 @Service("TeacherServiceImpl")
 public class TeacherServiceImpl implements TeacherService {
 
-	@Autowired
-	private TeacherMapper teacherMapper;
-	@Autowired
-	private CheckingQuestionMapper checkMapper;
-	@Autowired
-	private MultipleChoiceMapper multipleMapper;
-	@Autowired
-	private SingleChoiceMapper singleMapper;
+    private final TeacherMapper teacherMapper;
+    private final CheckingQuestionMapper checkMapper;
+    private final MultipleChoiceMapper multipleMapper;
+    private final SingleChoiceMapper singleMapper;
 
-	/**
-	 * 创建教师个人信息(包含创建教师身份)
-	 *
-	 * @param teacher
-	 *            需要创建的教师信息
-	 */
-	@Override
-	@Transactional
-	public void createTeacherInfo(Teacher teacher) {
-		teacherMapper.insertTeacherRole(teacher.getUid());
-		teacherMapper.insertSelective(teacher);
-	}
+    @Autowired
+    public TeacherServiceImpl(TeacherMapper teacherMapper, CheckingQuestionMapper checkMapper, MultipleChoiceMapper multipleMapper, SingleChoiceMapper singleMapper) {
+        this.teacherMapper = teacherMapper;
+        this.checkMapper = checkMapper;
+        this.multipleMapper = multipleMapper;
+        this.singleMapper = singleMapper;
+    }
 
-	/**
-	 * 删除教师个人信息
-	 *
-	 * @param uid
-	 *            根据教师uid进行删除
-	 * @return 返回删除成功与否
-	 */
-	@Override
-	@Transactional
-	public int deleteTeacher(int uid) {
-		return teacherMapper.deleteByUid(uid);
-	}
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void createTeacherInfo(Teacher teacher) {
+        teacherMapper.insertTeacherRole(teacher.getUid());
+        teacherMapper.insertSelective(teacher);
+    }
 
-	/**
-	 * 查询所有教师
-	 *
-	 * @return 返回查询的教师数据
-	 */
-	@Override
-	public List<TeacherLoginer> queryAllTeacher() {
-		return teacherMapper.selectAllTeacher();
-	}
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteTeacher(int uid) {
+        return teacherMapper.deleteByUid(uid);
+    }
 
-	/**
-	 * 查询登陆教师自己
-	 *
-	 * @param uid
-	 *            传入uid
-	 * @return 返回教师数据
-	 */
-	@Override
-	public TeacherLoginer queryTeacherSelf(int uid) {
-		return teacherMapper.selectTeacherSelf(uid);
-	}
+    @Override
+    public List<TeacherLoginer> queryAllTeacher() {
+        return teacherMapper.selectAllTeacher();
+    }
 
-	/**
-	 * 更新教师个人信息(根据编号)
-	 *
-	 * @param teacher
-	 *            传入需要更新的教师信息
-	 * @return 返回更新成功与否
-	 */
-	@Override
-	@Transactional
-	public int updateTeacherInfoByTeacherNumber(Teacher teacher) {
-		return teacherMapper.updateByTeacherNumberSelective(teacher);
-	}
+    @Override
+    public TeacherLoginer queryTeacherSelf(int uid) {
+        return teacherMapper.selectTeacherSelf(uid);
+    }
 
-	/**
-	 * 更新教师个人信息(根据账号id)
-	 *
-	 * @param teacher
-	 *            教师数据
-	 */
-	@Override
-	@Transactional
-	public void updateTeacherInfoByUid(Teacher teacher) {
-		teacherMapper.updateByUidSelective(teacher);
-	}
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateTeacherInfoByTeacherNumber(Teacher teacher) {
+        return teacherMapper.updateByTeacherNumberSelective(teacher);
+    }
 
-	/**
-	 * 导入题目，必须保证导入的文本文件中，题目数量和创建的考试中的题目数量一致， 并且题目难度必须和创建的考试中的题目难度一致
-	 * 
-	 * @param filePath
-	 *            文本文件存储路径
-	 * @param exam
-	 *            当前考试信息
-	 * @return list集合存放导入失败信息
-	 * @throws IOException
-	 */
-	@SuppressWarnings("finally")
-	@Override
-	public List<String> eaxmInput(String filePath, ExaminationInternal exam) {
-		List<String> list = new ArrayList<String>();
-		// 判断文件中题目是否符合要求
-		boolean checkTest = ExamFileInputUtil.checkTest(filePath, exam.getSingleNumber(), exam.getMultipleNumber(),
-				exam.getCheckingNumber(), exam.getPaperLevel());
-		if (checkTest == false) {
-			list.add("导入题目不符合要求");
-			File file = new File(filePath);
-			file.delete();// 删除磁盘中的文件
-			return list;
-		}
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateTeacherInfoByUid(Teacher teacher) {
+        teacherMapper.updateByUidSelective(teacher);
+    }
 
-		// 文件中的题目符合要求，插入数据库
-		int insertSelective = 0;
-		int errorNum = 0;
-		File file = new File(filePath);
-		//StringBuilder result = new StringBuilder();
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(file));
+    @Override
+    public List<String> examInput(String filePath, ExaminationInternal exam) {
+        List<String> list = new ArrayList<>();
+        // 判断文件中题目是否符合要求
+        boolean checkTest = ExamFileInputUtil.checkTest(filePath, exam.getSingleNumber(), exam.getMultipleNumber(),
+                exam.getCheckingNumber(), exam.getPaperLevel());
+        if (!checkTest) {
+            list.add("导入题目不符合要求");
+            File file = new File(filePath);
+            // 删除磁盘中的文件
+            file.delete();
+            return list;
+        }
 
-			String content = null;
-			while ((content = br.readLine()) != null) {// 使用readLine方法，一次读一行
-				System.out.println(content);
-				JSONObject obj = new JSONObject().fromObject(content);// 将json字符串转换为json对象
-				String kind = obj.getString("kind");
-				// 通过题目种类判断该插入哪种题目
-				if ("single_choice".equals(kind)) {
-					SingleChoice bean = (SingleChoice) JSONObject.toBean(obj, SingleChoice.class);
-					bean.setExamEiid(exam.getEiid());
-					insertSelective = singleMapper.insertSelective(bean);
-				} else if ("multiple_choice".equals(kind)) {
-					MultipleChoice bean = (MultipleChoice) JSONObject.toBean(obj, MultipleChoice.class);
-					bean.setExamEiid(exam.getEiid());
-					insertSelective = multipleMapper.insertSelective(bean);
-				} else if ("checking_question".equals(kind)) {
-					CheckingQuestion bean = (CheckingQuestion) JSONObject.toBean(obj, CheckingQuestion.class);
-					bean.setExamEiid(exam.getEiid());
-					insertSelective = checkMapper.insertSelective(bean);
-				}
-				if (insertSelective <= 0) {
-					errorNum++;
-				}
-			}
-			if (errorNum != 0) {
-				list.add("添加" + errorNum + "题失败");
-			}
-		} catch (Exception e) {
-			list.add("导入失败");
-			e.printStackTrace();
-		}finally {
-			try {
-				br.close();
-				if(file.exists()){
-					file.delete();// 删除磁盘中的文件
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return list;
-			
-		}
-		
-	}
+        // 文件中的题目符合要求，插入数据库
+        int insertSelective = 0;
+        int errorNum = 0;
+        File file = new File(filePath);
+        //StringBuilder result = new StringBuilder();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
 
-	/**
-	 * 根据学院查询老师
-	 * @param institute
-	 * @return
-	 */
-	@Override
-	public List<TeacherLoginer> queryByInstitute(Integer institute) {
-		return teacherMapper.selectByInstitute(institute);
-	}
+            String content;
+            // 使用readLine方法，一次读一行
+            while ((content = br.readLine()) != null) {
+                // 将json字符串转换为json对象
+                JSONObject obj = JSONObject.fromObject(content);
+                String kind = obj.getString("kind");
+                // 通过题目种类判断该插入哪种题目
+                if ("single_choice".equals(kind)) {
+                    SingleChoice bean = (SingleChoice) JSONObject.toBean(obj, SingleChoice.class);
+                    bean.setExamEiid(exam.getEiid());
+                    insertSelective = singleMapper.insertSelective(bean);
+                } else if ("multiple_choice".equals(kind)) {
+                    MultipleChoice bean = (MultipleChoice) JSONObject.toBean(obj, MultipleChoice.class);
+                    bean.setExamEiid(exam.getEiid());
+                    insertSelective = multipleMapper.insertSelective(bean);
+                } else if ("checking_question".equals(kind)) {
+                    CheckingQuestion bean = (CheckingQuestion) JSONObject.toBean(obj, CheckingQuestion.class);
+                    bean.setExamEiid(exam.getEiid());
+                    insertSelective = checkMapper.insertSelective(bean);
+                }
+                if (insertSelective <= 0) {
+                    errorNum++;
+                }
+            }
+            if (errorNum != 0) {
+                list.add("添加" + errorNum + "题失败");
+            }
+        } catch (Exception e) {
+            list.add("导入失败");
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+                if (file.exists()) {
+                    // 删除磁盘中的文件
+                    file.delete();
+                }
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<TeacherLoginer> queryByInstitute(Integer institute) {
+        return teacherMapper.selectByInstitute(institute);
+    }
 }

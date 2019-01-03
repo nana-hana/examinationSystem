@@ -7,9 +7,18 @@ package com.vvicey.permission.entity;
  */
 public class Permission {
 
-    private Integer pid;//权限 id
-    private String permission;//权限英文名
-    private String description;//权限注释
+    /**
+     * 权限 id
+     */
+    private Integer pid;
+    /**
+     * 权限英文名
+     */
+    private String permission;
+    /**
+     * 权限注释
+     */
+    private String description;
 
     public Integer getPid() {
         return pid;

@@ -206,7 +206,7 @@
                                         <td id="editable_examinationStudentClass" class="col-sm-9"></td>
                                     </tr>
                                     <tr>
-                                        <th class="col-sm-3">考试持续事件*</th>
+                                        <th class="col-sm-3">考试持续时间*</th>
                                         <td id="editable_examinationTime" class="col-sm-9"></td>
                                     </tr>
                                     <tr>

@@ -11,7 +11,7 @@
         <result column="phone" property="phone" jdbcType="INTEGER"/>
         <result column="uid" property="uid" jdbcType="INTEGER"/>
     </resultMap>
-    <resultMap id="StudentLoginerResultMap" type="com.vvicey.user.tempEntity.StudentLoginer">
+    <resultMap id="StudentLoginerResultMap" type="com.vvicey.user.tempentity.StudentLoginer">
         <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="student_number" property="studentNumber" jdbcType="INTEGER"/>
         <result column="student_class" property="studentClass" jdbcType="INTEGER"/>

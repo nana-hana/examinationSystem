@@ -10,7 +10,7 @@
     <result column="phone" jdbcType="INTEGER" property="phone" />
     <result column="uid" jdbcType="INTEGER" property="uid" />
   </resultMap>
-  <resultMap id="TeacherLoginerResultMap" type="com.vvicey.user.tempEntity.TeacherLoginer">
+  <resultMap id="TeacherLoginerResultMap" type="com.vvicey.user.tempentity.TeacherLoginer">
     <result column="name" property="name" jdbcType="VARCHAR"/>
     <result column="teacher_number" property="teacherNumber" jdbcType="INTEGER"/>
     <result column="major" property="major" jdbcType="INTEGER"/>

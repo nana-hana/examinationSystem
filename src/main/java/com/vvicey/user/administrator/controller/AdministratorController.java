@@ -2,24 +2,24 @@ package com.vvicey.user.administrator.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.vvicey.common.information.Status;
-import com.vvicey.common.utils.MD5Utils;
+import com.vvicey.common.utils.Md5Utils;
 import com.vvicey.examination.entity.ExaminationExternal;
 import com.vvicey.examination.service.ExaminationExternalService;
-import com.vvicey.itemBank.entity.CheckingQuestion;
-import com.vvicey.itemBank.entity.MultipleChoice;
-import com.vvicey.itemBank.entity.SingleChoice;
-import com.vvicey.itemBank.service.CheckingQuestionService;
-import com.vvicey.itemBank.service.MultipleChoiceService;
-import com.vvicey.itemBank.service.SingleChoiceService;
+import com.vvicey.itembank.entity.CheckingQuestion;
+import com.vvicey.itembank.entity.MultipleChoice;
+import com.vvicey.itembank.entity.SingleChoice;
+import com.vvicey.itembank.service.CheckingQuestionService;
+import com.vvicey.itembank.service.MultipleChoiceService;
+import com.vvicey.itembank.service.SingleChoiceService;
 import com.vvicey.user.administrator.entity.Administrator;
 import com.vvicey.user.administrator.service.AdministratorService;
 import com.vvicey.user.login.entity.Loginer;
 import com.vvicey.user.login.service.LoginService;
 import com.vvicey.user.teacher.entity.Teacher;
 import com.vvicey.user.teacher.service.TeacherService;
-import com.vvicey.user.tempEntity.ActivityInternal;
-import com.vvicey.user.tempEntity.AdministratorLoginer;
-import com.vvicey.user.tempEntity.TeacherLoginer;
+import com.vvicey.user.tempentity.ActivityInternal;
+import com.vvicey.user.tempentity.AdministratorLoginer;
+import com.vvicey.user.tempentity.TeacherLoginer;
 import com.vvicey.workflow.service.ActivityApprovalRequestService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,22 +45,26 @@ import java.util.Map;
 @RequestMapping("administrator")
 public class AdministratorController {
 
+    private final LoginService loginService;
+    private final AdministratorService administratorService;
+    private final TeacherService teacherService;
+    private final ActivityApprovalRequestService activityApprovalRequestService;
+    private final ExaminationExternalService examinationExternalService;
+    private final MultipleChoiceService multipleChoiceService;
+    private final CheckingQuestionService checkingQuestionService;
+    private final SingleChoiceService singleChoiceService;
+
     @Autowired
-    private LoginService loginService;
-    @Autowired
-    private AdministratorService administratorService;
-    @Autowired
-    private TeacherService teacherService;
-    @Autowired
-    private ActivityApprovalRequestService activityApprovalRequestService;
-    @Autowired
-    private ExaminationExternalService examinationExternalService;
-    @Autowired
-    private MultipleChoiceService multipleChoiceService;
-    @Autowired
-    private CheckingQuestionService checkingQuestionService;
-    @Autowired
-    private SingleChoiceService singleChoiceService;
+    public AdministratorController(LoginService loginService, AdministratorService administratorService, TeacherService teacherService, ActivityApprovalRequestService activityApprovalRequestService, ExaminationExternalService examinationExternalService, MultipleChoiceService multipleChoiceService, CheckingQuestionService checkingQuestionService, SingleChoiceService singleChoiceService) {
+        this.loginService = loginService;
+        this.administratorService = administratorService;
+        this.teacherService = teacherService;
+        this.activityApprovalRequestService = activityApprovalRequestService;
+        this.examinationExternalService = examinationExternalService;
+        this.multipleChoiceService = multipleChoiceService;
+        this.checkingQuestionService = checkingQuestionService;
+        this.singleChoiceService = singleChoiceService;
+    }
 
     /**
      * 跳转管理员界面,获取教师数据
@@ -145,7 +149,7 @@ public class AdministratorController {
      */
     @RequestMapping(value = "approvalRequest", method = RequestMethod.POST)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void approvalRequest(@RequestBody Map<String, Object> statusAndExaminationExternal) {
         activityApprovalRequestService.approve(statusAndExaminationExternal);
     }
@@ -158,7 +162,7 @@ public class AdministratorController {
      * @throws NoSuchAlgorithmException     请求的加密算法无法实现
      */
     @RequestMapping(value = "addTeacher", method = RequestMethod.POST)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public TeacherLoginer addTeacher(@RequestBody Map<String, Object> loginAndInfo) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         String loginerInfo = JSON.toJSONString(loginAndInfo.get("loginer"));
@@ -181,7 +185,7 @@ public class AdministratorController {
      */
     @RequestMapping(value = "deleteTeacher/{uid}", method = RequestMethod.DELETE)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteTeacher(@PathVariable int uid) {
         teacherService.deleteTeacher(uid);
     }
@@ -193,7 +197,7 @@ public class AdministratorController {
      */
     @RequestMapping(value = "deleteSingleChoice/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteSingleChoice(@PathVariable int id) {
         singleChoiceService.deleteSingleChoiceById(id);
     }
@@ -205,7 +209,7 @@ public class AdministratorController {
      */
     @RequestMapping(value = "deleteMultipleChoice/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteMultipleChoice(@PathVariable int id) {
         multipleChoiceService.deleteMultipleChoiceById(id);
     }
@@ -217,7 +221,7 @@ public class AdministratorController {
      */
     @RequestMapping(value = "deleteCheckingQuestion/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteCheckingQuestion(@PathVariable int id) {
         checkingQuestionService.deleteCheckingQuestionById(id);
     }
@@ -232,7 +236,7 @@ public class AdministratorController {
      */
     @RequestMapping(value = "updateTeacher", method = RequestMethod.PUT)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public TeacherLoginer updateTeacher(@RequestBody Map<String, Object> loginAndTeacherInfo) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         Loginer loginer = JSON.parseObject(JSON.toJSONString(loginAndTeacherInfo.get("loginer")), Loginer.class);
         Teacher teacher = JSON.parseObject(JSON.toJSONString(loginAndTeacherInfo.get("teacher")), Teacher.class);
@@ -254,11 +258,11 @@ public class AdministratorController {
      */
     @RequestMapping(value = "updateAdministratorLoginer", method = RequestMethod.PUT)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateAdministratorLoginer(HttpServletRequest request, @RequestBody Loginer local) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         String remotePassword = loginService.queryUser(loginer.getUsername()).getPassword();
-        if (!MD5Utils.encryptPassword(local.getUsername()).equals(remotePassword)) {
+        if (!Md5Utils.encryptPassword(local.getUsername()).equals(remotePassword)) {
             return Status.FAIL.getSign();
         }
         loginer.setPassword(local.getPassword());
@@ -274,7 +278,7 @@ public class AdministratorController {
      */
     @RequestMapping(value = "updateAdministratorInfo", method = RequestMethod.PUT)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updateAdministratorInfo(HttpServletRequest request, @RequestBody Administrator administrator) {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         administrator.setUid(loginer.getUid());
@@ -289,7 +293,7 @@ public class AdministratorController {
      */
     @RequestMapping(value = "updateExaminationExternal", method = RequestMethod.POST)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateExaminationExternal(@RequestBody Map<String, Object> examinationExternalAndEiid) {
         int eiid = JSON.parseObject(JSON.toJSONString(examinationExternalAndEiid.get("eiid")), Integer.class);
         ExaminationExternal examinationExternal = JSON.parseObject(JSON.toJSONString(examinationExternalAndEiid
@@ -308,7 +312,7 @@ public class AdministratorController {
     @RequestMapping("/queryTest.do")
     @ResponseBody
     public Map<String, Object> queryTest(HttpServletRequest request) {
-        Map<String, Object> modelMap = new HashMap<String, Object>();
+        Map<String, Object> modelMap = new HashMap<>(500);
         //获取eiid转为int类型
         String eiidStr = request.getParameter("eiid");
         int examEiid = Integer.parseInt(eiidStr);

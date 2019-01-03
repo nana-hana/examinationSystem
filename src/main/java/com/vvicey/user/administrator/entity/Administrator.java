@@ -7,11 +7,26 @@ package com.vvicey.user.administrator.entity;
  */
 public class Administrator {
 
-    private Integer aid;//管理员id
-    private String name;//管理员名字
-    private Integer institute;//管理员学院
-    private Integer phone;//管理员手机号码
-    private Integer uid;//管理员的登陆id
+    /**
+     * 管理员id
+     */
+    private Integer aid;
+    /**
+     * 管理员名字
+     */
+    private String name;
+    /**
+     * 管理员学院
+     */
+    private Integer institute;
+    /**
+     * 管理员手机号码
+     */
+    private Integer phone;
+    /**
+     * 管理员的登陆id
+     */
+    private Integer uid;
 
     public Integer getAid() {
         return aid;

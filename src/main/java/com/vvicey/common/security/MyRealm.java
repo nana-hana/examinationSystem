@@ -51,7 +51,8 @@ public class MyRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        UsernamePasswordToken usernamePasswordToke = (UsernamePasswordToken) authenticationToken;//登陆所使用的账号密码
+        //登陆所使用的账号密码
+        UsernamePasswordToken usernamePasswordToke = (UsernamePasswordToken) authenticationToken;
         String username = usernamePasswordToke.getUsername();
         Loginer loginer = loginService.queryUser(username);
         if (loginer == null) {

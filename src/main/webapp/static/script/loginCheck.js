@@ -40,7 +40,7 @@ $(function () {
                                 setTimeout("window.location.href = '/student/studentSelfInfo'", 2000);
                                 break;
                             case 3:
-                                setTimeout("window.location.href = '/superAdministrator/administratorManage'", 2000);
+                                setTimeout("window.location.href = susuperadministrator 2000);
                                 break;
                         }
                     } else {

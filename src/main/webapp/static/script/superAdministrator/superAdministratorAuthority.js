@@ -50,7 +50,7 @@ function updateAdministrator() {
             }
             $.ajax({
                 type: "PUT",
-                url: "/superAdministrator/updateAdministrator/",
+                url: "/superadministrator/updateAdministrator/",
                 contentType: 'application/json',
                 data: JSON.stringify({
                     loginer: {
@@ -91,7 +91,7 @@ function deleteAdministrator() {
             }
             $.ajax({
                 type: "DELETE",
-                url: "/superAdministrator/deleteAdministrator/" + uid,
+                url: "/superadministrator/deleteAdministrator/" + uid,
                 success: function () {
                     toastr.success("删除成功");
                     tr.remove();
@@ -148,7 +148,7 @@ function addAdministrator() {
         if (verify) {
             $.ajax({
                 type: "POST",
-                url: "/superAdministrator/addAdministrator",
+                url: "/superadministrator/addAdministrator",
                 contentType: 'application/json',
                 data: JSON.stringify({
                     loginer: {
@@ -217,7 +217,7 @@ function updateSuperAdministratorInfo() {
             }
             $.ajax({
                 type: "PUT",
-                url: "/superAdministrator/updateSuperAdministratorInfo/",
+                url: "/superadministrator/updateSuperAdministratorInfo/",
                 contentType: 'application/json',
                 data: JSON.stringify({
                     name: name,
@@ -250,7 +250,7 @@ function updateSuperAdministratorPassword() {
             }
             $.ajax({
                 type: "PUT",
-                url: "/superAdministrator/updateSuperAdministratorLoginer",
+                url: "/superadministrator/updateSuperAdministratorLoginer",
                 contentType: 'application/json',
                 data: JSON.stringify({
                     username: oldPassword, //username做老密码校验用

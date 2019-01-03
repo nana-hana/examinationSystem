@@ -17,51 +17,32 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("ExaminationInternalServiceImpl")
 public class ExaminationInternalServiceImpl implements ExaminationInternalService {
 
-    @Autowired
-    private ExaminationInternalMapper examinationInternalMapper;
+    private final ExaminationInternalMapper examinationInternalMapper;
 
-    /**
-     * 创建考试事件
-     *
-     * @param examinationInternal 试卷详情
-     * @return 返回创建成功与否
-     */
+    @Autowired
+    public ExaminationInternalServiceImpl(ExaminationInternalMapper examinationInternalMapper) {
+        this.examinationInternalMapper = examinationInternalMapper;
+    }
+
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int createExamination(ExaminationInternal examinationInternal) {
         return examinationInternalMapper.insertSelective(examinationInternal);
     }
 
-    /**
-     * 删除考试事件
-     *
-     * @param eiid 考试编号id
-     * @return 返回删除成功与否
-     */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deleteExamination(int eiid) {
         return examinationInternalMapper.deleteByEiid(eiid);
     }
 
-    /**
-     * 根据提交考试事情的eiid查询考试信息
-     *
-     * @param eiid 考试编号id
-     * @return 返回查询结果
-     */
     @Override
     public ExaminationInternal queryExaminationInternalByEiid(int eiid) {
         return examinationInternalMapper.selectByEiid(eiid);
     }
 
-    /**
-     * 根据考试编号id对考试信息进行更新
-     *
-     * @param examinationInternal 试卷详情
-     */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updateExaminationByEiid(ExaminationInternal examinationInternal) {
         examinationInternalMapper.updateByEiidSelective(examinationInternal);
     }

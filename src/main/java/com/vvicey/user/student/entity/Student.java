@@ -7,15 +7,42 @@ package com.vvicey.user.student.entity;
  */
 public class Student {
 
-    private Integer sid;//学生id
-    private String name;//学生姓名
-    private Integer studentNumber;//学生学号
-    private Integer studentClass;//学生班级
-    private Integer major;//学生专业
-    private Integer institute;//学生学院
-    private Integer phone;//学生手机号码
-    private Integer uid;//学生的登陆id
-    private String instituteName;//学院名字
+    /**
+     * 学生id
+     */
+    private Integer sid;
+    /**
+     * 学生姓名
+     */
+    private String name;
+    /**
+     * 学生学号
+     */
+    private Integer studentNumber;
+    /**
+     * 学生班级
+     */
+    private Integer studentClass;
+    /**
+     * 学生专业
+     */
+    private Integer major;
+    /**
+     * 学生学院
+     */
+    private Integer institute;
+    /**
+     * 学生手机号码
+     */
+    private Integer phone;
+    /**
+     * 学生的登陆id
+     */
+    private Integer uid;
+    /**
+     * 学院名字
+     */
+    private String instituteName;
 
     public String getInstituteName() {
         return instituteName;

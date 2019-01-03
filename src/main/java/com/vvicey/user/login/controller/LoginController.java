@@ -22,10 +22,17 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("login")
 public class LoginController {
 
-    private static final int SESSION_LIFE = 600000;//session过期时间10分钟
+    /**
+     * session过期时间10分钟
+     */
+    private static final int SESSION_LIFE = 600000;
+
+    private final LoginService loginService;
 
     @Autowired
-    private LoginService loginService;
+    public LoginController(LoginService loginService) {
+        this.loginService = loginService;
+    }
 
     /**
      * 跳转登陆界面
@@ -44,12 +51,13 @@ public class LoginController {
      * @return 返回账户验证失败或成功的状态信息
      */
     @RequestMapping(value = "check", method = RequestMethod.POST)
-    @ResponseBody//返回json格式数据而不是跳转界面
+    @ResponseBody
     public Loginer loginCheck(HttpServletRequest request) {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-        Subject subject = SecurityUtils.getSubject();//获取用户主体(current user)
+        //获取用户主体(current user)
+        Subject subject = SecurityUtils.getSubject();
         try {
             subject.login(token);
             SecurityUtils.getSubject().getSession().setTimeout(SESSION_LIFE);

@@ -18,6 +18,19 @@ import java.io.IOException;
 public class SessionInterceptor implements HandlerInterceptor {
 
     /**
+     * login
+     */
+    private static final String LOGIN = "login";
+    /**
+     * sign
+     */
+    private static final String SIGN = "sign";
+    /**
+     * error
+     */
+    private static final String ERROR = "error";
+
+    /**
      * 校验是否拥有session
      *
      * @param request  http请求
@@ -30,7 +43,7 @@ public class SessionInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws ServletException, IOException {
         String uri = request.getRequestURI();
-        if (uri.contains("login") || uri.contains("sign") || uri.contains("error")) {
+        if (uri.contains(LOGIN) || uri.contains(SIGN) || uri.contains(ERROR)) {
             return true;
         }
         Loginer loginer = (Loginer) SecurityUtils.getSubject().getSession().getAttribute("loginerInfo");

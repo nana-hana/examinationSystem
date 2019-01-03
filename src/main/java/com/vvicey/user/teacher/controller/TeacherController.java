@@ -2,24 +2,24 @@ package com.vvicey.user.teacher.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.vvicey.common.information.Status;
-import com.vvicey.common.utils.MD5Utils;
+import com.vvicey.common.utils.Md5Utils;
 import com.vvicey.examination.entity.ExaminationInternal;
 import com.vvicey.examination.service.ExaminationInternalService;
-import com.vvicey.itemBank.entity.CheckingQuestion;
-import com.vvicey.itemBank.entity.MultipleChoice;
-import com.vvicey.itemBank.entity.SingleChoice;
-import com.vvicey.itemBank.service.CheckingQuestionService;
-import com.vvicey.itemBank.service.MultipleChoiceService;
-import com.vvicey.itemBank.service.SingleChoiceService;
+import com.vvicey.itembank.entity.CheckingQuestion;
+import com.vvicey.itembank.entity.MultipleChoice;
+import com.vvicey.itembank.entity.SingleChoice;
+import com.vvicey.itembank.service.CheckingQuestionService;
+import com.vvicey.itembank.service.MultipleChoiceService;
+import com.vvicey.itembank.service.SingleChoiceService;
 import com.vvicey.user.login.entity.Loginer;
 import com.vvicey.user.login.service.LoginService;
 import com.vvicey.user.student.entity.Student;
 import com.vvicey.user.student.service.StudentService;
 import com.vvicey.user.teacher.entity.Teacher;
 import com.vvicey.user.teacher.service.TeacherService;
-import com.vvicey.user.tempEntity.ActivityInternal;
-import com.vvicey.user.tempEntity.StudentLoginer;
-import com.vvicey.user.tempEntity.TeacherLoginer;
+import com.vvicey.user.tempentity.ActivityInternal;
+import com.vvicey.user.tempentity.StudentLoginer;
+import com.vvicey.user.tempentity.TeacherLoginer;
 import com.vvicey.workflow.entity.ActivityApprovalRequest;
 import com.vvicey.workflow.service.ActivityApprovalRequestService;
 
@@ -50,22 +50,26 @@ import java.util.Map;
 @RequestMapping("teacher")
 public class TeacherController {
 
+    private final StudentService studentService;
+    private final LoginService loginService;
+    private final TeacherService teacherService;
+    private final ActivityApprovalRequestService activityApprovalRequestService;
+    private final ExaminationInternalService examinationInternalService;
+    private final MultipleChoiceService multipleChoiceService;
+    private final CheckingQuestionService checkingQuestionService;
+    private final SingleChoiceService singleChoiceService;
+
     @Autowired
-    private StudentService studentService;
-    @Autowired
-    private LoginService loginService;
-    @Autowired
-    private TeacherService teacherService;
-    @Autowired
-    private ActivityApprovalRequestService activityApprovalRequestService;
-    @Autowired
-    private ExaminationInternalService examinationInternalService;
-    @Autowired
-    private MultipleChoiceService multipleChoiceService;
-    @Autowired
-    private CheckingQuestionService checkingQuestionService;
-    @Autowired
-    private SingleChoiceService singleChoiceService;
+    public TeacherController(StudentService studentService, LoginService loginService, TeacherService teacherService, ActivityApprovalRequestService activityApprovalRequestService, ExaminationInternalService examinationInternalService, MultipleChoiceService multipleChoiceService, CheckingQuestionService checkingQuestionService, SingleChoiceService singleChoiceService) {
+        this.studentService = studentService;
+        this.loginService = loginService;
+        this.teacherService = teacherService;
+        this.activityApprovalRequestService = activityApprovalRequestService;
+        this.examinationInternalService = examinationInternalService;
+        this.multipleChoiceService = multipleChoiceService;
+        this.checkingQuestionService = checkingQuestionService;
+        this.singleChoiceService = singleChoiceService;
+    }
 
     /**
      * 跳转教师界面,获取学生数据
@@ -114,7 +118,7 @@ public class TeacherController {
      * @throws NoSuchAlgorithmException     请求的加密算法无法实现
      */
     @RequestMapping(value = "addStudent", method = RequestMethod.POST)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @ResponseBody
     public StudentLoginer addStudent(@RequestBody Map<String, Object> loginAndInfo) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         String loginerInfo = JSON.toJSONString(loginAndInfo.get("loginer"));
@@ -137,7 +141,7 @@ public class TeacherController {
      */
     @RequestMapping(value = "deleteStudent/{uid}", method = RequestMethod.DELETE)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteStudent(@PathVariable int uid) {
         studentService.deleteStudent(uid);
     }
@@ -152,7 +156,7 @@ public class TeacherController {
      */
     @RequestMapping(value = "updateStudent", method = RequestMethod.PUT)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public StudentLoginer updateStudent(@RequestBody Map<String, Object> loginAndStudentInfo) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         Loginer loginer = JSON.parseObject(JSON.toJSONString(loginAndStudentInfo.get("loginer")), Loginer.class);
         Student student = JSON.parseObject(JSON.toJSONString(loginAndStudentInfo.get("student")), Student.class);
@@ -174,11 +178,11 @@ public class TeacherController {
      */
     @RequestMapping(value = "updateTeacherLoginer", method = RequestMethod.PUT)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateTeacherLoginer(HttpServletRequest request, @RequestBody Loginer local) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         //前端在username中封装了oldPassword
-        String localOldPassword = MD5Utils.encryptPassword(local.getUsername());
+        String localOldPassword = Md5Utils.encryptPassword(local.getUsername());
         String remotePassword = loginService.queryUser(loginer.getUsername()).getPassword();
         if (!localOldPassword.equals(remotePassword)) {
             return Status.FAIL.getSign();
@@ -196,7 +200,7 @@ public class TeacherController {
      */
     @RequestMapping(value = "updateTeacherInfo", method = RequestMethod.PUT)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void updateTeacherInfo(HttpServletRequest request, @RequestBody Teacher teacher) {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         teacher.setUid(loginer.getUid());
@@ -224,7 +228,7 @@ public class TeacherController {
      */
     @RequestMapping(value = "createExamination", method = RequestMethod.POST)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ActivityInternal createExamination(HttpServletRequest request, @RequestBody Map<String, Object> activityAndExamination) {
         Loginer loginer = (Loginer) request.getSession().getAttribute("loginerInfo");
         int teacherNumber = teacherService.queryTeacherSelf(loginer.getUid()).getTeacherNumber();
@@ -243,7 +247,7 @@ public class TeacherController {
      */
     @RequestMapping(value = "deleteExamination/{taskId}", method = RequestMethod.DELETE)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteExamination(@PathVariable String taskId) {
         activityApprovalRequestService.deleteRequest(taskId);
     }
@@ -257,7 +261,7 @@ public class TeacherController {
      */
     @RequestMapping(value = "updateExamination", method = RequestMethod.PUT)
     @ResponseBody
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public ActivityInternal updateExamination(@RequestBody Map<String, Object> examinationAndTaskId) {
         String taskId = JSON.parseObject(JSON.toJSONString(examinationAndTaskId.get("taskId")), String.class);
         ExaminationInternal examinationInternal = JSON.parseObject(JSON.toJSONString(examinationAndTaskId.get("examination")),
@@ -276,7 +280,7 @@ public class TeacherController {
     @RequestMapping("/inputExamination.do")
     @ResponseBody
     public Map<String, String> inputExamination(@RequestParam("doc") MultipartFile file, HttpServletRequest request) {
-        Map<String, String> modelMap = new HashMap<>();
+        Map<String, String> modelMap = new HashMap<>(2048);
         //将前台json字符串转为ExaminationInternal对象
         String eiidStr = request.getParameter("eiid");
         int eiid = Integer.parseInt(eiidStr);
@@ -298,40 +302,41 @@ public class TeacherController {
             // 将内存中的数据写入磁盘
             file.transferTo(newFile);
             //题目写入数据库
-            List<String> list = teacherService.eaxmInput(newFile.toString(), exam);
+            List<String> list = teacherService.examInput(newFile.toString(), exam);
             if (list == null || list.isEmpty()) {
                 modelMap.put("status", "1");
             } else {
                 modelMap.put("status", "0");
-                String errorInfo = "";//存放错误信息
+                //存放错误信息
+                StringBuilder errorInfo = new StringBuilder();
                 for (String string : list) {
-                    errorInfo += string;
-                    errorInfo += "\n";
+                    errorInfo.append(string);
+                    errorInfo.append("\n");
                 }
-                modelMap.put("error_info", errorInfo);
+                modelMap.put("error_info", errorInfo.toString());
             }
         } catch (Exception e) {
             modelMap.put("status", "0");
             modelMap.put("error_info", "题目写入失败");
             e.printStackTrace();
         } finally {
-            if (newFile != null && newFile.exists()) {
+            if (newFile.exists()) {
                 newFile.delete();
             }
-            return modelMap;
         }
+        return modelMap;
     }
 
     /**
      * 根据前台eiid查询当前考试题目
      *
-     * @param request
-     * @return
+     * @param request request
+     * @return 返回当前考试题目
      */
     @RequestMapping("/queryTest.do")
     @ResponseBody
     public Map<String, Object> queryTest(HttpServletRequest request) {
-        Map<String, Object> modelMap = new HashMap<>();
+        Map<String, Object> modelMap = new HashMap<>(2048);
         //获取eiid转为int类型
         String eiidStr = request.getParameter("eiid");
         int examEiid = Integer.parseInt(eiidStr);
@@ -348,9 +353,9 @@ public class TeacherController {
             modelMap.put("single", singleChoiceList);
         }
         if (multipleChoiceList == null || multipleChoiceList.isEmpty()) {
-            modelMap.put("multuple", "empty");
+            modelMap.put("multiple", "empty");
         } else {
-            modelMap.put("multuple", multipleChoiceList);
+            modelMap.put("multiple", multipleChoiceList);
         }
         if (checkingQuestionList == null || checkingQuestionList.isEmpty()) {
             modelMap.put("check", "empty");

@@ -11,10 +11,22 @@ import java.util.List;
  */
 public class Loginer {
 
-    private Integer uId;//登陆者id
-    private String username;//登陆者姓名
-    private String password;//登陆者密码
-    private List<Role> roleList;//角色集
+    /**
+     * 登陆者id
+     */
+    private Integer uId;
+    /**
+     * 登陆者姓名
+     */
+    private String username;
+    /**
+     * 登陆者密码
+     */
+    private String password;
+    /**
+     * 角色集
+     */
+    private List<Role> roleList;
 
     public List<Role> getRoleList() {
         return roleList;

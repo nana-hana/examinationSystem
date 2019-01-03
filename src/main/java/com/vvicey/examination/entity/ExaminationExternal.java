@@ -8,13 +8,30 @@ import java.util.Date;
  * @Description 考试外在因素(时间地点人)实体类
  */
 public class ExaminationExternal {
-
-    private Integer eeid;//examinationExternal的id
-    private Date examTime;//考试开始的时间
-    private String examPlace;//考试地点
-    private Integer teacherNumber;//监考老师编号
-    private Integer institute;//归属于哪个学院管理员管理
-    private Integer eiid;//考试试卷id
+    /**
+     * examinationExternal的id
+     */
+    private Integer eeid;
+    /**
+     * 考试开始的时间
+     */
+    private Date examTime;
+    /**
+     * 考试地点
+     */
+    private String examPlace;
+    /**
+     * 监考老师编号
+     */
+    private Integer teacherNumber;
+    /**
+     * 归属于哪个学院管理员管理
+     */
+    private Integer institute;
+    /**
+     * 考试试卷id
+     */
+    private Integer eiid;
 
     public Integer getEeid() {
         return eeid;

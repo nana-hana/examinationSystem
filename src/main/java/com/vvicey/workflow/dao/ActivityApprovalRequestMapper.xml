@@ -9,7 +9,7 @@
     <result column="eiid" property="eiid" jdbcType="INTEGER" />
     <result column="task_id" property="taskId" jdbcType="VARCHAR"/>
   </resultMap>
-  <resultMap id="ActivityInternalResultMap" type="com.vvicey.user.tempEntity.ActivityInternal">
+  <resultMap id="ActivityInternalResultMap" type="com.vvicey.user.tempentity.ActivityInternal">
     <id column="eiid" property="eiid" jdbcType="INTEGER"/>
     <result column="single_number" property="singleNumber" jdbcType="INTEGER"/>
     <result column="single_score" property="singleScore" jdbcType="INTEGER"/>

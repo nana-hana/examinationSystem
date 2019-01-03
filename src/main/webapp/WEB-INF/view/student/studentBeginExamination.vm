@@ -32,6 +32,74 @@
     <script src="/static/plugins/layer/layer.js"></script>
     <script>
         $(function () {
+            var mediaStreamTrack;
+            //开启摄像头
+            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+            if (navigator.getUserMedia) {
+                navigator.getUserMedia({audio: false, video: {width: 320, height: 320}},
+                        function (stream) {
+                            mediaStreamTrack = typeof stream.stop === 'function' ? stream : stream.getTracks()[1];
+                            try {
+                                video.srcObject = stream;
+                            } catch (error) {
+                                video.src = (window.URL || window.webkitURL).createObjectURL(stream);
+                            }
+                        },
+                        function (err) {
+                            console.log("The following error occurred: " + err.name);
+                        }
+                );
+            } else {
+                console.log("getUserMedia not supported");
+            }
+
+            var imgDataFirst;
+            var imgDataSecond;
+            var isCheat = 0;
+            var api_key = "xgsMbioVF0yuZXslmJGvleHUjFE_FwCW";
+            var api_secret = "mk1y5UegVJ8LOT3N4bKJ3pWIPZppCYEW";
+            setInterval(function () {
+                //拍照
+                var context = $("#canvas")[0].getContext("2d");
+                context.drawImage(video, 0, 0, 320, 320);
+                //base64img
+                if (imgDataFirst == null) {
+                    imgDataFirst = $("#canvas")[0].toDataURL("image/png");
+                }
+                imgDataSecond = $("#canvas")[0].toDataURL("image/png");
+                //上传
+                if (imgDataFirst != null && imgDataSecond != null) {
+                    $.ajax({
+                        type: "POST",
+                        url: "https://api-cn.faceplusplus.com/facepp/v3/compare",
+                        data: {
+                            "api_key": api_key,
+                            "api_secret": api_secret,
+                            "image_base64_1": imgDataFirst,
+                            "image_base64_2": imgDataSecond
+                        },
+                        success: function (data) {
+                            var confidence = data.confidence;//置信度
+                            var threshold;
+                            try {
+                                threshold = data.thresholds["1e-3"];//误识率为千分之一的置信度阈值
+                            } catch (e) {
+                                console.log("zuobi");
+                                isCheat++;
+                            }
+                            if (isCheat != 1) {
+                                if (confidence < threshold) {
+                                    console.log("zuobi");
+                                } else {
+                                    console.log("zhenghcang");
+                                }
+                            }
+                        }
+                    });
+                    imgDataSecond = null;
+                }
+            }, 6000);
+
             $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
                 checkboxClass: 'icheckbox_minimal-blue',
                 radioClass: 'iradio_minimal-blue'
@@ -398,7 +466,7 @@
 <div id="nullExam" class="wrap-box" hidden="hidden" style="position: fixed;left: 700px;z-index: 100;top: 150px;">
     <table cellpadding="0" cellspacing="0" class="data-table">
         <tr>
-            <th colspan="3">暂无考试事件</th>
+            <th colspan="3">暂无考试时间</th>
         </tr>
     </table>
 </div>
@@ -490,13 +558,13 @@
                                     #foreach($singleChoice in $singleChoiceList)
                                     <tr class="singleTopic form-group" id=$foreach.count>
                                         <td>
-                                            $foreach.count. $singleChoice.question</br></br>
+                                            $foreach.count. $singleChoice.question<br><br>
                                             <input type="radio" name=single$foreach.count />
-                                            A. $singleChoice.answerA</br></br>
+                                            A. $singleChoice.answerA<br><br>
                                             <input type="radio" name=single$foreach.count />
-                                            B. $singleChoice.answerB</br></br>
+                                            B. $singleChoice.answerB<br><br>
                                             <input type="radio" name=single$foreach.count />
-                                            C. $singleChoice.answerC</br></br>
+                                            C. $singleChoice.answerC<br><br>
                                             <input type="radio" name=single$foreach.count />
                                             D. $singleChoice.answerD
                                         </td>
@@ -585,6 +653,8 @@
                 </div>
             </div>
         </section>
+        <video id="video" width="320" height="320" autoplay style="display: none"></video>
+        <canvas id="canvas" width="320" height="320" style="display: none"></canvas>
     </div>
     <footer>
         <div class="main-footer text-center">

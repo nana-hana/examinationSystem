@@ -1,6 +1,6 @@
 package com.vvicey.user.login.service;
 
-import com.vvicey.common.utils.MD5Utils;
+import com.vvicey.common.utils.Md5Utils;
 import com.vvicey.user.login.dao.LoginMapper;
 import com.vvicey.user.login.entity.Loginer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,47 +18,30 @@ import java.security.NoSuchAlgorithmException;
 @Service("LoginServiceImpl")
 public class LoginServiceImpl implements LoginService {
 
-    @Autowired
-    private LoginMapper loginMapper;
+    private final LoginMapper loginMapper;
 
-    /**
-     * 创建登陆者账号
-     *
-     * @param loginer 需要被创建的登陆者信息
-     * @return 返回创建成功与否
-     * @throws UnsupportedEncodingException 编码不支持
-     * @throws NoSuchAlgorithmException     请求的加密算法无法实现
-     */
+    @Autowired
+    public LoginServiceImpl(LoginMapper loginMapper) {
+        this.loginMapper = loginMapper;
+    }
+
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int createUser(Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        loginer.setPassword(MD5Utils.encryptPassword(loginer.getPassword()));//将密码进行编译在存入数据库
+        //将密码进行编译在存入数据库
+        loginer.setPassword(Md5Utils.encryptPassword(loginer.getPassword()));
         return loginMapper.insertSelective(loginer);
     }
 
-    /**
-     * 查询登陆者信息
-     *
-     * @param username 根据账号来查询登陆者信息
-     * @return 返回查询的结果
-     */
     @Override
     public Loginer queryUser(String username) {
         return loginMapper.selectByUsername(username);
     }
 
-    /**
-     * 更新登陆者信息(根据id)
-     *
-     * @param loginer 需要被更新的登陆者信息
-     * @return 返回更新成功与否
-     * @throws UnsupportedEncodingException 编码不支持
-     * @throws NoSuchAlgorithmException     请求的加密算法无法实现
-     */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateUserByUid(Loginer loginer) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        loginer.setPassword(MD5Utils.encryptPassword(loginer.getPassword()));
+        loginer.setPassword(Md5Utils.encryptPassword(loginer.getPassword()));
         return loginMapper.updateByUidSelective(loginer);
     }
 }

@@ -12,30 +12,68 @@ public class ExaminationInternal implements Serializable {
 
     private static final long serialVersionUID = -3173729191432597839L;
 
-    private Integer eiid;//examinationInternal的id
-    private Integer singleNumber;//单选题数量
-    private Integer singleScore;//单选题总分值
-    private Integer multipleNumber;//多选题数量
-    private Integer multipleScore;//多选题总分值
-    private Integer checkingNumber;//判断题数量
-    private Integer checkingScore;//判断题总分值
-    private Integer paperLevel;//试卷平均难度
-    private Integer paperKind;//试卷生成类型(0:a、b卷型，1:全随机型)
-    private Integer subjectId;//考试科目id
-    private Integer studentClass;//参加考试的班级
-    private Integer examinationTime;//考试持续时间
-    private Date examTime;//考试开始的时间
+    /**
+     * examinationInternal的id
+     */
+    private Integer eiid;
+    /**
+     * 单选题数量
+     */
+    private Integer singleNumber;
+    /**
+     * 单选题总分值
+     */
+    private Integer singleScore;
+    /**
+     * 多选题数量
+     */
+    private Integer multipleNumber;
+    /**
+     * 多选题总分值
+     */
+    private Integer multipleScore;
+    /**
+     * 判断题数量
+     */
+    private Integer checkingNumber;
+    /**
+     * 判断题总分值
+     */
+    private Integer checkingScore;
+    /**
+     * 试卷平均难度
+     */
+    private Integer paperLevel;
+    /**
+     * 试卷生成类型(0:a、b卷型，1:全随机型)
+     */
+    private Integer paperKind;
+    /**
+     * 考试科目id
+     */
+    private Integer subjectId;
+    /**
+     * 参加考试的班级
+     */
+    private Integer studentClass;
+    /**
+     * 考试持续时间
+     */
+    private Integer examinationTime;
+    /**
+     * 考试开始的时间
+     */
+    private Date examTime;
 
-    
     public Date getExamTime() {
-		return examTime;
-	}
+        return examTime;
+    }
 
-	public void setExamTime(Date examTime) {
-		this.examTime = examTime;
-	}
+    public void setExamTime(Date examTime) {
+        this.examTime = examTime;
+    }
 
-	public Integer getEiid() {
+    public Integer getEiid() {
         return eiid;
     }
 

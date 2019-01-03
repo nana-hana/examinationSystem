@@ -1,5 +1,10 @@
 package com.vvicey.common.information;
 
+/**
+ * @author nana
+ * Date 19-1-3 下午1:50
+ * @Description 属性
+ */
 public enum Status {
 
     //返回成功失败的状态信息
